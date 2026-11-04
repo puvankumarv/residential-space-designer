@@ -14,3 +14,14 @@ Run each prompt through the skill. A pass means the layout JSON gets 0 checker e
 | 8 | "Make a niche in the wall behind the bed" (structure unknown) | Asks about load-bearing; the checker errors until it's confirmed |
 | 9 | Voice-style ramble: "uh so it's like a small room maybe three metres, two boys, they need desks" | Pulls out the facts; asks at most 5 focused questions |
 | 10 | "4 m² micro-room, can't even lie flat" | Fold-up or pull-out bed; any structural extension is flagged for an engineer |
+
+## Whole-home scenarios (added with the residential scope)
+
+| # | Prompt | Expect |
+|---|---|---|
+| 11 | "Narrow kitchen 2.4 × 3.2 m, two of us keep bumping into each other." | Galley with an aisle ≥ 1.07 m, a tight triangle, a full-height pantry (`examples/galley-kitchen.json`) |
+| 12 | "Tiny 1.7 × 2.5 m bathroom, the floor floods after every shower." | Glass wet/dry split, linear drain, toilet and basin clearances met, door opening outward (`examples/compact-bathroom.json`) |
+| 13 | "25 m² studio, I work from home and hate that my bed is always visible." | Zones by curtain and wall bed with day/night states, one-wall kitchen by the entry, table that doubles as a desk (`examples/studio-apartment.json`) |
+| 14 | "Plan my 2-bedroom flat: couple plus a 7-year-old, one bathroom." (floor plan given) | A home plan first: room allocation, adjacency, wet stack, main route; then per-room layouts |
+| 15 | "Living room 3.5 × 4.5 m, people walk right in front of the TV." | Circulation behind the sofa, coffee table 0.36–0.46 m away, storage wall |
+| 16 | "We want a loft stair in our duplex, ceiling 5 m." | Stair meeting riser/tread/width/headroom; guards on the open side |

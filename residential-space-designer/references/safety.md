@@ -50,6 +50,14 @@ Quick feasibility check: a loft over a desk needs about 1.5 m under it, plus abo
 - The space in front of wardrobes, drawers, desks and steps stays clear for the depth given in `dimensions.md`. ✔
 - Padded wall panels beside raised beds; rounded corners in kids' rooms [DI many].
 
+## Room-type checks
+The checker turns on extra rules based on `room.type`. The values and sources are in each room module:
+- `kitchen`: work aisle and walkway clearances; work-triangle total and leg lengths (`rooms/kitchen.md`).
+- `bathroom`: toilet side and front clearance, basin front clearance, shower size and entry clearance (`rooms/bathroom.md`).
+- `living`, `dining`, `living_dining`: distance from the sofa to the coffee table (`rooms/living-dining.md`).
+- any room with a `stairs` element: riser, tread, width and headroom (`rooms/entry-circulation.md`).
+- **Window falls (every room):** if an opening has `drop_outside` > 1.83 m and its sill is < 0.61 m above the floor, it needs fall protection [IRC R312.2, verify]. The checker warns, and also warns when climbable furniture (beds, desks, seats, steps) stands under a window with a big outside drop.
+
 ## Electrical
 
 - Outlets go in before cladding. An electrician does wet-area and in-furniture wiring. LED strips in steps run on low voltage [DI 62].

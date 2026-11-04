@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Check a bedroom layout JSON against references/safety.md and references/dimensions.md.
+"""Check a room layout JSON against references/safety.md, references/dimensions.md
+and the room module for its room.type (kitchen, bathroom, living, stairs...).
 
 Usage: python3 check_layout.py layout.json [--plan]
 
@@ -30,6 +31,31 @@ BARRIERS = {"partition", "door"}
 GRID = 0.05
 NO_COLLIDE = {"curtain", "board", "hooks", "niche", "chair"}
 FLOOR_OBSTACLE_Z = 1.0     # anything starting below this blocks floor clearance
+
+# Kitchen [NKBA]
+KITCHEN_WORK = {"counter", "sink", "cooktop", "oven", "fridge", "dishwasher", "island"}
+WORK_AISLE = 1.07
+WALKWAY = 0.91
+TRIANGLE_MAX = 7.9
+LEG_MIN, LEG_MAX = 1.2, 2.7
+# Bathroom [IRC-P] minimum / [NKBA] recommended
+WC_SIDE = (0.38, 0.46)
+WC_FRONT = (0.53, 0.76)
+LAV_FRONT = 0.53
+SHOWER_SIDE = (0.76, 0.91)
+SHOWER_AREA = 0.58
+SHOWER_FRONT = (0.61, 0.76)
+# Living [RET-L]
+COFFEE_GAP = (0.36, 0.46)
+# Stairs [IRC-S]
+STAIR_RISE_MAX = 0.196
+STAIR_TREAD_MIN = 0.254
+STAIR_WIDTH_MIN = 0.914
+STAIR_HEADROOM = 2.03
+# Window falls [IRC R312.2]
+FALL_DROP = 1.83
+FALL_SILL = 0.61
+CLIMBABLE = {"bed", "desk", "seat", "sofa", "steps", "platform", "table", "counter"}
 
 
 class Report:
@@ -132,6 +158,174 @@ def check_bedside(b, room, solid, rep):
         rep.warn(f"{b['id']}: no long side has a {BEDSIDE} × {BEDSIDE_RUN} m free strip to get in")
 
 
+def free_ahead(e, solid, room, direction=None):
+    """Free floor distance from e's face in `direction` (default its front) to the
+    nearest wall or floor obstacle within e's width band."""
+    direction = direction or e.get("front")
+    x0, x1, y0, y1 = rect(e)
+    W, D = room["width"], room["depth"]
+    best = {"+x": W - x1, "-x": x0, "+y": D - y1, "-y": y0}[direction]
+    for o in solid:
+        if o is e or o["z"] >= FLOOR_OBSTACLE_Z:
+            continue
+        a0, a1, b0, b1 = rect(o)
+        if direction in ("+y", "-y"):
+            if min(a1, x1) - max(a0, x0) <= EPS:
+                continue
+            gap = b0 - y1 if direction == "+y" else y0 - b1
+        else:
+            if min(b1, y1) - max(b0, y0) <= EPS:
+                continue
+            gap = a0 - x1 if direction == "+x" else x0 - a1
+        if gap >= -EPS:
+            best = min(best, max(gap, 0.0))
+    return best
+
+
+def side_room(e, solid, room):
+    """Distance from e's centreline to the nearest wall/obstacle on each side,
+    measured across its front direction (for toilets)."""
+    x0, x1, y0, y1 = rect(e)
+    W, D = room["width"], room["depth"]
+    if e["front"] in ("+y", "-y"):
+        c, lo_wall, hi_wall, band = (x0 + x1) / 2, 0.0, W, (y0, y1)
+    else:
+        c, lo_wall, hi_wall, band = (y0 + y1) / 2, 0.0, D, (x0, x1)
+    left, right = c - lo_wall, hi_wall - c
+    for o in solid:
+        if o is e or o["z"] >= FLOOR_OBSTACLE_Z:
+            continue
+        a0, a1, b0, b1 = rect(o)
+        if e["front"] in ("+y", "-y"):
+            span, (o_lo, o_hi) = (b0, b1), (a0, a1)
+        else:
+            span, (o_lo, o_hi) = (a0, a1), (b0, b1)
+        if min(span[1], band[1]) - max(span[0], band[0]) <= EPS:
+            continue
+        if o_hi <= c + EPS:
+            left = min(left, c - o_hi)
+        elif o_lo >= c - EPS:
+            right = min(right, o_lo - c)
+    return left, right
+
+
+def centre(e):
+    return (e["x"] + e["w"] / 2, e["y"] + e["d"] / 2)
+
+
+def check_room_type(layout, solid, rep):
+    room = layout["room"]
+    rtype = room.get("type", "bedroom")
+    els = layout["elements"]
+
+    has_kitchen = any(e["type"] in ("sink", "cooktop") for e in els) and rtype in ("kitchen", "studio")
+    if has_kitchen:
+        for e in els:
+            if e["type"] not in KITCHEN_WORK:
+                continue
+            if not e.get("front"):
+                rep.warn(f"{e['id']}: kitchen element without 'front'; aisle can't be checked")
+                continue
+            gap = free_ahead(e, solid, room)
+            if gap < WALKWAY - EPS:
+                rep.warn(f"{e['id']}: {gap:.2f} m free in front < {WALKWAY} m walkway [NKBA]")
+            elif gap < WORK_AISLE - EPS:
+                rep.warn(f"{e['id']}: work aisle {gap:.2f} m < {WORK_AISLE} m for one cook [NKBA]")
+        pts = {}
+        for t in ("sink", "cooktop", "fridge"):
+            found = [e for e in els if e["type"] == t]
+            if found:
+                pts[t] = centre(found[0])
+        one_wall = len(pts) == 3 and (
+            max(p[0] for p in pts.values()) - min(p[0] for p in pts.values()) < 0.3
+            or max(p[1] for p in pts.values()) - min(p[1] for p in pts.values()) < 0.3)
+        if one_wall:
+            pass  # one-wall kitchen: the triangle rule doesn't apply (rooms/kitchen.md)
+        elif len(pts) == 3:
+            legs = [("sink", "cooktop"), ("cooktop", "fridge"), ("fridge", "sink")]
+            total = 0.0
+            for a, b in legs:
+                d = ((pts[a][0] - pts[b][0]) ** 2 + (pts[a][1] - pts[b][1]) ** 2) ** 0.5
+                total += d
+                if not LEG_MIN - EPS <= d <= LEG_MAX + EPS:
+                    rep.warn(f"work triangle {a}–{b} = {d:.2f} m, outside {LEG_MIN}–{LEG_MAX} m [NKBA]")
+            if total > TRIANGLE_MAX + EPS:
+                rep.warn(f"work triangle total {total:.2f} m > {TRIANGLE_MAX} m [NKBA]")
+        else:
+            rep.warn("kitchen without sink, cooktop and fridge; work triangle not checked")
+
+    if rtype == "bathroom":
+        for e in els:
+            t = e["type"]
+            if t in ("toilet", "vanity", "shower", "bathtub") and not e.get("front"):
+                rep.warn(f"{e['id']}: give 'front' so clearances can be checked")
+                continue
+            if t == "toilet":
+                front = free_ahead(e, solid, room)
+                if front < WC_FRONT[0] - EPS:
+                    rep.error(f"{e['id']}: {front:.2f} m clear in front of toilet < {WC_FRONT[0]} m [IRC-P]")
+                elif front < WC_FRONT[1] - EPS:
+                    rep.warn(f"{e['id']}: {front:.2f} m clear in front of toilet < recommended {WC_FRONT[1]} m [NKBA]")
+                for side, dist in zip(("left", "right"), side_room(e, solid, room)):
+                    if dist < WC_SIDE[0] - EPS:
+                        rep.error(f"{e['id']}: centreline to {side} obstruction {dist:.2f} m < {WC_SIDE[0]} m [IRC-P]")
+                    elif dist < WC_SIDE[1] - EPS:
+                        rep.warn(f"{e['id']}: centreline to {side} obstruction {dist:.2f} m < recommended {WC_SIDE[1]} m [NKBA]")
+            elif t == "vanity":
+                front = free_ahead(e, solid, room)
+                if front < LAV_FRONT - EPS:
+                    rep.error(f"{e['id']}: {front:.2f} m clear in front of basin < {LAV_FRONT} m [IRC-P]")
+            elif t == "shower":
+                small, area = min(e["w"], e["d"]), e["w"] * e["d"]
+                if small < SHOWER_SIDE[0] - EPS or area < SHOWER_AREA - EPS:
+                    rep.error(f"{e['id']}: shower {e['w']:.2f}×{e['d']:.2f} m below 0.76×0.76 m / 0.58 m² [IRC-P]")
+                elif small < SHOWER_SIDE[1] - EPS:
+                    rep.warn(f"{e['id']}: shower side {small:.2f} m < recommended {SHOWER_SIDE[1]} m [NKBA]")
+                front = free_ahead(e, solid, room)
+                if front < SHOWER_FRONT[0] - EPS:
+                    rep.error(f"{e['id']}: {front:.2f} m clear at shower entry < {SHOWER_FRONT[0]} m [IRC-P]")
+                elif front < SHOWER_FRONT[1] - EPS:
+                    rep.warn(f"{e['id']}: {front:.2f} m clear at shower entry < recommended {SHOWER_FRONT[1]} m [NKBA]")
+
+    if rtype in ("living", "dining", "living_dining", "studio"):
+        sofas = [e for e in els if e["type"] == "sofa" and e.get("front")]
+        for t in (e for e in els if e["type"] == "coffee_table"):
+            gaps = [free_ahead(s, [t], room) for s in sofas]
+            gaps = [g for g in gaps if g < 2.0]
+            if gaps and not COFFEE_GAP[0] - EPS <= min(gaps) <= COFFEE_GAP[1] + EPS:
+                rep.warn(f"{t['id']}: {min(gaps):.2f} m from sofa, outside {COFFEE_GAP[0]}–{COFFEE_GAP[1]} m [RET-L]")
+
+    for s in (e for e in els if e["type"] == "stairs"):
+        rise, tread = s.get("rise"), s.get("tread")
+        width = s.get("stair_width", min(s["w"], s["d"]))
+        if rise is None or tread is None:
+            rep.warn(f"{s['id']}: give 'rise' and 'tread' to check the stair")
+        else:
+            if rise > STAIR_RISE_MAX + EPS:
+                rep.error(f"{s['id']}: riser {rise} m > {STAIR_RISE_MAX} m [IRC-S]")
+            if tread < STAIR_TREAD_MIN - EPS:
+                rep.error(f"{s['id']}: tread {tread} m < {STAIR_TREAD_MIN} m [IRC-S]")
+        if width < STAIR_WIDTH_MIN - EPS:
+            rep.error(f"{s['id']}: stair width {width:.2f} m < {STAIR_WIDTH_MIN} m [IRC-S]")
+        if s.get("headroom") is not None and s["headroom"] < STAIR_HEADROOM - EPS:
+            rep.error(f"{s['id']}: stair headroom {s['headroom']} m < {STAIR_HEADROOM} m [IRC]")
+
+    for w in room["openings"]:
+        if w["type"] not in ("window", "bay_window") or w.get("drop_outside", 0) <= FALL_DROP:
+            continue
+        sill = w.get("sill", 0.9)
+        if sill < FALL_SILL - EPS:
+            rep.warn(f"window {w['id']}: sill {sill} m with {w['drop_outside']} m drop outside; "
+                     f"add fall protection [IRC R312.2]")
+        zone = wall_span_rect(room, w["wall"], w["offset"], w["width"], 0.6)
+        for e in solid:
+            top = e["z"] + e["h"]
+            if e["type"] in CLIMBABLE and xy_overlap(zone, rect(e)) and top <= sill + EPS \
+               and sill - top < FALL_SILL - EPS:
+                rep.warn(f"{e['id']}: climbable, {sill - top:.2f} m below window {w['id']} sill with a "
+                         f"{w['drop_outside']} m drop; fit window restrictors")
+
+
 def check_egress_per_area(room, els, rep):
     """Every bed must share a floor area with an egress window. Partitions and
     interior doors (closed) split the floor into areas [IRC R310]."""
@@ -164,6 +358,8 @@ def check_egress_per_area(room, els, rep):
                         stack.append((a, b))
             n += 1
 
+    if not any(e["type"] == "bed" for e in els):
+        return
     windows = [o for o in room["openings"] if o["type"] in ("window", "bay_window") and o.get("egress")]
     if not windows:
         rep.warn("no window is marked egress; every bedroom needs an escape opening [IRC]")
@@ -200,11 +396,14 @@ def check_all(layout):
     states = layout.get("states") or []
     if not states:
         return check(apply_state(layout, None))
+    reports = {s: check(apply_state(layout, s)) for s in states}
     rep = Report()
-    for s in states:
-        r = check(apply_state(layout, s))
-        rep.errors += [f"[{s}] {m}" for m in r.errors]
-        rep.warns += [f"[{s}] {m}" for m in r.warns]
+    for kind in ("errors", "warns"):
+        common = set.intersection(*(set(getattr(r, kind)) for r in reports.values()))
+        out = getattr(rep, kind)
+        out += [m for m in getattr(reports[states[0]], kind) if m in common]  # same in every state
+        for s, r in reports.items():
+            out += [f"[{s}] {m}" for m in getattr(r, kind) if m not in common]
     return rep
 
 
@@ -352,6 +551,8 @@ def check(layout):
         if e["type"] in ("bed", "desk"):
             if not any(p and dist_point_rect(p, rect(e)) <= OUTLET_REACH for p in outlets):
                 rep.warn(f"{e['id']}: no outlet within {OUTLET_REACH} m")
+
+    check_room_type(layout, solid, rep)
 
     # Reveal path
     for s in layout["reveal_path"]:

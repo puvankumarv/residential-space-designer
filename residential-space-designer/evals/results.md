@@ -34,3 +34,24 @@ After the fixes, all 7 layouts have 0 errors. The one remaining warning is #4's 
 ## Still open
 - **A blind run:** a fresh session given only the skill folder, on scenarios 1–10.
 - **Scenario 7** needs a real room photo.
+
+# Run 2: residential scope (2026-11-04)
+
+The skill was widened from bedrooms to every residential space. New room modules: kitchen, bathroom, living/dining, entry/circulation and stairs, balcony/laundry, home office, whole home and studio.
+
+| # | Scenario | Result | Checker |
+|---|---|---|---|
+| 11 | Galley kitchen | ✅ `examples/galley-kitchen.json`: 1.2 m aisle, triangle legs about 2 m | 0/0 |
+| 12 | Compact bathroom | ✅ `examples/compact-bathroom.json`: toilet front 1.0 m, sides 0.6/0.9 m, 0.92 m shower with 0.78 m entry | 0/0 |
+| 13 | Studio, WFH | ✅ `examples/studio-apartment.json`: wall bed with day/night states, one-wall kitchen, sofa 0.40 m from the coffee table | 0/0 |
+| 14–16 | Whole-home plan, living room, stair | ⏸ not run yet | — |
+
+**New checks, each tested with a broken layout:**
+- **Kitchen:** an aisle squeezed to 0.8 m gives walkway warnings on every work element. Stretching the fridge to the far end gives `cooktop–fridge 3.78 m` and `total 8.24 m > 7.9 m`.
+- **Bathroom:** a toilet 0.30 m from the side wall, with the vanity pushed into its front zone and a 0.70 m shower, gives 4 errors.
+- **Living:** a coffee table 0.80 m from the sofa gives a warning.
+- **Window falls:** a 0.5 m sill with a 15 m drop, and a daybed under the window, give 2 warnings.
+- **Stairs:** a 0.22 m riser, 0.22 m tread, 0.8 m width and 1.9 m headroom give 4 errors.
+- **States:** messages that are the same in every state are now printed once instead of once per state.
+
+All 10 layouts (4 examples and 6 bedroom runs) pass with 0 errors. The only warning is #4's intended bedside trade-off.

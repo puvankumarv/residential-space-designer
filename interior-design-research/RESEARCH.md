@@ -77,7 +77,7 @@ Pipeline: frames → COLMAP structure-from-motion → Gaussian splatting (.ply) 
 Inputs: text | voice (speech-to-text) | room photos | walkthrough video | floor plan
             │
    ┌────────▼─────────┐
-   │ 1. SKILL          │  small-space-bedroom-designer/
+   │ 1. SKILL          │  residential-space-designer/
    │  (knowledge)      │   SKILL.md          — intake questions, design procedure
    │                   │   references/        — dimensions, clearances, bunk/loft/split-level
    │                   │                       patterns, problem→solution catalog (from the Shorts),

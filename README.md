@@ -1,48 +1,74 @@
-# Small-Space Bedroom Designer
+# Residential Space Designer
 
-A Claude skill for designing small and shared bedrooms: kids' and twin rooms, loft, bunk, half-height and split-level beds, and micro-units under 10 m².
+**One skill for every space in the home.** It's a Claude skill that designs residential interiors, from a single cramped room to a whole apartment or house:
 
-It turns a room description (text, a voice transcript, photos or a floor plan) into:
+- **Bedrooms:** kids', twin and shared rooms with loft, bunk, half-height and wall beds
+- **Kitchens:** galley, L, U and island layouts
+- **Bathrooms:** fixture layout and wet/dry split
+- **Living and dining rooms**
+- **Entryways, corridors and stairs**
+- **Balconies and laundry**
+- **Home offices**
+- **Studios and whole-home planning:** room allocation, adjacency, and the wet-room stack
+
+You give it dimensions, photos, a floor plan or a spoken description. For each room it produces:
 - a design brief and zone plan,
-- a layout JSON (`templates/layout.schema.json`) that a checker can validate and a Blender stage can render,
-- an ASCII floor plan, a bill of materials, safety notes,
+- a layout JSON (`templates/layout.schema.json`) that the checker validates and a Blender stage can render,
+- an ASCII floor plan, a bill of materials and safety notes,
 - a zone-by-zone reveal script that doubles as the camera path for a walkthrough video.
 
-## Layout
+For a whole home it first makes a **home plan** (rooms, adjacency, circulation), then designs room by room.
+
+## What's inside
 
 | Path | What it is |
 |---|---|
-| `small-space-bedroom-designer/SKILL.md` | The skill: procedure and deliverables |
-| `small-space-bedroom-designer/references/` | Rules with source tags: sleep strategies, zoning, storage, safety (CPSC, EN 747, IRC), dimensions, materials, patterns, sources |
-| `small-space-bedroom-designer/templates/` | Layout JSON schema, intake questions and brief, BOM |
-| `small-space-bedroom-designer/scripts/check_layout.py` | Layout checker, standard-library Python |
-| `small-space-bedroom-designer/examples/` | Worked example (twins, offset loft) |
-| `small-space-bedroom-designer/evals/` | 10 test scenarios, generated layouts and results |
-| `interior-design-research/` | Research notes: existing skills/MCPs/models, per-video notes, draft rules |
+| `residential-space-designer/SKILL.md` | The skill: room modules, procedure, deliverables |
+| `residential-space-designer/references/rooms/` | One module per room type: `bedroom/`, `kitchen.md`, `bathroom.md`, `living-dining.md`, `entry-circulation.md`, `balcony-laundry.md`, `home-office.md`, `whole-home.md` |
+| `residential-space-designer/references/` | Shared rules with source tags: safety, dimensions, storage, services, materials, sources |
+| `residential-space-designer/templates/` | Layout JSON schema, intake questions and brief, BOM |
+| `residential-space-designer/scripts/check_layout.py` | Layout checker, standard-library Python |
+| `residential-space-designer/examples/` | Twins' loft bedroom, galley kitchen, compact bathroom, studio apartment |
+| `residential-space-designer/evals/` | Test scenarios, generated layouts and results |
+| `interior-design-research/` | Research notes: existing skills, MCPs and models; case-study notes; draft rules |
+
+## What the checker verifies
+
+- **Every room:** collisions, room bounds, door swings, clearance in front of furniture, outlets near beds and desks, day/night states for convertible furniture.
+- **Sleeping areas:** raised-bed guardrails, access and headroom, upper-bed age, lower-bunk headroom, bedside access, an escape window for every sleeping area (including rooms split by partitions).
+- **Kitchens:** work-aisle and walkway widths, work-triangle legs and total.
+- **Bathrooms:** toilet side and front clearance, basin clearance, shower size and entry clearance.
+- **Living rooms:** distance from the sofa to the coffee table.
+- **Stairs:** riser, tread, width and headroom.
+- **Windows:** fall protection on high floors, and climbable furniture under windows.
+- **Structure:** niches in load-bearing walls.
+
+Each rule cites its source: CPSC, EN 747, IRC, NKBA, Neufert/Panero or IES (see `references/sources.md`).
 
 ## Using it
 
-Install as a Claude Code skill by copying the folder into your skills directory:
+Install as a Claude Code skill:
 
 ```bash
-cp -r small-space-bedroom-designer ~/.claude/skills/
+cp -r residential-space-designer ~/.claude/skills/
 ```
 
 Check a layout:
 
 ```bash
-python3 small-space-bedroom-designer/scripts/check_layout.py small-space-bedroom-designer/examples/twins-offset-loft.json --plan
+python3 residential-space-designer/scripts/check_layout.py residential-space-designer/examples/studio-apartment.json --plan
 ```
 
 ## Status
 
-v1. Safety values come from the cited standards. Values tagged `[std]` are common practice and must be confirmed. Always check local building codes and have structure and electrics signed off by a professional.
+v1. Code values are minimums. NKBA and design-guide values are recommendations. Values tagged `[std]` are common practice and must be confirmed. Always check local building codes, and have structure, gas, electrics and waterproofing done or signed off by professionals.
 
-The design patterns were studied from public renovation videos and are written in our own words. `interior-design-research/video_notes.md` paraphrases that channel's content, so keep this repository private unless you have the channel owner's permission to publish those notes.
+Design patterns were studied from public renovation videos and written up in our own words. The case-study notes in `interior-design-research/` are paraphrased summaries, not transcripts.
 
 ## Roadmap
 
-1. Blind test of the skill on the 10 scenarios.
+1. Blind test of the skill on the scenarios in `evals/scenarios.md`.
 2. MCP v1: `validate_layout` and `floor_plan_svg` tools.
 3. Blender stage via blender-orchestrator: layout JSON to scene to walkthrough video.
 4. Inputs: photo to dimensions, voice (Whisper), video to 3D reconstruction.
+5. Multi-room home layouts in a single file.

@@ -95,7 +95,7 @@ Couple → raised platform with storage + his/her drawers in steps; split desk (
 - A ladder or steps with **anti-slip** treads [16, 47, 60]; protective ropes on steps in large multi-kid rooms [79].
 - **Headroom** (videos only say "won't bump head", so use these [std] values):
   - **Under a loft:** ≥ 1.5 m for sitting at a desk. Adult walk-through needs ≥ 1.9 m [42].
-  - **Above the upper mattress:** ≥ 0.84 m recommended, 0.76 m minimum. These values are superseded by the sourced versions in `small-space-bedroom-designer/references/safety.md`.
+  - **Above the upper mattress:** ≥ 0.84 m recommended, 0.76 m minimum. These values are superseded by the sourced versions in `residential-space-designer/references/safety.md`.
 - **Structure:** frames are galvanized square steel, welded, on vertical columns, and fixed with expansion bolts [80, 82].
   - **⚠ Never cut niches into load-bearing walls.** Videos 69 and 82 note this; video 86 claims to carve one, so flag it.
 - Don't put the guardrail and ladder on the window side without window railings [42].
