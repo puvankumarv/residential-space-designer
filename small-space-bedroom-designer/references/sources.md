@@ -1,0 +1,32 @@
+# Sources
+
+Every number in this skill is tagged with where it came from. When sources disagree, the skill uses the stricter value.
+
+| Tag | Source | What it supplies | Strength |
+|---|---|---|---|
+| **[CPSC]** | US 16 CFR Part 1213 (adult) and Part 1513 (children's) bunk bed rules ([govinfo text](https://www.govinfo.gov/content/pkg/CFR-2002-title16-vol2/html/CFR-2002-title16-vol2-part1213.htm), [CPSC guidance](https://www.cpsc.gov/Business--Manufacturing/Business-Education/Business-Guidance/Bunk-Beds)) | A bunk is any bed whose foundation underside is more than 30 in (760 mm) above the floor. It needs guardrails on both sides, with tops ≥ 5 in (130 mm) above the mattress. A rail's end gap is ≤ 15 in (380 mm). No children under 6 on the upper bunk. | Law (US) |
+| **[EN747]** | EN 747-1:2024, bunk beds and high beds ([BSI listing](https://knowledge.bsigroup.com/products/bs-en-747-1-furniture-bunk-beds-and-high-beds-part-1-safety-strength-and-durability-requirements)) | Applies to beds with a sleeping surface above 600 mm. Secondary summaries cite guardrails about 150–160 mm above the mattress and say to avoid openings of 60–120 mm. | Standard (EU/UK). The text is paywalled and the numbers come from summaries, so verify them. |
+| **[IRC]** | International Residential Code R310 emergency escape openings ([Boulder County handout](https://bouldercounty.gov/property-and-land/land-use/building/building-publications/b10-emergency-escape-and-rescue-openings/)) | Every sleeping room needs one operable escape opening, with a net clear area of 5.7 ft² (0.53 m²), a clear height ≥ 24 in, a clear width ≥ 20 in, and a sill ≤ 44 in (1.12 m) above the floor. | Code (US). Check the edition your jurisdiction has adopted. |
+| **[IES]** | IES Lighting Handbook, 11th ed., as cited by the interior-design-expert skill | Bedroom general lighting 50–150 lux; reading or detailed tasks 300–500 lux; 2700–3000 K in the evening. | Handbook |
+| **[NP]** | Neufert *Architects' Data*; Panero & Zelnik *Human Dimension & Interior Space*, via secondary summaries ([Studio Matrx](https://www.studiomatrx.org/students/space-planning-ergonomics/space-standards-and-clearances)) | Bedside circulation 700–900 mm; space in front of a wardrobe 900–1050 mm. | Professional guideline |
+| **[BO]** | blender-orchestrator `docs/SCENE_BUILDING_GUIDE.md` ([repo](https://github.com/mlolson/blender-orchestrator)) | Bedside clearance ≥ 0.6 m on at least one side; walking path ≥ 0.9 m; doorway ≥ 0.8 m; wardrobe 0.6 m deep and 2.0–2.2 m tall; desk 0.73 m tall and 0.6–0.8 m deep; ceilings 2.4 / 2.7 / 3.0 m. It cites no sources. | Tool defaults. Matching them lets our layouts render without changes. |
+| **[IDE]** | interior-design-expert skill ([repo](https://github.com/curiositech/some_claude_skills)) | Bed side ≥ 600 mm; secondary circulation 600–900 mm; primary paths 900–1200 mm; squeeze points ≥ 450 mm. It cites Ching *Interior Design Illustrated* and the IES Handbook. | Skill |
+| **[RET]** | Retailer and bunk-bed guides ([summary search](https://www.homestyler.com/article/how-to-fit-bunk-beds-in-small-rooms), [Dimensions.com bunk/loft drawings](https://www.dimensions.com/collection/bunk-beds-loft-beds)) | 33–36 in (0.84–0.91 m) of headroom above the top mattress is typical, with a 30 in (0.76 m) minimum. Top-bunk mattresses are 15–20 cm thick so the guardrail stays effective. | Industry practice |
+| **[DI]** | About 100 Dreamy Interior renovation Shorts, paraphrased in `interior-design-research/video_notes.md` with note IDs in [brackets] | Design patterns, problem→solution pairs, zoning and storage ideas. No dimensions. | Case studies, used for patterns only |
+| **[std]** | Common practice that no source above confirms | Under-loft seated (≥ 1.5 m) and walk-through (≥ 1.9 m) clearance. | Assumption, so flag it to the user |
+
+## What the existing skills and MCPs are built on
+
+None of the existing interior-design skills or MCPs are trained on data, and most cite almost nothing:
+- **blender-orchestrator:** its dimensions database and placement rules are the authors' own values, with no citations.
+- **interior-design-expert:** cites Ching, Pile, the IES Handbook and Munsell, but none of them for bedroom clearances.
+- **The only truly trained systems** are research layout models (LLplace, OptiScene, HLG and others). They learn from **3D-FRONT**, a synthetic dataset of furnished rooms made by professional designers, and M3DLayout. Neither dataset has bunk or loft beds or safety rules, so they don't help with this niche.
+
+That's why this skill relies on **primary safety rules** (CPSC, EN 747, IRC) for anything safety-related, and uses the case studies only for design patterns.
+
+## Design-inspiration references (for style and visuals, not rules)
+- Dezeen lookbooks: [kids' rooms with loft and bunk beds](https://www.dezeen.com/2022/05/01/bunk-beds-kids-room-lookbooks/), [small bedrooms](https://www.dezeen.com/2022/03/27/small-bedrooms-lookbooks/amp/), [mezzanine bedrooms](https://www.dezeen.com/2022/05/15/ten-cosy-bedroom-mezzanines-lookbooks/amp/), [children's bedrooms](https://www.dezeen.com/2021/03/13/contemporary-childrens-bedrooms-interior-design-lookbook/amp/)
+- [Dimensions.com bunk/loft beds](https://www.dimensions.com/collection/bunk-beds-loft-beds): dimensioned drawings
+- [Archello: child's loft bed/desk](https://archello.com/project/childs-loft-beddesk): removed a shallow closet to fit a full loft, desk and steps
+- [Dwell: kids' bedroom storage](https://www.dwell.com/photos/kids/room-type--bedroom/furniture--storage) and [lofted beds for tiny spaces](https://www.dwell.com/article/modern-lofted-beds-for-tiny-spaces-9395a8fe)
+- [Houzz India: key bedroom dimensions](https://www.houzz.in/ideabooks/111921842/thumbs/what-are-the-key-dimensions-for-a-well-planned-bedroom)
