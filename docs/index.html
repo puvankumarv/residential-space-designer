@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Residential Space Designer</title>
+<meta name="description" content="A Claude skill that designs every residential space, from a cramped kids' room to a whole apartment, and checks each layout against building codes and design standards.">
+<meta property="og:title" content="Residential Space Designer: a Claude skill for designing homes">
+<meta property="og:description" content="Describe a room or a whole home. Get a checked layout, a materials list and a walkthrough script.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b4532a'/%3E%3Cpath d='M7 25V13l9-6 9 6v12h-6v-7h-6v7z' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#f7f4ee; --bg-2:#efeae0; --card:#fffdf9; --ink:#1f1d1a; --ink-2:#55504a; --ink-3:#8a837a;
+  --line:#e2dbcf; --accent:#b4532a; --accent-ink:#fff; --accent-soft:#f3e2d8;
+  --grid:rgba(31,29,26,.05); --code-bg:#1f1d1a; --code-ink:#ece7de; --code-dim:#9d968b; --ok:#3f7d4e; --warn:#a8701c;
+  --p-floor:#fffdf9; --p-wall:#1f1d1a; --p-sleep:#e9c6b1; --p-store:#ddd6c9; --p-work:#c9d8e2; --p-kit:#d6dfc6; --p-live:#e8dcb8; --p-bath:#c8dfe0;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(60,45,30,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#161513; --bg-2:#1d1c19; --card:#201f1c; --ink:#f0ebe3; --ink-2:#bdb6ab; --ink-3:#8c857b;
+    --line:#34312c; --accent:#e07a4f; --accent-ink:#1a1210; --accent-soft:#3a271e;
+    --grid:rgba(240,235,227,.045); --code-bg:#0f0e0d; --code-ink:#ece7de; --code-dim:#8c857b; --ok:#7fbf8c; --warn:#e0b25c;
+    --p-floor:#26241f; --p-wall:#f0ebe3; --p-sleep:#7a4a35; --p-store:#4a463f; --p-work:#3b5160; --p-kit:#4c5a3c; --p-live:#6b5c33; --p-bath:#35585a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#161513; --bg-2:#1d1c19; --card:#201f1c; --ink:#f0ebe3; --ink-2:#bdb6ab; --ink-3:#8c857b;
+  --line:#34312c; --accent:#e07a4f; --accent-ink:#1a1210; --accent-soft:#3a271e;
+  --grid:rgba(240,235,227,.045); --code-bg:#0f0e0d; --code-ink:#ece7de; --code-dim:#8c857b; --ok:#7fbf8c; --warn:#e0b25c;
+  --p-floor:#26241f; --p-wall:#f0ebe3; --p-sleep:#7a4a35; --p-store:#4a463f; --p-work:#3b5160; --p-kit:#4c5a3c; --p-live:#6b5c33; --p-bath:#35585a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:650;letter-spacing:-.01em;line-height:1.15;margin:0}
+h2{font-size:clamp(28px,4vw,40px)}
+h3{font-size:20px}
+p{margin:0}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.eyebrow{font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--ink-2);font-size:18px;max-width:640px}
+section{padding:88px 0;border-top:1px solid var(--line)}
+.sec-head{display:grid;gap:14px;margin-bottom:40px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:24px;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;text-decoration:none}
+.brand svg{width:26px;height:26px}
+.nav-links{display:flex;gap:22px;margin-left:auto;font-size:14px;color:var(--ink-2)}
+.nav-links a{text-decoration:none}
+.nav-links a:hover{color:var(--ink)}
+.icon-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;height:34px;padding:0 10px;display:inline-flex;align-items:center;gap:6px;font:500 13px Inter,sans-serif;cursor:pointer;text-decoration:none}
+.icon-btn:hover{border-color:var(--ink-3)}
+
+/* hero */
+.hero{padding:72px 0 88px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;border-top:0}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(38px,6vw,64px);margin:18px 0 20px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 20px;border-radius:10px;font-weight:600;text-decoration:none;border:1px solid var(--line);background:var(--card)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn:hover{transform:translateY(-1px)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.chip{font:500 12px "JetBrains Mono",monospace;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink-2)}
+.plan-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.plan-card figcaption{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink-3);margin-top:10px}
+.plan{width:100%;height:auto;display:block}
+.p-floor{fill:var(--p-floor)} .p-wall{stroke:var(--p-wall)} .p-gap{stroke:var(--p-floor)}
+.p-sleep{fill:var(--p-sleep)} .p-store{fill:var(--p-store)} .p-work{fill:var(--p-work)} .p-kit{fill:var(--p-kit)} .p-live{fill:var(--p-live)} .p-bath{fill:var(--p-bath)}
+.p-up{fill-opacity:.55;stroke:var(--accent);stroke-width:2;stroke-dasharray:6 4}
+.p-door{fill:none;stroke:var(--ink-3);stroke-width:1.5}
+.p-win{stroke:var(--accent);stroke-width:3}
+.p-lab{font:500 12px Inter,sans-serif;fill:var(--ink)}
+.p-dim{font:500 11px "JetBrains Mono",monospace;fill:var(--ink-3)}
+.status{display:inline-flex;align-items:center;gap:6px;font:500 12px "JetBrains Mono",monospace;color:var(--ok)}
+.status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok)}
+
+/* cards */
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+.card p{color:var(--ink-2);font-size:15px;margin-top:8px}
+.card .k{font:500 12px "JetBrains Mono",monospace;color:var(--ink-3);margin-top:14px;display:block}
+.card .k b{color:var(--ink);font-weight:500}
+
+/* what it is */
+.compare{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.compare .card.on{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.tag{display:inline-block;font:500 11px "JetBrains Mono",monospace;padding:3px 8px;border-radius:6px;background:var(--bg-2);color:var(--ink-2)}
+.card.on .tag{background:var(--accent);color:var(--accent-ink)}
+
+/* steps */
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.step{position:relative;padding-top:52px}
+.step::before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;top:18px;left:22px;font:500 13px "JetBrains Mono",monospace;color:var(--accent)}
+.step ul{margin:10px 0 0;padding-left:18px;color:var(--ink-2);font-size:14px}
+
+/* rooms */
+.room h3{display:flex;align-items:center;gap:10px}
+.swatch{width:12px;height:12px;border-radius:3px;flex:none}
+
+/* checker */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.term{background:var(--code-bg);color:var(--code-ink);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.term-bar{display:flex;align-items:center;gap:6px;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.term-bar i{width:10px;height:10px;border-radius:50%;background:#4a4640}
+.term-bar span{margin-left:8px;font:12px "JetBrains Mono",monospace;color:var(--code-dim)}
+.term pre{margin:0;padding:18px;font-size:13px;line-height:1.7;overflow-x:auto;white-space:pre}
+.t-dim{color:var(--code-dim)} .t-err{color:#ff8a7a} .t-warn{color:#f0c36b} .t-ok{color:#8fd19e}
+.rules{display:grid;gap:10px}
+.rule{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+.rule b{font-weight:600}
+.rule span{color:var(--ink-2)}
+
+/* example */
+.reveal{list-style:none;margin:0;padding:0;display:grid;gap:10px;counter-reset:r}
+.reveal li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;font-size:15px;color:var(--ink-2)}
+.reveal li::before{counter-increment:r;content:counter(r);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font:600 12px "JetBrains Mono",monospace}
+
+/* install */
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--card);color:var(--ink-2);border-radius:8px;padding:8px 14px;font:500 14px Inter,sans-serif;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.panel{display:none}
+.panel.on{display:block}
+.code{position:relative;background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:16px 18px;margin:10px 0;font-size:13.5px;line-height:1.7;overflow-x:auto}
+.code pre{margin:0;white-space:pre}
+.copy{position:absolute;top:10px;right:10px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--code-dim);border-radius:6px;font:500 12px Inter,sans-serif;padding:4px 8px;cursor:pointer}
+.copy:hover{color:var(--code-ink)}
+.ol{margin:0;padding-left:20px;display:grid;gap:12px;color:var(--ink-2)}
+.ol b{color:var(--ink)}
+.prompts{display:grid;gap:10px}
+.prompt{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:15px}
+.prompt .copy{position:static;border-color:var(--line);color:var(--ink-3);flex:none}
+.prompt .copy:hover{color:var(--ink)}
+.prompt small{display:block;color:var(--ink-3);font:500 11px "JetBrains Mono",monospace;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+
+/* sources */
+.src{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.src .card{padding:16px}
+.src b{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--accent)}
+.note{margin-top:28px;padding:18px 20px;border-radius:12px;background:var(--accent-soft);color:var(--ink);font-size:15px}
+
+/* roadmap */
+.road{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.road .card{padding:18px}
+.road .card.done{border-color:var(--ok)}
+.road .tag.ok{background:var(--ok);color:var(--bg)}
+
+footer{border-top:1px solid var(--line);padding:36px 0;color:var(--ink-3);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:960px){
+  .hero-grid,.split{grid-template-columns:1fr}
+  .steps,.grid-4{grid-template-columns:repeat(2,1fr)}
+  .grid-3,.compare,.src{grid-template-columns:1fr 1fr}
+  .road{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+}
+@media (max-width:600px){
+  .wrap{padding:0 16px}
+  section{padding:64px 0}
+  .steps,.grid-4,.grid-3,.grid-2,.compare,.src,.road{grid-template-columns:1fr}
+  .rule{grid-template-columns:1fr;gap:2px}
+  .hero{padding:48px 0 64px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M7 25V13l9-6 9 6v12h-6v-7h-6v7z" fill="var(--accent-ink)"/></svg>
+      Residential Space Designer
+    </a>
+    <div class="nav-links">
+      <a href="#what">What it is</a>
+      <a href="#how">How it works</a>
+      <a href="#rooms">Rooms</a>
+      <a href="#checker">Checker</a>
+      <a href="#install">Install</a>
+    </div>
+    <button class="icon-btn" id="theme" aria-label="Toggle dark mode">◐</button>
+    <a class="icon-btn" href="https://github.com/puvankumarv/residential-space-designer">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
+    </a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">A Claude skill · open source</span>
+      <h1>Design <em>every space</em> in the home, with layouts you can check.</h1>
+      <p class="lead">Describe a room or a whole home: by text, voice, photos or a floor plan. Claude diagnoses what's wrong, makes the key design decision, and hands back a buildable layout that a checker validates against building codes and design standards.</p>
+      <div class="cta">
+        <a class="btn primary" href="#install">Install the skill →</a>
+        <a class="btn" href="https://github.com/puvankumarv/residential-space-designer">View on GitHub</a>
+      </div>
+      <div class="chips">
+        <span class="chip">bedrooms</span><span class="chip">kitchens</span><span class="chip">bathrooms</span><span class="chip">living &amp; dining</span><span class="chip">entry &amp; stairs</span><span class="chip">balcony &amp; laundry</span><span class="chip">home office</span><span class="chip">studios &amp; whole homes</span>
+      </div>
+    </div>
+    <figure class="plan-card" style="margin:0">
+      <svg viewBox="0 0 456 696" role="img" aria-label="Studio apartment floor plan" class="plan">
+<rect class="p-floor" x="28" y="28.0" width="400.0" height="640.0"/>
+<rect class="p-store" x="28.0" y="478.0" width="35.0" height="90.0" rx="3"/>
+<rect class="p-kit" x="158.0" y="608.0" width="60.0" height="60.0" rx="3"/>
+<rect class="p-kit" x="218.0" y="608.0" width="60.0" height="60.0" rx="3"/>
+<rect class="p-kit" x="278.0" y="608.0" width="80.0" height="60.0" rx="3"/>
+<rect class="p-kit" x="358.0" y="598.0" width="70.0" height="70.0" rx="3"/>
+<rect class="p-work" x="188.0" y="418.0" width="80.0" height="70.0" rx="3"/>
+<rect class="p-live" x="28.0" y="273.0" width="90.0" height="200.0" rx="3"/>
+<rect class="p-live" x="158.0" y="333.0" width="50.0" height="80.0" rx="3"/>
+<rect class="p-live" x="383.0" y="303.0" width="45.0" height="140.0" rx="3"/>
+<rect class="p-store" x="93.0" y="28.0" width="160.0" height="45.0" rx="3"/>
+<rect class="p-sleep" x="103.0" y="73.0" width="140.0" height="200.0" rx="3"/>
+<text class="p-lab" x="45.5" y="527.0" text-anchor="middle" transform="rotate(-90 45.5 523.0)">Shoes</text>
+<text class="p-lab" x="188.0" y="642.0" text-anchor="middle">Prep</text>
+<text class="p-lab" x="248.0" y="642.0" text-anchor="middle">Hob</text>
+<text class="p-lab" x="318.0" y="642.0" text-anchor="middle">Sink</text>
+<text class="p-lab" x="393.0" y="637.0" text-anchor="middle">Fridge</text>
+<text class="p-lab" x="228.0" y="457.0" text-anchor="middle">Table / desk</text>
+<text class="p-lab" x="73.0" y="377.0" text-anchor="middle">Sofa</text>
+<text class="p-lab" x="183.0" y="377.0" text-anchor="middle">Coffee</text>
+<text class="p-lab" x="405.5" y="377.0" text-anchor="middle" transform="rotate(-90 405.5 373.0)">TV</text>
+<text class="p-lab" x="173.0" y="54.5" text-anchor="middle">Bed housing</text>
+<text class="p-lab" x="173.0" y="177.0" text-anchor="middle">Wall bed (night)</text>
+<rect class="p-wall" x="25.0" y="25.0" width="406.0" height="646.0" fill="none" stroke-width="6"/>
+<line class="p-gap" x1="48.0" y1="668.0" x2="138.0" y2="668.0" stroke-width="8"/>
+<path class="p-door" d="M48.0,668.0 L48.0,578.0 A90.0,90.0 0 0,1 138.0,668.0"/>
+<line class="p-gap" x1="428.0" y1="248.0" x2="428.0" y2="108.0" stroke-width="8"/>
+<line class="p-win" x1="428.0" y1="248.0" x2="428.0" y2="108.0"/>
+<text class="p-dim" x="228.0" y="690.0" text-anchor="middle">4.0 m</text>
+<text class="p-dim" x="12" y="348.0" text-anchor="middle" transform="rotate(-90 12 348.0)">6.4 m</text>
+</svg>
+      <figcaption><span>Studio apartment, 25 m², night layout · from <code>examples/</code></span><span class="status">0 errors</span></figcaption>
+    </figure>
+  </div>
+</header>
+
+<section id="what">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">What it is</span>
+      <h2>A design method Claude follows, not a black box.</h2>
+      <p class="lead">A <b>skill</b> is a folder of instructions, reference rules and scripts that Claude loads when a task needs it. Nothing is "trained": the quality comes from the written rules, and every number cites where it came from.</p>
+    </div>
+    <div class="compare">
+      <div class="card">
+        <span class="tag">Plain chat</span>
+        <h3 style="margin-top:12px">Ideas, no guarantees</h3>
+        <p>General inspiration. Nobody checks clearances, headroom or whether a wardrobe door can actually open.</p>
+      </div>
+      <div class="card on">
+        <span class="tag">This skill</span>
+        <h3 style="margin-top:12px">A method plus a checker</h3>
+        <p>A fixed procedure, room-by-room rule modules, a layout format, and a Python checker that flags unsafe or unusable designs before you see them.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Next: MCP + Blender</span>
+        <h3 style="margin-top:12px">Tools that render</h3>
+        <p>The same layout JSON is designed to feed a 3D render stage. A walkthrough video follows the skill's own camera path.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">How it works</span>
+      <h2>From "my room is a mess" to a checked plan.</h2>
+    </div>
+    <div class="steps">
+      <div class="card step">
+        <h3>Describe</h3>
+        <p>Any mix of inputs. Claude asks at most five focused questions for what's missing.</p>
+        <ul><li>Text or voice transcript</li><li>Room photos or a walkthrough video</li><li>A floor plan</li></ul>
+      </div>
+      <div class="card step">
+        <h3>Diagnose &amp; decide</h3>
+        <p>It names the real failures, then makes the room's master decision and says why the alternatives lose.</p>
+        <ul><li>Bedroom: how people sleep</li><li>Kitchen: galley, L, U or island</li><li>Bathroom: fixture layout</li></ul>
+      </div>
+      <div class="card step">
+        <h3>Lay out &amp; check</h3>
+        <p>A layout JSON per room, run through the checker. Every error gets fixed before anything is shown.</p>
+        <ul><li>Collisions, door swings, clearances</li><li>Room-specific code checks</li></ul>
+      </div>
+      <div class="card step">
+        <h3>Deliver</h3>
+        <p>Everything needed to build it, or render it.</p>
+        <ul><li>Brief and zone plan</li><li>Floor plan and bill of materials</li><li>Safety notes and a reveal script</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rooms">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Room modules</span>
+      <h2>One skill, every room. Claude loads only the module it needs.</h2>
+    </div>
+    <div class="grid-4">
+      <div class="card room"><h3><span class="swatch" style="background:var(--p-sleep)"></span>Bedrooms</h3><p>Kids', twin and shared rooms; loft, offset, half-height and wall beds.</p><span class="k">decides <b>how people sleep</b></span></div>
+      <div class="card room"><h3><span class="swatch" style="background:var(--p-kit)"></span>Kitchens</h3><p>Galley, L, U and island layouts with aisle and work-triangle checks.</p><span class="k">decides <b>layout shape</b></span></div>
+      <div class="card room"><h3><span class="swatch" style="background:var(--p-bath)"></span>Bathrooms</h3><p>Wet/dry split, toilet, basin and shower clearances.</p><span class="k">decides <b>fixture arrangement</b></span></div>
+      <div class="card room"><h3><span class="swatch" style="background:var(--p-live)"></span>Living &amp; dining</h3><p>Seating focus, circulation behind the sofa, dining clearances.</p><span class="k">decides <b>seating focus</b></span></div>
+      <div class="card room"><h3><span class="swatch" style="background:var(--p-store)"></span>Entry &amp; stairs</h3><p>Drop zones, corridor widths, stair risers, treads and headroom.</p><span class="k">decides <b>routes &amp; widths</b></span></div>
+      <div class="card room"><h3><span class="swatch" style="background:var(--p-bath)"></span>Balcony &amp; laundry</h3><p>Laundry towers around existing pipes, drying, outdoor safety.</p><span class="k">decides <b>wet-utility stack</b></span></div>
+      <div class="card room"><h3><span class="swatch" style="background:var(--p-work)"></span>Home office</h3><p>Desk orientation for glare and video calls, closable work zones.</p><span class="k">decides <b>desk orientation</b></span></div>
+      <div class="card room"><h3><span class="swatch" style="background:var(--accent)"></span>Whole home</h3><p>Room allocation, public/private zoning, adjacency, studios.</p><span class="k">decides <b>who gets which room</b></span></div>
+    </div>
+  </div>
+</section>
+
+<section id="checker">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The checker</span>
+      <h2>Every layout is tested before you see it.</h2>
+      <p class="lead"><code>check_layout.py</code> is plain Python with no dependencies. It reads a layout JSON, prints errors and warnings with their source, and draws an ASCII floor plan.</p>
+    </div>
+    <div class="split">
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span>a deliberately broken bathroom</span></div>
+<pre><span class="t-dim">$ python3 scripts/check_layout.py bath.json</span>
+<span class="t-err">ERROR:</span> toilet: 0.00 m clear in front of toilet &lt; 0.53 m [IRC-P]
+<span class="t-err">ERROR:</span> toilet: centreline to left obstruction 0.30 m &lt; 0.38 m [IRC-P]
+<span class="t-err">ERROR:</span> vanity: 0.00 m clear in front of basin &lt; 0.53 m [IRC-P]
+<span class="t-err">ERROR:</span> shower: shower 0.70×0.92 m below 0.76×0.76 m / 0.58 m² [IRC-P]
+4 error(s), 0 warning(s)
+
+<span class="t-dim">$ python3 scripts/check_layout.py examples/compact-bathroom.json</span>
+<span class="t-ok">0 error(s), 0 warning(s)</span></pre>
+      </div>
+      <div class="rules">
+        <div class="rule"><b>Every room</b><span>Collisions, room bounds, door swings, clearance in front of furniture, outlets, day/night states for convertible furniture.</span></div>
+        <div class="rule"><b>Sleeping</b><span>Guardrails, access and headroom on raised beds, upper-bed age, bedside access, an escape window for every sleeping area.</span></div>
+        <div class="rule"><b>Kitchen</b><span>Work-aisle and walkway widths, work-triangle legs and total.</span></div>
+        <div class="rule"><b>Bathroom</b><span>Toilet side and front clearance, basin clearance, shower size and entry.</span></div>
+        <div class="rule"><b>Living</b><span>Sofa-to-coffee-table distance.</span></div>
+        <div class="rule"><b>Stairs</b><span>Riser, tread, width, headroom.</span></div>
+        <div class="rule"><b>Windows &amp; walls</b><span>Fall protection on high floors, climbable furniture under windows, niches in load-bearing walls.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="example">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Worked example</span>
+      <h2>Twins, 11 m², and no more bunk-bed fights.</h2>
+      <p class="lead">Instead of a stacked bunk, the upper bed turns the corner over a desk and wardrobe. Dashed outlines are at loft level. The reveal script below doubles as the camera path for a walkthrough video.</p>
+    </div>
+    <div class="split">
+      <figure class="plan-card" style="margin:0">
+        <svg viewBox="0 0 396 396" role="img" aria-label="Twins' room, offset L-loft floor plan" class="plan">
+<rect class="p-floor" x="28" y="28.0" width="340.0" height="340.0"/>
+<rect class="p-sleep" x="28.0" y="28.0" width="95.0" height="200.0" rx="3"/>
+<rect class="p-store" x="123.0" y="28.0" width="45.0" height="95.0" rx="3"/>
+<rect class="p-work" x="168.0" y="28.0" width="110.0" height="55.0" rx="3"/>
+<rect class="p-store" x="283.0" y="28.0" width="85.0" height="60.0" rx="3"/>
+<rect class="p-store" x="28.0" y="308.0" width="120.0" height="60.0" rx="3"/>
+<rect class="p-work" x="313.0" y="158.0" width="55.0" height="110.0" rx="3"/>
+<rect class="p-sleep p-up" x="168.0" y="28.0" width="200.0" height="95.0" rx="3"/>
+<text class="p-lab" x="75.5" y="132.0" text-anchor="middle">Lower bed</text>
+<text class="p-lab" x="268.0" y="69.5" text-anchor="middle">Upper bed · 1.55 m up</text>
+<text class="p-lab" x="145.5" y="79.5" text-anchor="middle" transform="rotate(-90 145.5 75.5)">Steps</text>
+<text class="p-lab" x="223.0" y="73.5" text-anchor="middle">Desk</text>
+<text class="p-lab" x="325.5" y="76.0" text-anchor="middle">Wardrobe</text>
+<text class="p-lab" x="88.0" y="342.0" text-anchor="middle">Wardrobe</text>
+<text class="p-lab" x="340.5" y="217.0" text-anchor="middle" transform="rotate(-90 340.5 213.0)">Desk</text>
+<rect class="p-wall" x="25.0" y="25.0" width="346.0" height="346.0" fill="none" stroke-width="6"/>
+<line class="p-gap" x1="268.0" y1="368.0" x2="348.0" y2="368.0" stroke-width="8"/>
+<path class="p-door" d="M268.0,368.0 L268.0,288.0 A80.0,80.0 0 0,1 348.0,368.0"/>
+<line class="p-gap" x1="368.0" y1="278.0" x2="368.0" y2="158.0" stroke-width="8"/>
+<line class="p-win" x1="368.0" y1="278.0" x2="368.0" y2="158.0"/>
+<text class="p-dim" x="198.0" y="390.0" text-anchor="middle">3.4 m</text>
+<text class="p-dim" x="12" y="198.0" text-anchor="middle" transform="rotate(-90 12 198.0)">3.4 m</text>
+</svg>
+        <figcaption><span>3.4 × 3.4 m, ceiling 2.8 m · <code>examples/twins-offset-loft.json</code></span><span class="status">0 errors</span></figcaption>
+      </figure>
+      <div>
+        <h3 style="margin-bottom:16px">Reveal script</h3>
+        <ol class="reveal">
+          <li>Two kids, one 11 m² room. No more bunk-bed fights over who gets the top.</li>
+          <li>The upper bed turns the corner instead of stacking, so both kids can sit up in bed.</li>
+          <li>Every step is a drawer, seven of them, with anti-slip treads.</li>
+          <li>Under the loft there&#x27;s a full desk with 1.55 m of headroom, plus a sliding wardrobe.</li>
+          <li>The lower bed keeps open sky above it, with drawers that roll out instead of lifting.</li>
+          <li>The window becomes the second desk, with the best daylight in the room.</li>
+          <li>Sliding doors mean the wardrobe opens fully even in a tight room.</li>
+          <li>The centre stays open for play. Same storage, same desk space, one each.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Install &amp; use</span>
+      <h2>Up and running in two minutes.</h2>
+    </div>
+    <div class="split">
+      <div>
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" aria-selected="true" data-panel="p-code">Claude Code</button>
+          <button class="tab" role="tab" aria-selected="false" data-panel="p-app">Claude app</button>
+          <button class="tab" role="tab" aria-selected="false" data-panel="p-check">Checker only</button>
+        </div>
+        <div class="panel on" id="p-code">
+          <ol class="ol">
+            <li><b>Clone the repository</b>
+              <div class="code"><button class="copy">Copy</button><pre>git clone https://github.com/puvankumarv/residential-space-designer.git</pre></div></li>
+            <li><b>Copy the skill into your skills folder</b> (use <code>.claude/skills/</code> inside a project to scope it to that project)
+              <div class="code"><button class="copy">Copy</button><pre>cp -r residential-space-designer/residential-space-designer ~/.claude/skills/</pre></div></li>
+            <li><b>Start Claude Code and describe your space.</b> The skill loads automatically when the request matches.</li>
+          </ol>
+        </div>
+        <div class="panel" id="p-app">
+          <ol class="ol">
+            <li><b>Download the repository</b> as a ZIP from GitHub and unzip it.
+              <div class="code"><button class="copy">Copy</button><pre>https://github.com/puvankumarv/residential-space-designer/archive/refs/heads/main.zip</pre></div></li>
+            <li><b>Zip just the <code>residential-space-designer/</code> folder</b> (the one that contains <code>SKILL.md</code>).</li>
+            <li><b>Upload it</b> in Claude's settings under Capabilities → Skills, where custom skills are available on your plan.</li>
+            <li><b>Start a chat</b> and describe the room or home. Photos and floor plans work too.</li>
+          </ol>
+        </div>
+        <div class="panel" id="p-check">
+          <ol class="ol">
+            <li><b>Python 3, nothing else to install.</b> Check any layout and draw its plan:
+              <div class="code"><button class="copy">Copy</button><pre>python3 residential-space-designer/scripts/check_layout.py \
+  residential-space-designer/examples/studio-apartment.json --plan</pre></div></li>
+            <li><b>Write your own layouts</b> against <code>templates/layout.schema.json</code>. Units are metres, the origin is the south-west inner corner, and every element is a box.</li>
+          </ol>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:14px">Try asking</h3>
+        <div class="prompts">
+          <div class="prompt"><div><small>bedroom</small>My twins are 9 and share a 3.4 × 3.4 m room with a 2.8 m ceiling. They fight over the bunk bed and both need a desk.</div><button class="copy">Copy</button></div>
+          <div class="prompt"><div><small>kitchen</small>Our galley kitchen is 2.4 × 3.2 m and two of us keep bumping into each other. Fridge is by the door.</div><button class="copy">Copy</button></div>
+          <div class="prompt"><div><small>bathroom</small>Tiny 1.7 × 2.5 m bathroom. The floor floods after every shower and there's nowhere to put anything.</div><button class="copy">Copy</button></div>
+          <div class="prompt"><div><small>whole home</small>Plan my 2-bedroom flat for a couple and a 7-year-old. One bathroom, and I work from home. Floor plan attached.</div><button class="copy">Copy</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Where the rules come from</span>
+      <h2>Every number has a source tag.</h2>
+      <p class="lead">Design patterns come from studying about 100 real small-space renovations. Safety and clearance numbers come from codes and standards. Anything unconfirmed is tagged <code>[std]</code> and flagged to you.</p>
+    </div>
+    <div class="src">
+      <div class="card"><b>[CPSC] [EN747]</b><p>Bunk and high-bed safety: guardrails, access, upper-bed age.</p></div>
+      <div class="card"><b>[IRC]</b><p>US residential code: escape windows, toilet and shower clearances, stairs, window falls.</p></div>
+      <div class="card"><b>[NKBA]</b><p>Kitchen and bath planning guidelines: aisles, work triangle, seating, fixtures.</p></div>
+      <div class="card"><b>[NP]</b><p>Neufert and Panero: bedside circulation, space in front of wardrobes.</p></div>
+      <div class="card"><b>[IES]</b><p>Lighting levels for general, reading and desk tasks.</p></div>
+      <div class="card"><b>[DI]</b><p>Renovation case studies, paraphrased, for patterns and problem→solution pairs.</p></div>
+    </div>
+    <p class="note"><b>Not a substitute for a professional.</b> Code values are minimums and vary by country and edition. Check local codes, and have structure, gas, electrics and waterproofing done or signed off by qualified people.</p>
+  </div>
+</section>
+
+<section id="roadmap">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Roadmap</span>
+      <h2>Where this is going.</h2>
+    </div>
+    <div class="road">
+      <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">Skill v1</h3><p>Room modules, sourced rules, layout format, checker, examples.</p></div>
+      <div class="card"><span class="tag">next</span><h3 style="margin-top:10px">Blind tests</h3><p>Fresh sessions with only the skill, on the scenario set.</p></div>
+      <div class="card"><span class="tag">planned</span><h3 style="margin-top:10px">MCP server</h3><p><code>validate_layout</code> and <code>floor_plan_svg</code> as tools.</p></div>
+      <div class="card"><span class="tag">planned</span><h3 style="margin-top:10px">3D renders</h3><p>Layout JSON to a Blender scene to a walkthrough video.</p></div>
+      <div class="card"><span class="tag">planned</span><h3 style="margin-top:10px">Richer inputs</h3><p>Photo to dimensions, voice, video to 3D reconstruction.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Residential Space Designer · built by <a href="https://github.com/puvankumarv">puvankumarv</a></span>
+    <span><a href="https://github.com/puvankumarv/residential-space-designer">Source on GitHub</a> · <a href="https://github.com/puvankumarv/residential-space-designer/issues">Report an issue</a></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root=document.documentElement, key="rsd-theme";
+  try{var saved=localStorage.getItem(key); if(saved) root.setAttribute("data-theme",saved);}catch(e){}
+  document.getElementById("theme").addEventListener("click",function(){
+    var dark=root.getAttribute("data-theme")==="dark"||(!root.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme: dark)").matches);
+    var next=dark?"light":"dark"; root.setAttribute("data-theme",next);
+    try{localStorage.setItem(key,next);}catch(e){}
+  });
+  document.querySelectorAll(".tab").forEach(function(t){
+    t.addEventListener("click",function(){
+      document.querySelectorAll(".tab").forEach(function(o){o.setAttribute("aria-selected",o===t?"true":"false");});
+      document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("on",p.id===t.dataset.panel);});
+    });
+  });
+  document.querySelectorAll(".copy").forEach(function(b){
+    b.addEventListener("click",function(){
+      var src=b.parentElement.querySelector("pre")||b.parentElement.querySelector("div");
+      var text=src.cloneNode(true); var s=text.querySelector("small"); if(s) s.remove();
+      navigator.clipboard.writeText(text.textContent.trim()).then(function(){
+        var o=b.textContent; b.textContent="Copied"; setTimeout(function(){b.textContent=o;},1400);
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>
