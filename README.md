@@ -1,5 +1,7 @@
 # Residential Space Designer
 
+**Website:** https://puvankumarv.github.io/residential-space-designer/
+
 **One skill for every space in the home.** It's a Claude skill that designs residential interiors, from a single cramped room to a whole apartment or house:
 
 - **Bedrooms:** kids', twin and shared rooms with loft, bunk, half-height and wall beds
@@ -30,6 +32,7 @@ For a whole home it first makes a **home plan** (rooms, adjacency, circulation),
 | `residential-space-designer/scripts/check_layout.py` | Layout checker, standard-library Python |
 | `residential-space-designer/examples/` | Twins' loft bedroom, galley kitchen, compact bathroom, studio apartment |
 | `residential-space-designer/evals/` | Test scenarios, generated layouts and results |
+| `docs/` | Project website (GitHub Pages) |
 | `interior-design-research/` | Research notes: existing skills, MCPs and models; case-study notes; draft rules |
 
 ## What the checker verifies
