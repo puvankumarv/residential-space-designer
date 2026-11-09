@@ -218,7 +218,7 @@ def check_room_type(layout, solid, rep):
     rtype = room.get("type", "bedroom")
     els = layout["elements"]
 
-    has_kitchen = any(e["type"] in ("sink", "cooktop") for e in els) and rtype in ("kitchen", "studio")
+    has_kitchen = any(e["type"] in ("sink", "cooktop") for e in els) and rtype in ("kitchen", "studio", "living_dining", "dining")
     if has_kitchen:
         for e in els:
             if e["type"] not in KITCHEN_WORK:

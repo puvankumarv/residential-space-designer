@@ -21,6 +21,8 @@ Source tags are explained in `../sources.md`. ✔ means `scripts/check_layout.py
 | Window sill too high to extend the counter | Lower the sill and run the counter under it [DI 66] |
 | Corner cabinets unusable | Corner carousel or diagonal corner sink [DI 66] |
 
+**Modelling L and U corners:** give the corner unit its own element as a `cabinet` (carousel or magic corner), not a counter with a `front`. Otherwise the checker correctly reports "0 m free in front" for a blind corner.
+
 ## Rules
 | Rule | Value | Source | Checked |
 |---|---|---|---|

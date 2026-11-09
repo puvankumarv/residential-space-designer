@@ -55,3 +55,73 @@ The skill was widened from bedrooms to every residential space. New room modules
 - **States:** messages that are the same in every state are now printed once instead of once per state.
 
 All 10 layouts (4 examples and 6 bedroom runs) pass with 0 errors. The only warning is #4's intended bedside trade-off.
+
+# Run 3: regional scenarios 17–20 (2026-11-09)
+
+**How this was run:** I followed SKILL.md with the regional and exterior modules, as in runs 1–2, and I'm also the author. Whole-home scenarios get a home plan (below) plus layouts for the rooms the skill chose to detail. Layouts are in `runs/` (regenerate with `python3 evals/build_regional.py`).
+
+## 17: Vastu house, 30×40 ft east-facing plot, Bengaluru, G+1
+**Intake the skill would ask first:** How strictly do you follow Vastu (fixed rules or preferences)? Who uses the pooja room daily? Do the parents manage stairs? Is there household help? What are the setbacks under the local bye-laws?
+
+**Home plan** (assumed setbacks: front 1.5 m, rear 1.0 m, sides 0.9 m; to be confirmed locally):
+```
+GROUND FLOOR  (N up · road on the EAST)
+ W                                                      E
+ +-------------+--------------------+------------------+
+ | Parents'    |  Living, double    |  Foyer  + POOJA  |  ← pedestrian gate
+ | bath        |  height, faces N   |  (NE)   ENTRY    |    (NE corner)
+ +-------------+---------+----------+------------------+
+ | Parents'    | Dining + |  Stair  |  Dry kitchen     |  CAR PORCH
+ | bedroom SW  | wash     |  (S)    |  (SE), hob → E   |  (front setback)
+ | sit-out (W) | basin    |         +------------------+
+ +-------------+----------+---------+  Utility (S)     |
+   ~~~ south side setback: drying yard, service door ~~~~
+
+FIRST FLOOR
+ +-------------+--------------------+------------------+
+ | Child (NW)  |  Void over living  |  Open terrace    |
+ | + study     |  + library landing |  (NE, light)     |
+ +-------------+---------+----------+------------------+
+ | Master (SW) | Family   |  Stair  | Bath  | Covered  |
+ | + walk-in   | lounge   |  (S)    | (SE)  | terrace  |
+ +-------------+----------+---------+-------+----------+
+```
+- **Vastu placements used:** entry and pooja NE; kitchen SE; parents' bedroom SW (ground floor) and master SW (first floor); child NW; stair S; no toilet in the NE.
+- **Trade-offs stated:** the NE pooja takes the best morning-light corner from the living room, so the double-height void and the NE terrace bring that light back. A strict SW master on both floors stacks the two biggest bedrooms, which suits the structure.
+- **Exterior:** separate pedestrian gate (NE) and car porch (front, south half); the porch roof doubles as the covered terrace.
+- **Detailed rooms:** `17a-vastu-kitchen-utility.json` (SE dry kitchen + utility to the south setback, hob on the east wall, deep drawers, corner carousel) and `17b-parents-bedroom.json` (ground floor, no steps, low bed reachable from both sides, outward-opening bath door, near the pooja room).
+
+## 18: Pune 3BHK flat, daily Indian cooking, maid twice a day
+- **Brief:** keep the parallel kitchen and the **utility balcony**; give the maid a route main door → dining → kitchen → utility that never passes the bedrooms; put a **pooja unit** on the NE wall of the living/dining; lofts above the wardrobes and kitchen.
+- **Detailed room:** `18-pune-flat-kitchen-utility.json`: 1.4 m aisle; triangle legs 2.06/2.70/1.50 m; deep drawers by the hob; lofts; utility with washer, low vessel-washing tap and ceiling drying rack, behind a sliding glass door.
+
+## 19: Victorian terrace, London, two kids, see them while cooking
+- **Brief:** knock the dark back rooms into one kitchen-diner-family room facing the garden; **island sink facing the family zone and garden**; keep the original hall tiles, cornices and stair; drop zone in the hall; under-stair cupboard as pantry or utility; boot bench by the garden doors.
+- **Detailed room:** `19-london-terrace-kitchen-diner.json`: E-wall run plus island (1.2 m aisle), sofa 0.40 m from the coffee table, low toy storage, table by the sliding doors. Party walls are flagged load-bearing (structural engineer and party wall agreement needed).
+
+## 20: Sloping site, family of five, love hosting
+**Home plan (section, street to valley):**
+```
+ STREET (east, high)                                   VALLEY (west, low)
+ Level  0 │ garage · entry → HOSTING: living | island kitchen | dining for 10 → DECK
+ Level −1 │ KIDS: 3 bedrooms around a shared lounge, bath, side garden
+ Level −2 │ MASTER SUITE (most private) + guest/den, opens onto the lawn
+```
+- **Privacy by floor:** hosting at street level, kids in the middle, parents lowest and quietest, with the garden. A courtyard or lightwell at level −1 brings daylight into the slope.
+- **Detailed room:** `20-sloping-hosting-level.json`: an island kitchen (1.2 m aisle, triangle well inside limits), a table for 10 opening onto the deck, two sofas facing the valley view, and a stair down (riser 0.175 m, tread 0.28 m, width 1.0 m, headroom 2.4 m: all pass).
+
+## Results
+| # | Expectation | Result |
+|---|---|---|
+| 17 | Ask about Vastu strictness; parents downstairs near the pooja room; SE kitchen, NE pooja or trade-offs; dry kitchen + utility; site sketch | ✅ all present; 17a and 17b pass with 0/0 |
+| 18 | Utility balcony; deep drawers; pooja unit; lofts; maid route avoids bedrooms | ✅ 0/0 |
+| 19 | Sight lines; original features kept; drop zone; under-stair storage | ✅ 0/0 |
+| 20 | Split levels; privacy by floor; hosting level; deck; site sketch | ✅ 0/0 after one fix |
+
+## What the run found and what changed
+1. **Blind corners:** the first 17a draft modelled the L-corner as a counter with a front, and the checker reported 0 m free in front. That's correct, because it's a blind corner. The kitchen module now says to model corners as a `cabinet` (carousel), and 17a uses one.
+2. **Fall risk caught:** the first 20 draft put the sofa against the view window with a 3.5 m drop outside. The checker warned that it was climbable, so the seating moved 0.7 m off the window wall.
+3. **Open-plan kitchens are checked:** kitchen aisle and triangle checks now also run for `living_dining` and `dining` rooms that contain a sink or hob (scenarios 19 and 20 rely on this).
+
+## Still not checked automatically
+Home-plan rules (Vastu placements, elders near the pooja room, the maid's route, privacy by floor, adjacency) are judged by reading the plan, not by the checker, which works one room at a time. A multi-room home-plan checker is on the roadmap ("multi-room home layouts in a single file").
