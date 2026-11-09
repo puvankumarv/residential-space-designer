@@ -12,6 +12,8 @@
 - **Balconies and laundry**
 - **Home offices**
 - **Studios and whole-home planning:** room allocation, adjacency, and the wet-room stack
+- **Exterior and site:** car and pedestrian arrival, privacy from the street, courtyards, verandahs and terraces
+- **Indian and Western ways of living:** pooja rooms, Vastu if wanted, dry and wet kitchens, elders on the ground floor; or drop zones, open kitchens with sight lines, mudrooms and ensuites
 
 You give it dimensions, photos, a floor plan or a spoken description. For each room it produces:
 - a design brief and zone plan,
@@ -26,14 +28,15 @@ For a whole home it first makes a **home plan** (rooms, adjacency, circulation),
 | Path | What it is |
 |---|---|
 | `residential-space-designer/SKILL.md` | The skill: room modules, procedure, deliverables |
-| `residential-space-designer/references/rooms/` | One module per room type: `bedroom/`, `kitchen.md`, `bathroom.md`, `living-dining.md`, `entry-circulation.md`, `balcony-laundry.md`, `home-office.md`, `whole-home.md` |
+| `residential-space-designer/references/rooms/` | One module per room type: `bedroom/`, `kitchen.md`, `bathroom.md`, `living-dining.md`, `entry-circulation.md`, `balcony-laundry.md`, `home-office.md`, `whole-home.md`, `exterior.md` |
+| `residential-space-designer/references/regional/` | `india.md` and `western.md`: room programs, cultural preferences and climate responses |
 | `residential-space-designer/references/` | Shared rules with source tags: safety, dimensions, storage, services, materials, sources |
 | `residential-space-designer/templates/` | Layout JSON schema, intake questions and brief, BOM |
 | `residential-space-designer/scripts/check_layout.py` | Layout checker, standard-library Python |
 | `residential-space-designer/examples/` | Twins' loft bedroom, galley kitchen, compact bathroom, studio apartment |
 | `residential-space-designer/evals/` | Test scenarios, generated layouts and results |
 | `docs/` | Project website (GitHub Pages) |
-| `interior-design-research/` | Research notes: existing skills, MCPs and models; case-study notes; draft rules |
+| `interior-design-research/` | Research notes: existing skills, MCPs and models; small-space case-study notes; whole-home tour notes (`home_tours.md`); draft rules |
 
 ## What the checker verifies
 

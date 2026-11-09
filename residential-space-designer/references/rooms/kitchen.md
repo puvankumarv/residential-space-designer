@@ -42,6 +42,10 @@ Source tags are explained in `../sources.md`. ✔ means `scripts/check_layout.py
 - Gas, hob and electrical connections are professional work.
 - Ventilation: a ducted hood where possible. In small flats, keep the kitchen's air separate from the bedrooms.
 
+## Regional notes
+- **Indian kitchens:** daily heavy cooking calls for a ducted chimney, **deep drawers for pressure cookers and kadai**, a tall pantry beside the cooktop, and often a separate **wet kitchen or utility** for vessel washing and the washing machine. Plan storage from the family's utensil list [HT-I4, I6]. See `../regional/india.md`.
+- **Western small kitchens:** toe-kick drawers, open glass shelves in front of windows, a rolling trolley, task lights in front of the cook [HT-W1]. See `../regional/western.md`.
+
 ## Storage moves
 Full-height pantry with pull-out baskets [DI 66]; stacked drawer bases instead of doors; a rail system on the backsplash; a toe-kick drawer; appliance garages; an over-fridge cabinet for rarely used items.
 

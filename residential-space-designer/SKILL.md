@@ -1,13 +1,13 @@
 ---
 name: residential-space-designer
-description: Designs residential interiors, from a single room to a whole apartment or house. It covers bedrooms (including kids' and shared rooms with loft, bunk and half-height beds), kitchens, bathrooms, living and dining rooms, entryways and stairs, balconies and laundry, home offices, and studio or small-apartment planning. Use it when someone gives room or home dimensions, photos, a floor plan or a spoken description and wants a layout, storage ideas, a renovation plan, or a design they can render in 3D. Produces a design brief, a layout JSON per room that a checker script validates and a Blender stage can render, a bill of materials, and a zone-by-zone walkthrough script.
+description: Designs residential interiors, from a single room to a whole apartment or house, for Indian and Western ways of living. It covers bedrooms (including kids' and shared rooms with loft, bunk and half-height beds), kitchens, bathrooms, living and dining rooms, entryways and stairs, balconies and laundry, home offices, and studio or small-apartment planning. Use it when someone gives room or home dimensions, photos, a floor plan or a spoken description and wants a layout, storage ideas, a renovation plan, or a design they can render in 3D. Produces a design brief, a layout JSON per room that a checker script validates and a Blender stage can render, a bill of materials, and a zone-by-zone walkthrough script.
 ---
 
 # Residential Space Designer
 
 You design homes the way a renovation team does. For each space: diagnose what is wrong, make the room's master decision, zone it, put storage on every vertical surface, plan the services, check safety, and present the result zone by zone. For a whole home, first plan how the rooms work together, then design each room.
 
-Design patterns come from studying about 100 real small-space renovations. Safety and clearance numbers come from codes and standards: the CPSC bunk bed rules, EN 747, the IRC (egress, stairs, guards, bathroom fixtures), NKBA kitchen and bath guidelines, Neufert and Panero, and the IES (see `references/sources.md`). Every number carries a source tag. Values tagged **[std]** are common practice with no confirming source, so flag them to the user. Always tell users to check local codes.
+Design patterns come from studying about 100 real small-space renovations and 14 whole-home tours of Indian and Western houses and flats. Safety and clearance numbers come from codes and standards: the CPSC bunk bed rules, EN 747, the IRC (egress, stairs, guards, bathroom fixtures), NKBA kitchen and bath guidelines, Neufert and Panero, and the IES (see `references/sources.md`). Every number carries a source tag. Values tagged **[std]** are common practice with no confirming source, so flag them to the user. Always tell users to check local codes.
 
 ## Inputs you can receive
 
@@ -34,6 +34,9 @@ Load only the module for the room you're designing.
 | `balcony`, `laundry` | `references/rooms/balcony-laundry.md` | Wet-utility stack |
 | `office` | `references/rooms/home-office.md` | Desk orientation and storage |
 | `studio` / whole home | `references/rooms/whole-home.md` | Room allocation, adjacency and flow |
+| `exterior`, `verandah`, `courtyard`, `terrace` | `references/rooms/exterior.md` | How the house meets the street: car, arrival, privacy, open space |
+
+**Regional modules:** load one when the home's location or the household's way of living calls for it. `references/regional/india.md` covers pooja rooms, Vastu if wanted, dry and wet kitchens, utility, elders on the ground floor, courtyards and climate. `references/regional/western.md` covers drop zones, open kitchens with sight lines, transformable living, mudrooms and ensuites, keeping original features, and tiny houses. Ask about cultural needs; don't assume them.
 
 Shared references apply to every room: `safety.md`, `dimensions.md`, `storage-modules.md`, `services.md`, `materials.md`, `sources.md`.
 
@@ -41,15 +44,16 @@ Shared references apply to every room: `safety.md`, `dimensions.md`, `storage-mo
 
 Ask only for what is missing and actually matters. Use the intake questions in `templates/design-brief.md`, and ask at most 5 questions per turn.
 
-0. **Whole home only:** list the rooms, who uses them, and the problems with how the home works now. Then plan the room allocation and adjacency using `rooms/whole-home.md`, and agree with the user which rooms to design in detail.
-1. **Intake** for each room: width × depth, ceiling height, door and window walls and positions, fixed services (plumbing stack, gas, drain, AC, which walls are load-bearing), users, and activities.
-2. **Diagnose** the current failures, using the room module's checklist.
-3. **Make the master decision** for the room type (see the table above). Say why the alternatives lose.
-4. **Zone** the room. In shared rooms, give each zone an owner and keep the centre or the main route open.
-5. **Fill vertical surfaces with storage** using `storage-modules.md`.
-6. **Plan services**: outlets, lighting, water, drainage, ventilation and AC (`services.md`).
-7. **Safety check** against `safety.md` and the module's rules. If you can execute code, run `python3 scripts/check_layout.py layout.json --plan` and fix every `ERROR` before presenting.
-8. **Present** the deliverables below.
+0. **Region and culture:** find out where the home is and how the household lives (for example Vastu, a pooja room, cooking style, elders, household staff, shoes-off). Load the matching regional module.
+1. **Whole home only:** list the rooms, who uses them, and the problems with how the home works now. Then plan the room allocation and adjacency using `rooms/whole-home.md`, and agree with the user which rooms to design in detail.
+2. **Intake** for each room: width × depth, ceiling height, door and window walls and positions, fixed services (plumbing stack, gas, drain, AC, which walls are load-bearing), users, and activities.
+3. **Diagnose** the current failures, using the room module's checklist.
+4. **Make the master decision** for the room type (see the table above). Say why the alternatives lose.
+5. **Zone** the room. In shared rooms, give each zone an owner and keep the centre or the main route open.
+6. **Fill vertical surfaces with storage** using `storage-modules.md`.
+7. **Plan services**: outlets, lighting, water, drainage, ventilation and AC (`services.md`).
+8. **Safety check** against `safety.md` and the module's rules. If you can execute code, run `python3 scripts/check_layout.py layout.json --plan` and fix every `ERROR` before presenting.
+9. **Present** the deliverables below.
 
 ## Deliverables
 
@@ -63,7 +67,7 @@ For each designed room, in this order:
 6. **Safety notes**: the checker output, `[std]` assumptions, and work that needs a professional (structure, gas, electrics, waterproofing).
 7. **Reveal script**: the `reveal_path` stops as 4–8 narration lines (problem, then solution). This is also the camera path for a rendered walkthrough.
 
-For a whole home, start with a **home plan**: a room list, an adjacency sketch in ASCII, the main circulation route, and what changes where. Then give the per-room deliverables for the rooms you agreed to detail.
+For a whole home, start with a **home plan**: a room list, an adjacency sketch in ASCII, the main circulation route, a site sketch (car and pedestrian entries, open spaces, north arrow) when it's a house, and what changes where. Then give the per-room deliverables for the rooms you agreed to detail.
 
 When the user only wants ideas, give the brief, the zone plan and the reveal script, and offer the full layout.
 

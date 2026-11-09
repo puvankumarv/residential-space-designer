@@ -8,7 +8,8 @@
 5. What happens here: sleep, study, WFH, cooking for how many, guests, gaming, hobbies, play?
 6. What bothers you most about it now?
 7. Fixed services: where are the water supply, drain or soil stack, gas, and the electrical panel? Which walls are load-bearing? (If unknown, I'll assume they're all load-bearing and the plumbing stays.)
-8. Budget level and style (warm wood, minimal white, playful colour…)?
+8. Where is the home, and how do you live? For example Vastu, a pooja room, heavy daily cooking, elders, household staff, shoes-off.
+9. Budget level and style (warm wood, minimal white, playful colour…)?
 
 ## Brief (output)
 

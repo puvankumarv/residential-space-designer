@@ -136,6 +136,12 @@
             "laundry",
             "office",
             "studio",
+            "pooja",
+            "utility",
+            "verandah",
+            "courtyard",
+            "terrace",
+            "exterior",
             "other"
           ],
           "default": "bedroom",
@@ -258,6 +264,10 @@
               "coffee_table",
               "tv_unit",
               "stairs",
+              "swing",
+              "pooja_unit",
+              "water_feature",
+              "planter",
               "other"
             ],
             "description": "partition and door (interior, modelled closed) split the floor into separate areas for the egress check"

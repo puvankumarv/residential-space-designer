@@ -102,3 +102,6 @@ Inputs: text | voice (speech-to-text) | room photos | walkthrough video | floor 
 3. **MCP v1:** `validate_layout` + `floor_plan_svg` (pure Python, no Blender yet).
 4. **Blender stage:** install blender-orchestrator and map layout JSON → scene → render a camera-path video.
 5. **Inputs:** add photo→dimensions, voice (Whisper), then video→3D reconstruction.
+
+## 5. Whole-home tours (added 2026-11-09)
+To widen the skill from small rooms to whole houses, 14 full home tours were read: 8 Indian (Buildofy, Zenden, Homely by LBB and a budget-build channel) and 6 Western (Never Too Small, The Local Project, Living Big in a Tiny House). Paraphrased notes and cross-cutting patterns are in [`home_tours.md`](home_tours.md). They feed `references/regional/india.md`, `references/regional/western.md`, `references/rooms/exterior.md` and the patterns section of `references/rooms/whole-home.md`.

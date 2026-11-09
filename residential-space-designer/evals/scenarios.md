@@ -25,3 +25,12 @@ Run each prompt through the skill. A pass means the layout JSON gets 0 checker e
 | 14 | "Plan my 2-bedroom flat: couple plus a 7-year-old, one bathroom." (floor plan given) | A home plan first: room allocation, adjacency, wet stack, main route; then per-room layouts |
 | 15 | "Living room 3.5 × 4.5 m, people walk right in front of the TV." | Circulation behind the sofa, coffee table 0.36–0.46 m away, storage wall |
 | 16 | "We want a loft stair in our duplex, ceiling 5 m." | Stair meeting riser/tread/width/headroom; guards on the open side |
+
+## Regional and whole-house scenarios (added with the home-tour research)
+
+| # | Prompt | Expect |
+|---|---|---|
+| 17 | "East-facing 30×40 ft plot in Bengaluru, G+1, couple + parents + one child. We follow Vastu and need a pooja room." | Asks how strictly they follow Vastu; parents' room on the ground floor near the pooja room; kitchen SE and pooja NE (or explains trade-offs); dry kitchen plus utility; site sketch with car and pedestrian entry |
+| 18 | "3BHK flat in Pune, we cook Indian food daily and have a maid twice a day." | Keeps or creates a utility balcony; deep drawers for cookers; pooja unit; loft storage; maid's access to the utility without crossing bedrooms |
+| 19 | "Victorian terrace in London, two kids, I want to see them while I cook." | Open kitchen with sight lines; keeps original features; mudroom or drop zone; storage under the stairs |
+| 20 | "Plan our house on a sloping site, family of five, we love hosting." | Split levels following the slope; privacy by floor; hosting level; courtyard or deck; site sketch |

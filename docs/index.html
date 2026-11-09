@@ -90,6 +90,7 @@ nav .wrap{display:flex;align-items:center;gap:24px;height:60px}
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
 .card p{color:var(--ink-2);font-size:15px;margin-top:8px}
 .card .k{font:500 12px "JetBrains Mono",monospace;color:var(--ink-3);margin-top:14px;display:block}
@@ -159,7 +160,7 @@ nav .wrap{display:flex;align-items:center;gap:24px;height:60px}
 .road .card.done{border-color:var(--ok)}
 .road .tag.ok{background:var(--ok);color:var(--bg)}
 
-.hero-grid>*,.split>*,.steps>*,.grid-2>*,.grid-3>*,.grid-4>*,.compare>*,.src>*,.road>*,.ol>li,.prompts>*,.rules>*{min-width:0}
+.hero-grid>*,.split>*,.steps>*,.grid-2>*,.grid-3>*,.grid-4>*,.grid-5>*,.compare>*,.src>*,.road>*,.ol>li,.prompts>*,.rules>*{min-width:0}
 p code,li code,.lead code{overflow-wrap:anywhere}
 .status{white-space:nowrap}
 footer{border-top:1px solid var(--line);padding:36px 0;color:var(--ink-3);font-size:14px}
@@ -167,7 +168,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 @media (max-width:960px){
   .hero-grid,.split{grid-template-columns:1fr}
-  .steps,.grid-4{grid-template-columns:repeat(2,1fr)}
+  .steps,.grid-4,.grid-5{grid-template-columns:repeat(2,1fr)}
   .grid-3,.compare,.src{grid-template-columns:1fr 1fr}
   .road{grid-template-columns:1fr 1fr}
   .nav-links{display:none}
@@ -175,7 +176,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 @media (max-width:600px){
   .wrap{padding:0 16px}
   section{padding:64px 0}
-  .steps,.grid-4,.grid-3,.grid-2,.compare,.src,.road{grid-template-columns:1fr}
+  .steps,.grid-4,.grid-5,.grid-3,.grid-2,.compare,.src,.road{grid-template-columns:1fr}
   .rule{grid-template-columns:1fr;gap:2px}
   .hero{padding:48px 0 64px}
   .brand{font-size:14px;white-space:nowrap}
@@ -218,7 +219,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <a class="btn" href="https://github.com/puvankumarv/residential-space-designer">View on GitHub</a>
       </div>
       <div class="chips">
-        <span class="chip">bedrooms</span><span class="chip">kitchens</span><span class="chip">bathrooms</span><span class="chip">living &amp; dining</span><span class="chip">entry &amp; stairs</span><span class="chip">balcony &amp; laundry</span><span class="chip">home office</span><span class="chip">studios &amp; whole homes</span>
+        <span class="chip">bedrooms</span><span class="chip">kitchens</span><span class="chip">bathrooms</span><span class="chip">living &amp; dining</span><span class="chip">entry &amp; stairs</span><span class="chip">balcony &amp; laundry</span><span class="chip">home office</span><span class="chip">studios &amp; whole homes</span><span class="chip">exterior &amp; site</span><span class="chip">Indian &amp; Western homes</span>
       </div>
     </div>
     <figure class="plan-card" style="margin:0">
@@ -321,9 +322,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">Room modules</span>
-      <h2>One skill, every room. Claude loads only the module it needs.</h2>
+      <h2>One skill, every room, inside and out. Claude loads only the modules it needs.</h2>
     </div>
-    <div class="grid-4">
+    <div class="grid-5">
       <div class="card room"><h3><span class="swatch" style="background:var(--p-sleep)"></span>Bedrooms</h3><p>Kids', twin and shared rooms; loft, offset, half-height and wall beds.</p><span class="k">decides <b>how people sleep</b></span></div>
       <div class="card room"><h3><span class="swatch" style="background:var(--p-kit)"></span>Kitchens</h3><p>Galley, L, U and island layouts with aisle and work-triangle checks.</p><span class="k">decides <b>layout shape</b></span></div>
       <div class="card room"><h3><span class="swatch" style="background:var(--p-bath)"></span>Bathrooms</h3><p>Wet/dry split, toilet, basin and shower clearances.</p><span class="k">decides <b>fixture arrangement</b></span></div>
@@ -332,6 +333,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="card room"><h3><span class="swatch" style="background:var(--p-bath)"></span>Balcony &amp; laundry</h3><p>Laundry towers around existing pipes, drying, outdoor safety.</p><span class="k">decides <b>wet-utility stack</b></span></div>
       <div class="card room"><h3><span class="swatch" style="background:var(--p-work)"></span>Home office</h3><p>Desk orientation for glare and video calls, closable work zones.</p><span class="k">decides <b>desk orientation</b></span></div>
       <div class="card room"><h3><span class="swatch" style="background:var(--accent)"></span>Whole home</h3><p>Room allocation, public/private zoning, adjacency, studios.</p><span class="k">decides <b>who gets which room</b></span></div>
+      <div class="card room"><h3><span class="swatch" style="background:var(--p-kit)"></span>Exterior &amp; site</h3><p>Car and pedestrian arrival, raised plinths, courtyards, verandahs, terraces.</p><span class="k">decides <b>how the house meets the street</b></span></div>
+      <div class="card room"><h3><span class="swatch" style="background:var(--accent)"></span>Indian &amp; Western</h3><p>Pooja rooms, Vastu if wanted, dry/wet kitchens, elders downstairs; or drop zones, open kitchens, mudrooms.</p><span class="k">adapts <b>to how you live</b></span></div>
     </div>
   </div>
 </section>
@@ -479,7 +482,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="sec-head">
       <span class="eyebrow">Where the rules come from</span>
       <h2>Every number has a source tag.</h2>
-      <p class="lead">Design patterns come from studying about 100 real small-space renovations. Safety and clearance numbers come from codes and standards. Anything unconfirmed is tagged <code>[std]</code> and flagged to you.</p>
+      <p class="lead">Design patterns come from about 100 small-space renovations and 14 whole-home tours of Indian and Western houses and flats. Safety and clearance numbers come from codes and standards. Anything unconfirmed is tagged <code>[std]</code> and flagged to you.</p>
     </div>
     <div class="src">
       <div class="card"><b>[CPSC] [EN747]</b><p>Bunk and high-bed safety: guardrails, access, upper-bed age.</p></div>
@@ -487,7 +490,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="card"><b>[NKBA]</b><p>Kitchen and bath planning guidelines: aisles, work triangle, seating, fixtures.</p></div>
       <div class="card"><b>[NP]</b><p>Neufert and Panero: bedside circulation, space in front of wardrobes.</p></div>
       <div class="card"><b>[IES]</b><p>Lighting levels for general, reading and desk tasks.</p></div>
-      <div class="card"><b>[DI]</b><p>Renovation case studies, paraphrased, for patterns and problem→solution pairs.</p></div>
+      <div class="card"><b>[DI] [HT]</b><p>About 100 renovation case studies and 14 whole-home tours (Indian and Western), paraphrased, for patterns.</p></div>
     </div>
     <p class="note"><b>Not a substitute for a professional.</b> Code values are minimums and vary by country and edition. Check local codes, and have structure, gas, electrics and waterproofing done or signed off by qualified people.</p>
   </div>
