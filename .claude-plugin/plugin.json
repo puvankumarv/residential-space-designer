@@ -1,0 +1,27 @@
+{
+  "name": "residential-space-designer",
+  "displayName": "Residential Space Designer",
+  "version": "1.0.0",
+  "description": "Designs every residential space, from a cramped kids' room to a whole Indian or Western home, and checks each layout against building codes and design standards.",
+  "author": {
+    "name": "Puvan Kumar V",
+    "url": "https://github.com/puvankumarv"
+  },
+  "homepage": "https://puvankumarv.github.io/residential-space-designer/",
+  "repository": "https://github.com/puvankumarv/residential-space-designer",
+  "license": "MIT",
+  "keywords": [
+    "interior-design",
+    "floor-plan",
+    "home",
+    "bedroom",
+    "kitchen",
+    "bathroom",
+    "vastu",
+    "layout"
+  ],
+  "skills": [
+    "./residential-space-designer"
+  ],
+  "icon": "./.claude-plugin/icon.png"
+}

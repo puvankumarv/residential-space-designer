@@ -1,0 +1,15 @@
+{
+  "name": "residential-space-designer",
+  "description": "Residential Space Designer: a Claude skill that designs every space in the home, with a code-sourced layout checker.",
+  "owner": {
+    "name": "Puvan Kumar V",
+    "url": "https://github.com/puvankumarv"
+  },
+  "plugins": [
+    {
+      "name": "residential-space-designer",
+      "source": "./",
+      "description": "Designs every residential space, from a cramped kids' room to a whole Indian or Western home, with a code-sourced layout checker."
+    }
+  ]
+}

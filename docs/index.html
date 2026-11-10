@@ -433,13 +433,26 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="split">
       <div>
         <div class="tabs" role="tablist">
-          <button class="tab" role="tab" aria-selected="true" data-panel="p-code">Claude Code</button>
+          <button class="tab" role="tab" aria-selected="true" data-panel="p-plugin">Claude Code plugin</button>
+          <button class="tab" role="tab" aria-selected="false" data-panel="p-code">Skills CLI / manual</button>
           <button class="tab" role="tab" aria-selected="false" data-panel="p-app">Claude app</button>
           <button class="tab" role="tab" aria-selected="false" data-panel="p-check">Checker only</button>
         </div>
-        <div class="panel on" id="p-code">
+        <div class="panel on" id="p-plugin">
           <ol class="ol">
-            <li><b>Clone the repository</b>
+            <li><b>Install the plugin</b> in Claude Code (one step on recent versions)
+              <div class="code"><button class="copy">Copy</button><pre>/plugin install residential-space-designer --marketplace puvankumarv/residential-space-designer</pre></div></li>
+            <li><b>Older Claude Code?</b> Add the marketplace first, then install
+              <div class="code"><button class="copy">Copy</button><pre>/plugin marketplace add puvankumarv/residential-space-designer</pre></div>
+              <div class="code"><button class="copy">Copy</button><pre>/plugin install residential-space-designer@residential-space-designer</pre></div></li>
+            <li><b>Describe your space.</b> The skill loads automatically when the request matches.</li>
+          </ol>
+        </div>
+        <div class="panel" id="p-code">
+          <ol class="ol">
+            <li><b>Skills CLI</b> (works with any agent that supports skills)
+              <div class="code"><button class="copy">Copy</button><pre>npx skills add puvankumarv/residential-space-designer</pre></div></li>
+            <li><b>Or clone the repository</b>
               <div class="code"><button class="copy">Copy</button><pre>git clone https://github.com/puvankumarv/residential-space-designer.git</pre></div></li>
             <li><b>Copy the skill into your skills folder</b> (use <code>.claude/skills/</code> inside a project to scope it to that project)
               <div class="code"><button class="copy">Copy</button><pre>cp -r residential-space-designer/residential-space-designer ~/.claude/skills/</pre></div></li>
@@ -448,9 +461,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
         <div class="panel" id="p-app">
           <ol class="ol">
-            <li><b>Download the repository</b> as a ZIP from GitHub and unzip it.
-              <div class="code"><button class="copy">Copy</button><pre>https://github.com/puvankumarv/residential-space-designer/archive/refs/heads/main.zip</pre></div></li>
-            <li><b>Zip just the <code>residential-space-designer/</code> folder</b> (the one that contains <code>SKILL.md</code>).</li>
+            <li><b>Download the skill ZIP</b> from the latest release
+              <div class="code"><button class="copy">Copy</button><pre>https://github.com/puvankumarv/residential-space-designer/releases/latest/download/residential-space-designer.zip</pre></div></li>
             <li><b>Upload it</b> in Claude's settings under Capabilities → Skills, where custom skills are available on your plan.</li>
             <li><b>Start a chat</b> and describe the room or home. Photos and floor plans work too.</li>
           </ol>
@@ -514,7 +526,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <footer>
   <div class="wrap">
-    <span>Residential Space Designer · built by <a href="https://github.com/puvankumarv">puvankumarv</a></span>
+    <span>Residential Space Designer · MIT licensed · built by <a href="https://github.com/puvankumarv">puvankumarv</a></span>
     <span><a href="https://github.com/puvankumarv/residential-space-designer">Source on GitHub</a> · <a href="https://github.com/puvankumarv/residential-space-designer/issues">Report an issue</a></span>
   </div>
 </footer>
