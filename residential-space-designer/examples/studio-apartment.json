@@ -48,12 +48,12 @@
     },
     {
       "id": "kitchen",
-      "purpose": "study",
+      "purpose": "cooking",
       "owner": "shared"
     },
     {
       "id": "dining",
-      "purpose": "leisure",
+      "purpose": "dining",
       "owner": "shared"
     },
     {

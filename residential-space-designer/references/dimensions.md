@@ -25,8 +25,11 @@ All values are in metres (W = width, D = depth, H = height). Source tags are exp
 | Nightstand | 0.45–0.55 × 0.40 × 0.55–0.65; or swap in a wall niche | [BO] [DI] |
 | Desk, adult | H 0.73–0.75, D 0.60–0.80, W ≥ 1.0 per person | [BO] |
 | Desk, child | Adjustable, H 0.55–0.75, D 0.50–0.60 | common practice |
-| Storage steps | Rise ≤ 0.22, tread ≥ 0.22, W ≥ 0.40 | common stair practice [std] |
+| Storage stair (comfortable) | Rise ≤ 0.22, tread ≥ 0.22, W ≥ 0.40; a 1.5 m loft needs about 7 risers and **1.3–1.5 m of run** | common stair practice [std] |
+| Steep box steps (compact) | Rise ≤ 0.25, alternating treads, handrail; fits a 0.45–0.6 m deep block; ages 6+ only | [std] |
 | Ladder | Rung pitch 0.20–0.30, W ≥ 0.30 | [std], check EN 747 |
+| Wall bed, side-tilt (single) | Housing about 0.45 deep; bed projects about 0.95–1.0 when down | [std] |
+| Wall bed, end-tilt (single/double) | Housing about 0.45 deep; bed projects about 2.05–2.15 when down; needs full length clear | [std] |
 
 ## Clearances (stricter value is ideal, looser is the minimum for small rooms)
 

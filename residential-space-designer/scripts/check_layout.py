@@ -29,7 +29,9 @@ BEDSIDE_RUN = 0.9          # [std] free length of that strip needed to get in
 DOUBLE_WIDTH = 1.2         # beds this wide sleep two
 BARRIERS = {"partition", "door"}
 GRID = 0.05
-NO_COLLIDE = {"curtain", "board", "hooks", "niche", "chair"}
+NO_COLLIDE = {"curtain", "board", "hooks", "niche", "chair", "route", "mirror"}
+STEP_RISE_MAX = 0.25       # [std] steep box steps / alternating treads, handrail needed
+STEP_COMFORT = (0.22, 0.22)  # [std] rise max, tread min for comfortable storage stairs
 FLOOR_OBSTACLE_Z = 1.0     # anything starting below this blocks floor clearance
 
 # Kitchen [NKBA]
@@ -98,7 +100,15 @@ def wall_span_rect(room, wall, offset, width, depth):
     return (W - depth, W, offset, offset + width)
 
 
-def front_rect(e):
+def fronts(e):
+    """An element's used sides: 'front' may be one direction or a list (islands, dining tables)."""
+    f = e.get("front")
+    if not f:
+        return []
+    return f if isinstance(f, list) else [f]
+
+
+def front_rect(e, direction=None):
     x0, x1, y0, y1 = rect(e)
     c = e["clearance"]
     return {
@@ -106,7 +116,7 @@ def front_rect(e):
         "-x": (x0 - c, x0, y0, y1),
         "+y": (x0, x1, y1, y1 + c),
         "-y": (x0, x1, y0 - c, y0),
-    }[e["front"]]
+    }[direction or fronts(e)[0]]
 
 
 def dist_point_rect(p, r):
@@ -161,7 +171,7 @@ def check_bedside(b, room, solid, rep):
 def free_ahead(e, solid, room, direction=None):
     """Free floor distance from e's face in `direction` (default its front) to the
     nearest wall or floor obstacle within e's width band."""
-    direction = direction or e.get("front")
+    direction = direction or fronts(e)[0]
     x0, x1, y0, y1 = rect(e)
     W, D = room["width"], room["depth"]
     best = {"+x": W - x1, "-x": x0, "+y": D - y1, "-y": y0}[direction]
@@ -187,7 +197,8 @@ def side_room(e, solid, room):
     measured across its front direction (for toilets)."""
     x0, x1, y0, y1 = rect(e)
     W, D = room["width"], room["depth"]
-    if e["front"] in ("+y", "-y"):
+    front = fronts(e)[0]
+    if front in ("+y", "-y"):
         c, lo_wall, hi_wall, band = (x0 + x1) / 2, 0.0, W, (y0, y1)
     else:
         c, lo_wall, hi_wall, band = (y0 + y1) / 2, 0.0, D, (x0, x1)
@@ -196,7 +207,7 @@ def side_room(e, solid, room):
         if o is e or o["z"] >= FLOOR_OBSTACLE_Z:
             continue
         a0, a1, b0, b1 = rect(o)
-        if e["front"] in ("+y", "-y"):
+        if front in ("+y", "-y"):
             span, (o_lo, o_hi) = (b0, b1), (a0, a1)
         else:
             span, (o_lo, o_hi) = (a0, a1), (b0, b1)
@@ -226,11 +237,13 @@ def check_room_type(layout, solid, rep):
             if not e.get("front"):
                 rep.warn(f"{e['id']}: kitchen element without 'front'; aisle can't be checked")
                 continue
-            gap = free_ahead(e, solid, room)
-            if gap < WALKWAY - EPS:
-                rep.warn(f"{e['id']}: {gap:.2f} m free in front < {WALKWAY} m walkway [NKBA]")
-            elif gap < WORK_AISLE - EPS:
-                rep.warn(f"{e['id']}: work aisle {gap:.2f} m < {WORK_AISLE} m for one cook [NKBA]")
+            for d in fronts(e):
+                gap = free_ahead(e, solid, room, d)
+                side = f" ({d})" if len(fronts(e)) > 1 else ""
+                if gap < WALKWAY - EPS:
+                    rep.warn(f"{e['id']}{side}: {gap:.2f} m free in front < {WALKWAY} m walkway [NKBA]")
+                elif gap < WORK_AISLE - EPS:
+                    rep.warn(f"{e['id']}{side}: work aisle {gap:.2f} m < {WORK_AISLE} m for one cook [NKBA]")
         pts = {}
         for t in ("sink", "cooktop", "fridge"):
             found = [e for e in els if e["type"] == t]
@@ -311,7 +324,7 @@ def check_room_type(layout, solid, rep):
             rep.error(f"{s['id']}: stair headroom {s['headroom']} m < {STAIR_HEADROOM} m [IRC]")
 
     for w in room["openings"]:
-        if w["type"] not in ("window", "bay_window") or w.get("drop_outside", 0) <= FALL_DROP:
+        if w["type"] not in ("window", "bay_window") or w.get("drop_outside", 0) <= FALL_DROP or w.get("restrictor"):
             continue
         sill = w.get("sill", 0.9)
         if sill < FALL_SILL - EPS:
@@ -455,18 +468,28 @@ def check(layout):
                 if e["z"] < 2.0 and xy_overlap(sw, rect(e)):
                     rep.error(f"{e['id']} blocks the swing of door {o['id']}")
 
+    # Routes: circulation paths that must stay clear (e.g. door to door behind a sofa)
+    for r in (e for e in els if e["type"] == "route"):
+        for o in solid:
+            if o["z"] < FLOOR_OBSTACLE_Z and xy_overlap(rect(r), rect(o)):
+                rep.error(f"{o['id']} blocks route {r['id']}")
+        width = min(r["w"], r["d"])
+        if width < 0.6 - EPS:
+            rep.warn(f"route {r['id']}: {width:.2f} m wide < 0.6 m small-room minimum")
+
     # Front clearances
     for e in els:
         if not (e.get("front") and e.get("clearance")):
             continue
-        fr = front_rect(e)
-        if fr[0] < -EPS or fr[2] < -EPS or fr[1] > W + EPS or fr[3] > D + EPS:
-            rep.error(f"{e['id']}: front clearance ({e['clearance']} m) runs outside the room")
-        for o in solid:
-            if o is e or o["z"] >= FLOOR_OBSTACLE_Z or o["id"] == e.get("serves"):
-                continue
-            if xy_overlap(fr, rect(o)):
-                rep.error(f"{o['id']} sits in the {e['clearance']} m clearance in front of {e['id']}")
+        for d in fronts(e):
+            fr = front_rect(e, d)
+            if fr[0] < -EPS or fr[2] < -EPS or fr[1] > W + EPS or fr[3] > D + EPS:
+                rep.error(f"{e['id']}: front clearance ({e['clearance']} m, {d}) runs outside the room")
+            for o in solid:
+                if o is e or o["z"] >= FLOOR_OBSTACLE_Z or o["id"] == e.get("serves"):
+                    continue
+                if xy_overlap(fr, rect(o)):
+                    rep.error(f"{o['id']} sits in the {e['clearance']} m clearance in front of {e['id']} ({d})")
         if e["type"] == "wardrobe" and e.get("doors") == "hinged" and e["clearance"] < 0.6:
             rep.warn(f"{e['id']}: hinged doors with only {e['clearance']} m clearance; consider sliding doors")
 
@@ -520,8 +543,26 @@ def check(layout):
         for w in room["openings"]:
             if w["type"] in ("window", "bay_window"):
                 near = wall_span_rect(room, w["wall"], w["offset"], w["width"], 0.3)
-                if xy_overlap(near, rect(b)) and top > w.get("sill", 0.9):
+                if xy_overlap(near, rect(b)) and top > w.get("sill", 0.9) and not w.get("restrictor"):
                     rep.warn(f"{bid}: raised bed next to window {w['id']}; fit window guards/restrictors")
+
+    # Steps and ladders up to beds or lofts
+    for st in (e for e in els if e["type"] == "steps" and e.get("rise") is not None):
+        rise, tread = st["rise"], st.get("tread", 0)
+        if rise > STEP_RISE_MAX + EPS:
+            rep.error(f"{st['id']}: step rise {rise} m > {STEP_RISE_MAX} m; use a ladder or a longer run")
+        elif rise > STEP_COMFORT[0] + EPS or tread < STEP_COMFORT[1] - EPS:
+            rep.warn(f"{st['id']}: steep steps (rise {rise}, tread {tread}); add a handrail, and use alternating treads [std]")
+
+    # Ordinary windows covered by tall furniture
+    for w in room["openings"]:
+        if w["type"] not in ("window", "bay_window") or w.get("egress"):
+            continue
+        sill = w.get("sill", 0.9)
+        zone = wall_span_rect(room, w["wall"], w["offset"], w["width"], 0.3)
+        for e in solid:
+            if e["z"] < sill and e["z"] + e["h"] > sill + 0.1 and xy_overlap(zone, rect(e)):
+                rep.warn(f"{e['id']} covers window {w['id']}")
 
     # Egress window
     check_egress_per_area(room, els, rep)
@@ -571,7 +612,8 @@ def ascii_plan(layout, upper):
     legend = []
     sym = iter("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789")
     for e in layout["elements"]:
-        if e["type"] == "niche" or (e["z"] >= FLOOR_OBSTACLE_Z) != upper:
+        shown = (e["z"] >= FLOOR_OBSTACLE_Z or e["z"] + e["h"] >= 1.8) if upper else e["z"] < FLOOR_OBSTACLE_Z
+        if e["type"] in ("niche", "route") or not shown:
             continue
         c = next(sym, "#")
         legend.append(f"{c}={e['id']}")
@@ -581,7 +623,7 @@ def ascii_plan(layout, upper):
                 if xy_overlap(rect(e), (k / 10, (k + 1) / 10, r / 10, (r + 1) / 10)):
                     grid[r][k] = c
     lines = ["".join(row) for row in reversed(grid)]  # N at top
-    title = "UPPER LEVEL (z ≥ 1.0 m)" if upper else "FLOOR LEVEL (z < 1.0 m)"
+    title = "UPPER LEVEL (z ≥ 1.0 m, plus full-height items)" if upper else "FLOOR LEVEL (z < 1.0 m)"
     return f"{title}   N↑  W| |E  S↓\n" + "\n".join(lines) + "\n" + "  ".join(legend)
 
 

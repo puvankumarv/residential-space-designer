@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "residential-space-designer/layout.schema.json",
   "title": "Room layout",
-  "description": "Units are metres. Origin: inner corner where wall S meets wall W. x runs along S toward E, y along W toward N, z up. Elements are axis-aligned boxes: (x, y, z) is the min corner, (w, d, h) the size along x, y, z. Wall offsets: S/N walls measured along x from W; E/W walls measured along y from S.",
+  "description": "Units are metres. Origin: inner corner where wall S meets wall W. x runs along S toward E, y along W toward N, z up. Elements are axis-aligned boxes: (x, y, z) is the min corner, (w, d, h) the size along x, y, z. Wall offsets: S/N walls measured along x from W; E/W walls measured along y from S. Wall letters S/E/N/W are layout axes; give the real compass direction of wall N in room.north if it differs.",
   "type": "object",
   "required": [
     "version",
@@ -116,6 +116,14 @@
               "drop_outside": {
                 "type": "number",
                 "description": "windows: height of the drop outside (m); > 1.83 m triggers fall-protection checks"
+              },
+              "estimated": {
+                "type": "boolean",
+                "description": "position or size estimated, not measured"
+              },
+              "restrictor": {
+                "type": "boolean",
+                "description": "windows: fitted with child-safe restrictors or fixed lower glazing; silences fall/climbable warnings"
               }
             }
           }
@@ -146,6 +154,10 @@
           ],
           "default": "bedroom",
           "description": "Turns on the room module's checks (see SKILL.md room modules)"
+        },
+        "north": {
+          "type": "string",
+          "description": "compass direction the layout's N wall actually faces, e.g. 'E' for an east-facing plot drawn road-side down"
         }
       }
     },
@@ -196,7 +208,14 @@
               "storage",
               "leisure",
               "entry",
-              "circulation"
+              "circulation",
+              "cooking",
+              "dining",
+              "wet",
+              "worship",
+              "laundry",
+              "work",
+              "play"
             ]
           },
           "owner": {
@@ -268,9 +287,12 @@
               "pooja_unit",
               "water_feature",
               "planter",
+              "route",
+              "mirror",
+              "guard",
               "other"
             ],
-            "description": "partition and door (interior, modelled closed) split the floor into separate areas for the egress check"
+            "description": "partition and door (interior, modelled closed) split the floor into separate areas for the egress check; 'route' is a non-solid box marking a circulation path that must stay clear"
           },
           "states": {
             "type": "object",
@@ -307,17 +329,33 @@
             "type": "number"
           },
           "front": {
-            "enum": [
-              "+x",
-              "-x",
-              "+y",
-              "-y"
-            ],
-            "description": "side that is used/opened"
+            "description": "side(s) that are used/opened; a list for islands, dining tables or other multi-sided items",
+            "oneOf": [
+              {
+                "enum": [
+                  "+x",
+                  "-x",
+                  "+y",
+                  "-y"
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "enum": [
+                    "+x",
+                    "-x",
+                    "+y",
+                    "-y"
+                  ]
+                },
+                "minItems": 1
+              }
+            ]
           },
           "clearance": {
             "type": "number",
-            "description": "free floor depth required in front (m)"
+            "description": "free floor depth required in front of each side listed in 'front' (m)"
           },
           "doors": {
             "enum": [
@@ -364,11 +402,11 @@
           },
           "rise": {
             "type": "number",
-            "description": "stairs: riser height (m)"
+            "description": "stairs or steps: riser height (m). Steps above 0.25 m error; above 0.22 m warn as steep"
           },
           "tread": {
             "type": "number",
-            "description": "stairs: tread depth (m)"
+            "description": "stairs or steps: tread depth (m)"
           },
           "stair_width": {
             "type": "number",

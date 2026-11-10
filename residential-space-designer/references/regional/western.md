@@ -1,6 +1,6 @@
 # Designing for Western homes
 
-Load this for homes in Europe, North America and Australia/NZ, or households living that way. The patterns come from whole-home tours (`[HT-W…]`, see `interior-design-research/home_tours.md`). Code numbers in `safety.md` follow the US IRC; for other countries, use the local code.
+Load this for homes in Europe, North America and Australia/NZ, or households living that way. The patterns come from whole-home tours (`[HT-W…]`, see [home_tours.md](https://github.com/puvankumarv/residential-space-designer/tree/main/interior-design-research/home_tours.md) in the project repo). Code numbers in `safety.md` follow the US IRC; for other countries, use the local code: in England and Wales, the Building Regulations Approved Documents (B fire and escape, K stairs and guarding, M access, F/O ventilation and overheating); in Australia the NCC. The checker's numbers stay IRC, so flag them as a guide.
 
 ## Intake: extra questions
 1. House, apartment, heritage building or tiny house? Any **original features** worth keeping (floors, brick, stairs)?

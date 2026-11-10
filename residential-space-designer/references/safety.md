@@ -14,6 +14,7 @@
 | Maximum top-mattress thickness | 0.15–0.20 m, chosen so the guardrail rule still holds | [RET] | ✔ (via guardrail height) |
 | Minimum age for the upper bed | 6 years | [CPSC] | ✔ (warns if an occupant is under 6) |
 | Access by fixed ladder or storage steps, with anti-slip treads and a grab point at the top | required | [CPSC] [DI 16, 47, 60] | ✔ (an access element must `serve` the bed) |
+| Step rise: give `rise`/`tread` on `steps` | > 0.25 m error; > 0.22 m or tread < 0.22 m warns as steep (handrail, alternating treads) | [std] | ✔ |
 
 ## Headroom
 

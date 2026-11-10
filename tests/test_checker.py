@@ -179,6 +179,46 @@ class TestRoomTypeRules(unittest.TestCase):
         self.assertTrue(has(run(L).warns, "climbable"))
 
 
+
+class TestBlindTestFixes(unittest.TestCase):
+    """Checks added after the blind test (evals/results.md, run 4)."""
+
+    def test_route_must_stay_clear(self):
+        L = load("examples/studio-apartment.json")
+        L["elements"].append({"id": "path", "type": "route", "x": 1.0, "y": 1.0, "z": 0,
+                              "w": 0.9, "d": 1.5, "h": 0.01})
+        self.assertTrue(has(run(L).errors, "blocks route path"))
+
+    def test_multi_sided_island(self):
+        L = load("evals/runs/19-london-terrace-kitchen-diner.json")
+        el(L, "island_s")["front"] = ["+x", "-x"]
+        el(L, "island_s")["clearance"] = 1.4
+        self.assertTrue(has(run(L).errors, "(-x)"))
+
+    def test_restrictor_silences_fall_warnings(self):
+        L = load("evals/runs/20-sloping-hosting-level.json")
+        el(L, "sofa")["x"] = 0.0
+        self.assertTrue(has(run(L).warns, "climbable"))
+        L["room"]["openings"][2]["restrictor"] = True
+        self.assertFalse(has(run(L).warns, "climbable"))
+
+    def test_tall_furniture_over_window(self):
+        L = load("examples/compact-bathroom.json")
+        el(L, "tall_cab")["h"] = 2.0
+        self.assertTrue(has(run(L).warns, "covers window"))
+
+    def test_step_rise(self):
+        L = load("examples/twins-offset-loft.json")
+        el(L, "steps_a")["rise"] = 0.30
+        self.assertTrue(has(run(L).errors, "step rise"))
+        el(L, "steps_a")["rise"] = 0.24
+        el(L, "steps_a")["tread"] = 0.20
+        self.assertTrue(has(run(L).warns, "steep steps"))
+
+    def test_upper_plan_shows_full_height_items(self):
+        L = load("examples/twins-offset-loft.json")
+        self.assertIn("wardrobe_b", cl.ascii_plan(L, upper=True))
+
 class TestSkillPackage(unittest.TestCase):
     def setUp(self):
         self.text = (SKILL / "SKILL.md").read_text()

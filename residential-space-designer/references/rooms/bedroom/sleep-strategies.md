@@ -9,6 +9,7 @@ Occupants = 1
 │     variants: pull-out desk under the loft [6, 16, 64, 84]; walk-in closet under the bed [22, 42, 98];
 │               gaming den under the bed with a hidden door [1, 7, 41, 78, 92]
 ├─ room 5–8 m², low ceiling (< 2.6)  → HALF-HEIGHT bed (mattress top ~0.8) + storage under + desk alongside [21, 24]
+├─ ceiling 2.4–2.6, wants a den/hideout → LOW LOFT (underside ≥ 1.0) over a sitting-only den; desk beside it, not under it
 └─ micro-unit ≤ 4 m²                 → FOLD-UP wall bed [36], PULL-OUT sofa-bed from drawers [12, 23];
                                         structural extensions only with an engineer [34, 48, 57]
 
@@ -29,7 +30,7 @@ Teen + sibling of the other sex → full partition with a door or frosted glass 
 ```
 
 ## Questions that decide the branch
-1. Ceiling height? Below 2.6 m rules out a loft over a desk.
+1. Ceiling height? Below 2.6 m rules out a loft over a desk; 2.4–2.6 m still allows a low loft over a sitting-only den (`../../dimensions.md` → Room heights).
 2. Ages? Under 6 rules out the upper bed for that child.
 3. Does each person need a desk? Then lofts or wardrobe-supported beds free the floor.
 4. Is privacy the main complaint? Then use dividers, offset beds or dens.

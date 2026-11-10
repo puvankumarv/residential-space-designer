@@ -1,5 +1,26 @@
 # Changelog
 
+## Unreleased
+
+Fixes from the blind test (see `residential-space-designer/evals/results.md`, run 4):
+- **Checker:**
+  - `route` elements that must stay clear
+  - multi-sided `front` for islands and dining tables
+  - window `restrictor`
+  - tall-furniture-over-window warning
+  - step rise and tread checks
+  - the upper-level plan shows full-height items
+- **Skill:**
+  - defaults when the user can't answer
+  - when to load secondary modules
+  - a low-ceiling den branch
+  - Pattern H puts the window beside the screen
+  - two step types and wall-bed sizes
+  - NBC and UK code pointers
+- **Layout format:** new zone purposes (cooking, dining, wet, worship, laundry, work, play); `route`, `mirror` and `guard` element types; `estimated` and `restrictor` on openings; `room.north`.
+- **Examples:** the bathroom example's linen cabinet is lowered below the window sill.
+- **Blind test:** outputs and a scoring script added.
+
 ## v1.0.0 (2026-11-10)
 
 First public release.

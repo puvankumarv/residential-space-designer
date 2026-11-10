@@ -44,17 +44,17 @@
     },
     {
       "id": "prep",
-      "purpose": "study",
+      "purpose": "cooking",
       "owner": "shared"
     },
     {
       "id": "cook",
-      "purpose": "study",
+      "purpose": "cooking",
       "owner": "shared"
     },
     {
       "id": "clean",
-      "purpose": "study",
+      "purpose": "cooking",
       "owner": "shared"
     }
   ],

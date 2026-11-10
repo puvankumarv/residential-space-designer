@@ -1,6 +1,6 @@
 # Diagnostic checklist
 
-Name every symptom that applies before you design anything. Each symptom points to a usual fix. Numbers in brackets are case-study IDs from `interior-design-research/video_notes.md`.
+Name every symptom that applies before you design anything. Each symptom points to a usual fix. Numbers in brackets are case-study IDs from [video_notes.md](https://github.com/puvankumarv/residential-space-designer/tree/main/interior-design-research/video_notes.md) in the project repo.
 
 | Symptom | Usual fix | Seen in |
 |---|---|---|

@@ -37,7 +37,7 @@ List each household member's daily routine: sleep, work or study, cooking, guest
 5. Then a layout JSON for each room (one file per room, with the right `room.type`).
 
 ## 6. Patterns from whole-home tours
-Seen across Indian and Western houses and flats (`[HT]`, see `interior-design-research/home_tours.md`):
+Seen across Indian and Western houses and flats (`[HT]`, see [home_tours.md](https://github.com/puvankumarv/residential-space-designer/tree/main/interior-design-research/home_tours.md) in the project repo):
 | Pattern | Use when | Seen in |
 |---|---|---|
 | **Privacy by floor** | Multi-storey homes: elders and guests on the ground floor, the private family floor upstairs, hosting or wellness on the top or bottom level | [HT-I1, I2, I4, I5, W4] |

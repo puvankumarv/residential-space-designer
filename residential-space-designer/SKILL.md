@@ -30,7 +30,7 @@ Load only the module for the room you're designing.
 | `kitchen` | `references/rooms/kitchen.md` | Layout shape (galley, L, U, island) |
 | `bathroom` | `references/rooms/bathroom.md` | Fixture arrangement and wet/dry split |
 | `living`, `dining`, `living_dining` | `references/rooms/living-dining.md` | Seating focus and circulation |
-| `entry`, `corridor`, `stairs` | `references/rooms/entry-circulation.md` | Drop zone and route widths |
+| `entry`, `corridor`, `stairs` | `references/rooms/entry-circulation.md` | Drop zone and route widths; for stairs, the stair form (straight, L, U, spiral, ladder) |
 | `balcony`, `laundry` | `references/rooms/balcony-laundry.md` | Wet-utility stack |
 | `office` | `references/rooms/home-office.md` | Desk orientation and storage |
 | `studio` / whole home | `references/rooms/whole-home.md` | Room allocation, adjacency and flow |
@@ -38,7 +38,17 @@ Load only the module for the room you're designing.
 
 **Regional modules:** load one when the home's location or the household's way of living calls for it. `references/regional/india.md` covers pooja rooms, Vastu if wanted, dry and wet kitchens, utility, elders on the ground floor, courtyards and climate. `references/regional/western.md` covers drop zones, open kitchens with sight lines, transformable living, mudrooms and ensuites, keeping original features, and tiny houses. Ask about cultural needs; don't assume them.
 
+**Load secondary modules when the activities call for them:** a bedroom or studio with a desk also uses `rooms/home-office.md`; shared rooms and studios also use `rooms/bedroom/zoning-privacy.md`; a whole home loads each room's module as you detail it.
+
 Shared references apply to every room: `safety.md`, `dimensions.md`, `storage-modules.md`, `services.md`, `materials.md`, `sources.md`.
+
+## Defaults when the user can't answer
+You may ask at most 5 questions per turn. If answers don't come (or the user asks you to just go ahead), proceed with stated assumptions instead of stalling:
+- **Region and culture:** infer it from units (ft/₹ vs m/£/$), place names and words used (BHK, pooja, mudroom). Fold the region question into another question rather than spending a slot on it. If there are no clues, use no regional module and say so.
+- **Doors and windows:** door on a short wall near a corner; window on the opposite or longest outside wall, sill 0.9 m. Mark them `estimated`.
+- **Structure:** treat walls as load-bearing and plumbing as fixed. When a request depends on cutting a wall (a niche, an opening), don't refuse: offer the safe alternative (built-out shallow wall, furniture) and show the cut-in version as "after a structural check".
+- **Which rooms to detail (whole home):** the rooms named in the complaint first, then the kitchen, then the shared bedroom.
+- **Wall letters** S/E/N/W are layout axes. State which compass direction the N wall really faces (`room.north`) whenever Vastu or sun direction matters.
 
 ## Procedure
 

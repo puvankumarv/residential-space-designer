@@ -28,7 +28,8 @@ Pick the focus first: TV, a view or window, or conversation. Seating faces the f
 | Main walkway | ≥ 0.9 m; small-room minimum 0.6 m | [BO] [IDE] | ✔ via front clearances |
 | TV viewing distance | About 1.5–2.5 × the screen diagonal | [std] | |
 | Dining: width per diner | 0.61 m | [NKBA] | |
-| Dining: clearance behind a chair | 0.81 m (no traffic) to 1.12 m (people walk behind) | [NKBA] | ✔ give the table `front`/`clearance` per side with chairs |
+| Dining: clearance behind a chair | 0.81 m (no traffic) to 1.12 m (people walk behind) | [NKBA] | ✔ give the table `front` as a list of the sides with chairs, e.g. `["+y", "-y"]` |
+| **Main route stays clear** | Draw the path (front door → inner door, door → balcony) as a `route` element ≥ 0.9 m wide | [BO] | ✔ error if anything stands on it |
 | General lighting | 50–150 lux, plus task lamps at seats | [IES] | |
 
 ## Storage moves

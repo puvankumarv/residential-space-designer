@@ -29,6 +29,8 @@ Keep the toilet on its existing soil stack if you can, because moving it is the 
 | Clear space in front of the basin (lavatory) | ≥ 0.53 m (21 in) | [IRC-P] | ✔ |
 | Shower interior | ≥ 0.76 × 0.76 m and ≥ 0.58 m² (900 in²); 0.91 × 0.91 m recommended | [IRC-P] [NKBA] | ✔ error / warning |
 | Clear space in front of the shower entry | ≥ 0.61 m (24 in); 0.76 m recommended | [IRC-P] [NKBA] | ✔ error / warning |
+
+**Full-width showers:** the checker measures the entry clearance across the shower's whole width. For a shower across the far end, split it into the wet tray (`shower`, `front` toward the room) only as wide as the glass opening, and model the fixed glass panel as a `partition`, so the clearance applies to the opening, not the whole room width.
 | Toilet compartment | ≥ 0.76 × 1.52 m; 0.91 × 1.68 m recommended | [IRC-P] [NKBA] | |
 | Waterproofing | Two coats, then a 48 h flood test before tiling | [DI 14, 31] | |
 

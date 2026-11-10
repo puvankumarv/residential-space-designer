@@ -125,3 +125,60 @@ FIRST FLOOR
 
 ## Still not checked automatically
 Home-plan rules (Vastu placements, elders near the pooja room, the maid's route, privacy by floor, adjacency) are judged by reading the plan, not by the checker, which works one room at a time. A multi-room home-plan checker is on the roadmap ("multi-room home layouts in a single file").
+
+# Run 4: blind test (2026-11-11)
+
+**How this was run:** five fresh Claude sessions, each given **only the installed skill folder** (the `evals/` folder with answers removed, exactly what a user installs). Each answered 3–4 prompts as a real chat; the user couldn't reply, so they asked their questions, stated assumptions and delivered full designs. Scenario 7 (photo only) was skipped because there's no photo. Outputs are in `blind/`. `python3 evals/score_blind.py evals/blind` re-runs the checker on every layout and looks for each deliverable.
+
+**Caveat:** the examples' rooms match scenarios 2, 11, 12 and 13 exactly. The sessions designed their own layouts anyway (in 2, one deliberately rejected the example's offset loft), but those four are less blind than the rest.
+
+## Scores
+| # | Expectation met? | Checker (re-run) | Notes |
+|---|---|---|---|
+| 01 | ✅ loft over desk, sliding wardrobe | 0 / 0 | |
+| 02 | ✅ no stacked bunk; mirrored side-by-side platforms | 0 / 2 | Warnings: desks under a window with a 3 m drop. Couldn't mark restrictors (fixed: `restrictor`) |
+| 03 | ✅ 5-year-old on a floor bed | 0 / 0 | Compensation for the youngest was written down |
+| 04 | ✅ platform + split drawers + split desk | 0 / 1 | Intended bedside trade-off. Found the window-behind-screen conflict in Pattern H (fixed) |
+| 05 | ✅ saw that a loft over a desk doesn't fit; loft over a den | 0 / 0 | Found contradictory ceiling rules (fixed) |
+| 06 | ✅ partition with doors, equal cells | 0 / 3 | One window shared by two cells; flagged and asked |
+| 08 | ✅ treated walls as load-bearing; offered a built-out wall | 0 / 0 | Showed the cut-in version failing with structure unknown |
+| 09 | ✅ pulled out facts, asked ≤ 5, marked estimates | 0 / 0 | |
+| 10 | ✅ wall bed with day/night states; extension flagged | 0 / 0 | |
+| 11 | ✅ aisle 1.25 m (two-cook guideline) | 0 / 0 | |
+| 12 | ✅ glass wet/dry split, linear drain, door opening outward | 0 / 0 | |
+| 13 | ⚠ the bed is hidden, but with a storage-wall alcove, not a wall bed | 0 / 0 | A valid alternative; it said why it rejected a wall bed |
+| 14 | ✅ home plan first, then 3 rooms | 0 / 0 | |
+| 15 | ✅ route behind the sofa; coffee table 0.36 m | 0 / 0 | The checker caught 2 clearance errors on the first draft. It couldn't check the route itself (fixed: `route`) |
+| 16 | ✅ L stair with landing passes riser/tread/width/headroom | 0 / 0 | |
+| 17 | ⚠ Vastu table, pooja NE, kitchen SE; parents on the ground floor but NW | 0 / 0 | Flagged NW as a Vastu conflict and offered a swap |
+| 18 | ✅ dry/wet split, utility, maid route in the public zone | 0 / 0 | |
+| 19 | ✅ sight lines from the island hob; original features kept | 0 / 0 | |
+| 20 | ✅ split levels, hosting level, site sketch | 0 / 0 | |
+
+**Result:** 19 of 19 run; 17 fully meet expectations, 2 meet them with a reasonable variation. All 26 layouts have **0 checker errors**. All 19 answers contain every required deliverable, and every session kept to the 5-question limit.
+
+## Gaps the blind sessions found, and fixes
+| Gap (sessions that hit it) | Fix |
+|---|---|
+| Storage steps: the rule (rise ≤ 0.22) needs about 1.4 m of run, but the examples use compact blocks; the checker never checked steps (A, B, C) | `dimensions.md` now has two step types (comfortable storage stair; steep box steps with handrail). `steps` take `rise`/`tread`; the checker errors above 0.25 m and warns above 0.22 m |
+| Low ceiling + den: contradictory branches (A) | The decision tree adds "2.4–2.6 m ceiling + den → low loft over a sitting-only den"; Pattern B is aligned |
+| Pattern H put the window behind the WFH screen (A) | Pattern H now puts the vanity in the window and the desk on a side wall |
+| No defaults when the user can't answer; the region question used a question slot (A–E) | New SKILL.md section "Defaults when the user can't answer" (region inference, door/window defaults, structure, rooms to detail, wall letters vs compass) |
+| Zone purposes only fit bedrooms (C, D, E) | Added `cooking`, `dining`, `wet`, `worship`, `laundry`, `work`, `play`; examples updated |
+| Research files cited but not shipped with the skill (B, C, D, E) | References now link to the notes in the GitHub repo |
+| No way to check the walking route (D) | New `route` element: anything standing on it is an error |
+| Dining tables and islands have several working sides (C, E) | `front` accepts a list; clearances and kitchen aisles are checked on every side |
+| Window warnings couldn't be cleared (E) | Openings accept `restrictor: true`; `estimated` was added to openings too |
+| Tall furniture covering ordinary windows went unnoticed (D) | New warning. It immediately caught the linen cabinet over the window in this repo's own bathroom example, now lowered |
+| The upper-level plan hid full-height items (C) | The upper view now also draws items reaching 1.8 m or higher |
+| Secondary modules (home office, privacy) weren't loaded for bedrooms and studios (A, C) | SKILL.md now says when to load them |
+| Stairs: wrong master decision; IRC-only numbers for India and the UK (D, E) | The stair decision is now the stair form; the India and Western modules say the checker's numbers are IRC and point to NBC 2016 / UK Approved Documents |
+| Full-width shower entry measured across the whole room (C) | `bathroom.md` explains modelling the glass panel separately |
+
+## Still open (backlog)
+- A multi-room / whole-floor layout format, so adjacency, Vastu placement, routes and site plans can be checked (raised by C, D, E).
+- Rooms with more than one height (split levels, stair voids) and stairs with storage under them.
+- Guard/railing checks at landings and balconies (the `guard` type now exists, but there are no rules yet).
+- Room modules for pooja rooms and utility rooms; NBC India numbers in the checker.
+- Outlets inside furniture (power rails in desks and storage walls).
+- Scenario 7 (photo input) still needs a real photo.

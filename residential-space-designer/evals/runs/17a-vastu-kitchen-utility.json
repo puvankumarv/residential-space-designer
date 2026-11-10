@@ -48,12 +48,12 @@
     },
     {
       "id": "prep",
-      "purpose": "study",
+      "purpose": "cooking",
       "owner": "shared"
     },
     {
       "id": "cook",
-      "purpose": "study",
+      "purpose": "cooking",
       "owner": "shared"
     },
     {

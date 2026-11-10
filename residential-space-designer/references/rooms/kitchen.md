@@ -26,7 +26,7 @@ Source tags are explained in `../sources.md`. ✔ means `scripts/check_layout.py
 ## Rules
 | Rule | Value | Source | Checked |
 |---|---|---|---|
-| Work aisle, one cook | ≥ 1.07 m (42 in) | [NKBA] | ✔ warns on the front clearance of counters, sink, cooktop, fridge and island |
+| Work aisle, one cook | ≥ 1.07 m (42 in) | [NKBA] | ✔ warns on the front clearance of counters, sink, cooktop, fridge and island; give an island every working side, e.g. `"front": ["+x", "-x"]` |
 | Work aisle, two or more cooks | ≥ 1.22 m (48 in) | [NKBA] | |
 | Walkway past a kitchen (not a work aisle) | ≥ 0.91 m (36 in) | [NKBA] | ✔ warns below 0.91 m |
 | Work triangle (sink, cooktop, fridge): total of the three legs | ≤ 7.9 m (26 ft) | [NKBA] | ✔ |

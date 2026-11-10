@@ -39,7 +39,7 @@
     },
     {
       "id": "wet",
-      "purpose": "storage",
+      "purpose": "wet",
       "owner": "shared"
     }
   ],
@@ -103,9 +103,9 @@
       "z": 0,
       "w": 0.75,
       "d": 0.45,
-      "h": 2.0,
+      "h": 1.5,
       "zone": "dry",
-      "label": "Tall linen cabinet"
+      "label": "Linen cabinet, kept below the window sill"
     }
   ],
   "services": [

@@ -1,6 +1,6 @@
 # Designing for Indian homes
 
-Load this when the home is in India or the household follows Indian living patterns. The patterns come from whole-home tours (`[HT-I…]`, see `interior-design-research/home_tours.md`) and the small-space case studies `[DI]`. These are **cultural preferences, not codes**: ask, don't assume. Safety and code rules in `safety.md` still apply. Indian projects should be checked against the National Building Code of India and local bye-laws rather than the US IRC numbers.
+Load this when the home is in India or the household follows Indian living patterns. The patterns come from whole-home tours (`[HT-I…]`, see [home_tours.md](https://github.com/puvankumarv/residential-space-designer/tree/main/interior-design-research/home_tours.md) in the project repo) and the small-space case studies `[DI]`. These are **cultural preferences, not codes**: ask, don't assume. Safety and code rules in `safety.md` still apply. Indian projects should be checked against the National Building Code of India (NBC 2016) and local bye-laws rather than the US IRC numbers. **The checker's stair, fixture and egress values are IRC values**, so present them as a guide and tell the user the NBC/bye-law figures must be confirmed by their architect.
 
 ## Intake: extra questions
 1. Do you follow **Vastu**? Strictly, loosely, or not at all.

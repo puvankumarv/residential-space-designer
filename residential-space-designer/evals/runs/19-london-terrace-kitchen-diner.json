@@ -47,7 +47,7 @@
   "zones": [
     {
       "id": "cook",
-      "purpose": "study",
+      "purpose": "cooking",
       "owner": "shared"
     },
     {
@@ -57,12 +57,12 @@
     },
     {
       "id": "dining",
-      "purpose": "leisure",
+      "purpose": "dining",
       "owner": "shared"
     },
     {
       "id": "play",
-      "purpose": "leisure",
+      "purpose": "play",
       "owner": "shared"
     }
   ],
