@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.1.0 (2026-11-11)
 
 Fixes from the blind test (see `residential-space-designer/evals/results.md`, run 4):
 - **Checker:**
