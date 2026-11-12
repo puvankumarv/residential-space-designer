@@ -219,6 +219,39 @@ class TestBlindTestFixes(unittest.TestCase):
         L = load("examples/twins-offset-loft.json")
         self.assertIn("wardrobe_b", cl.ascii_plan(L, upper=True))
 
+class TestCommandLine(unittest.TestCase):
+    """The checker reports bad input clearly instead of crashing."""
+
+    def cli(self, *args):
+        import subprocess, sys
+        return subprocess.run([sys.executable, str(SKILL / "scripts" / "check_layout.py"), *args],
+                              capture_output=True, text=True)
+
+    def test_help(self):
+        r = self.cli("--help")
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("Usage", r.stdout)
+
+    def test_missing_file(self):
+        r = self.cli("no-such-layout.json")
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("Can't open", r.stderr)
+        self.assertNotIn("Traceback", r.stderr)
+
+    def test_invalid_json(self):
+        import tempfile
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            f.write("{not json")
+        r = self.cli(f.name)
+        self.assertIn("not valid JSON", r.stderr)
+        self.assertNotIn("Traceback", r.stderr)
+
+    def test_plan_flag_before_file(self):
+        r = self.cli("--plan", str(SKILL / "examples" / "studio-apartment.json"))
+        self.assertEqual(r.returncode, 0)
+        self.assertIn("FLOOR LEVEL", r.stdout)
+
+
 class TestSkillPackage(unittest.TestCase):
     def setUp(self):
         self.text = (SKILL / "SKILL.md").read_text()

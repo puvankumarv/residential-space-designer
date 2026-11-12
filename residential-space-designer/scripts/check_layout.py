@@ -628,11 +628,20 @@ def ascii_plan(layout, upper):
 
 
 def main():
-    if len(sys.argv) < 2:
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    if "-h" in sys.argv or "--help" in sys.argv:
+        print(__doc__)
+        sys.exit(0)
+    if not args:
         print(__doc__)
         sys.exit(2)
-    with open(sys.argv[1]) as f:
-        layout = json.load(f)
+    try:
+        with open(args[0]) as f:
+            layout = json.load(f)
+    except OSError as e:
+        sys.exit(f"Can't open {args[0]}: {e.strerror}")
+    except json.JSONDecodeError as e:
+        sys.exit(f"{args[0]} is not valid JSON: {e.msg} (line {e.lineno}, column {e.colno})")
     rep = check_all(layout)
     for m in rep.errors:
         print("ERROR:", m)
