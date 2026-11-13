@@ -88,6 +88,8 @@ Then describe your room or home ("my twins share a 3.4 × 3.4 m room…", "plan 
 python3 residential-space-designer/scripts/check_layout.py residential-space-designer/examples/studio-apartment.json --plan
 ```
 
+Add `--json` to get the result as one JSON object (`errors`, `warnings`, `ok`, and `plans` with `--plan`) for scripts and other tools. The exit code is 1 when there are errors.
+
 ## Development
 
 ```bash

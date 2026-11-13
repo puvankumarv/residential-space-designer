@@ -2,12 +2,14 @@
 """Check a room layout JSON against references/safety.md, references/dimensions.md
 and the room module for its room.type (kitchen, bathroom, living, stairs...).
 
-Usage: python3 check_layout.py layout.json [--plan]
+Usage: python3 check_layout.py layout.json [--plan] [--json]
 
 Prints ERROR / WARN lines and exits 1 if any ERROR. --plan also prints ASCII
 top views (floor level and upper level, 1 char = 10 cm). If the layout lists
 "states" (e.g. night/day for fold-down furniture), each state is checked and
-drawn separately. Standard library only.
+drawn separately. --json prints one JSON object instead, for other tools to
+read: {"errors": [...], "warnings": [...], "ok": bool}, plus "plans" with
+--plan. Standard library only.
 """
 import json
 import sys
@@ -643,6 +645,15 @@ def main():
     except json.JSONDecodeError as e:
         sys.exit(f"{args[0]} is not valid JSON: {e.msg} (line {e.lineno}, column {e.colno})")
     rep = check_all(layout)
+    if "--json" in sys.argv:
+        out = {"errors": rep.errors, "warnings": rep.warns, "ok": not rep.errors}
+        if "--plan" in sys.argv and "room" in layout:
+            out["plans"] = {
+                (s or "default"): {"floor": ascii_plan(apply_state(layout, s), False),
+                                   "upper": ascii_plan(apply_state(layout, s), True)}
+                for s in (layout.get("states") or [None])}
+        print(json.dumps(out, ensure_ascii=False, indent=2))
+        sys.exit(1 if rep.errors else 0)
     for m in rep.errors:
         print("ERROR:", m)
     for m in rep.warns:

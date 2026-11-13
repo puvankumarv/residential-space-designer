@@ -3,6 +3,7 @@
 ## Unreleased
 
 - **Checker:** `--help` prints usage, and a missing file or invalid JSON gives a one-line error instead of a Python traceback. `--plan` can come before the file name.
+- **Checker:** `--json` prints errors, warnings and (with `--plan`) the ASCII plans as one JSON object for other tools to read.
 
 ## v1.1.0 (2026-11-11)
 

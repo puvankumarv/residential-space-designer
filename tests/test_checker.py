@@ -246,6 +246,27 @@ class TestCommandLine(unittest.TestCase):
         self.assertIn("not valid JSON", r.stderr)
         self.assertNotIn("Traceback", r.stderr)
 
+    def test_json_output(self):
+        r = self.cli(str(SKILL / "examples" / "studio-apartment.json"), "--json", "--plan")
+        self.assertEqual(r.returncode, 0)
+        out = json.loads(r.stdout)
+        self.assertEqual(out["errors"], [])
+        self.assertTrue(out["ok"])
+        self.assertIn("night", out["plans"])
+        self.assertIn("FLOOR LEVEL", out["plans"]["night"]["floor"])
+
+    def test_json_output_with_errors(self):
+        import tempfile
+        L = load("examples/twins-offset-loft.json")
+        el(L, "bed_upper")["guardrail"] = False
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
+            json.dump(L, f)
+        r = self.cli(f.name, "--json")
+        self.assertEqual(r.returncode, 1)
+        out = json.loads(r.stdout)
+        self.assertFalse(out["ok"])
+        self.assertTrue(has(out["errors"], "without guardrails"))
+
     def test_plan_flag_before_file(self):
         r = self.cli("--plan", str(SKILL / "examples" / "studio-apartment.json"))
         self.assertEqual(r.returncode, 0)
