@@ -629,6 +629,18 @@ def ascii_plan(layout, upper):
     return f"{title}   N↑  W| |E  S↓\n" + "\n".join(lines) + "\n" + "  ".join(legend)
 
 
+def result(layout, plan=False, rep=None):
+    """The check result as a dict: errors, warnings, ok, and ASCII plans per state if asked."""
+    rep = rep or check_all(layout)
+    out = {"errors": rep.errors, "warnings": rep.warns, "ok": not rep.errors}
+    if plan and "room" in layout:
+        out["plans"] = {
+            (s or "default"): {"floor": ascii_plan(apply_state(layout, s), False),
+                               "upper": ascii_plan(apply_state(layout, s), True)}
+            for s in (layout.get("states") or [None])}
+    return out
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     if "-h" in sys.argv or "--help" in sys.argv:
@@ -646,13 +658,7 @@ def main():
         sys.exit(f"{args[0]} is not valid JSON: {e.msg} (line {e.lineno}, column {e.colno})")
     rep = check_all(layout)
     if "--json" in sys.argv:
-        out = {"errors": rep.errors, "warnings": rep.warns, "ok": not rep.errors}
-        if "--plan" in sys.argv and "room" in layout:
-            out["plans"] = {
-                (s or "default"): {"floor": ascii_plan(apply_state(layout, s), False),
-                                   "upper": ascii_plan(apply_state(layout, s), True)}
-                for s in (layout.get("states") or [None])}
-        print(json.dumps(out, ensure_ascii=False, indent=2))
+        print(json.dumps(result(layout, "--plan" in sys.argv, rep), ensure_ascii=False, indent=2))
         sys.exit(1 if rep.errors else 0)
     for m in rep.errors:
         print("ERROR:", m)

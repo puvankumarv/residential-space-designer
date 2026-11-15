@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **MCP server** (`scripts/mcp_server.py`, standard-library Python): `validate_layout`, `floor_plan_svg`, `get_layout_schema`, `list_references` and `read_reference` tools. The Claude Code plugin registers it through `.mcp.json`; other MCP clients can point at the script.
+- **SVG floor plans** (`scripts/floor_plan_svg.py`): north-up plans with door swings, windows, routes, and raised items dashed over floor items.
 - **Checker:** `--help` prints usage, and a missing file or invalid JSON gives a one-line error instead of a Python traceback. `--plan` can come before the file name.
 - **Checker:** `--json` prints errors, warnings and (with `--plan`) the ASCII plans as one JSON object for other tools to read.
 

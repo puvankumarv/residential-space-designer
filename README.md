@@ -35,6 +35,9 @@ For a whole home it first makes a **home plan** (rooms, adjacency, circulation),
 | `residential-space-designer/references/` | Shared rules with source tags: safety, dimensions, storage, services, materials, sources |
 | `residential-space-designer/templates/` | Layout JSON schema, intake questions and brief, BOM |
 | `residential-space-designer/scripts/check_layout.py` | Layout checker, standard-library Python |
+| `residential-space-designer/scripts/floor_plan_svg.py` | Draws a layout as an SVG floor plan |
+| `residential-space-designer/scripts/mcp_server.py` | MCP server exposing the checker, the SVG plan and the references as tools |
+| `.mcp.json` | Registers the MCP server when the plugin is installed |
 | `residential-space-designer/examples/` | Twins' loft bedroom, galley kitchen, compact bathroom, studio apartment |
 | `residential-space-designer/evals/` | Test scenarios, generated layouts and results |
 | `docs/` | Project website (GitHub Pages) |
@@ -82,13 +85,46 @@ cp -r residential-space-designer/residential-space-designer ~/.claude/skills/
 
 Then describe your room or home ("my twins share a 3.4 × 3.4 m room…", "plan our 30×40 Vastu house…") and the skill loads automatically.
 
+## MCP server
+
+The plugin starts a small MCP server (standard-library Python, no install) with five tools:
+
+| Tool | What it does |
+|---|---|
+| `validate_layout` | Checks a layout and returns `errors`, `warnings`, `ok`, and ASCII plans if asked |
+| `floor_plan_svg` | Draws a layout as an SVG floor plan, one state at a time |
+| `get_layout_schema` | Returns the layout JSON Schema |
+| `list_references` | Lists the room modules, regional modules, rules and examples |
+| `read_reference` | Reads one of those files |
+
+![SVG floor plan of the twins' offset-loft example, drawn by floor_plan_svg](docs/images/twins-offset-loft.svg)
+
+Installed through the Claude Code plugin, it starts by itself. For other MCP clients (Claude Desktop, Cursor and others), clone the repository and add:
+
+```json
+{
+  "mcpServers": {
+    "residential-space-designer": {
+      "command": "python3",
+      "args": ["/path/to/residential-space-designer/residential-space-designer/scripts/mcp_server.py"]
+    }
+  }
+}
+```
+
 ## Check a layout
 
 ```bash
 python3 residential-space-designer/scripts/check_layout.py residential-space-designer/examples/studio-apartment.json --plan
 ```
 
-Add `--json` to get the result as one JSON object (`errors`, `warnings`, `ok`, and `plans` with `--plan`) for scripts and other tools. The exit code is 1 when there are errors.
+Draw it as an SVG floor plan:
+
+```bash
+python3 residential-space-designer/scripts/floor_plan_svg.py residential-space-designer/examples/studio-apartment.json --state day > plan.svg
+```
+
+Add `--json` to the checker to get the result as one JSON object (`errors`, `warnings`, `ok`, and `plans` with `--plan`) for scripts and other tools. The exit code is 1 when there are errors.
 
 ## Development
 
@@ -105,8 +141,8 @@ Design patterns were studied from public renovation videos and written up in our
 
 ## Roadmap
 
-1. Blind test of the skill on the scenarios in `evals/scenarios.md`.
-2. MCP v1: `validate_layout` and `floor_plan_svg` tools.
+1. ~~Blind test of the skill on the scenarios in `evals/scenarios.md`.~~ Done in v1.1.0.
+2. ~~MCP v1: `validate_layout` and `floor_plan_svg` tools.~~ Done.
 3. Blender stage via blender-orchestrator: layout JSON to scene to walkthrough video.
 4. Inputs: photo to dimensions, voice (Whisper), video to 3D reconstruction.
 5. Multi-room home layouts in a single file.
