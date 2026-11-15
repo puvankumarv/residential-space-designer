@@ -6,6 +6,7 @@
 - **SVG floor plans** (`scripts/floor_plan_svg.py`): north-up plans with door swings, windows, routes, and raised items dashed over floor items.
 - **Checker:** `--help` prints usage, and a missing file or invalid JSON gives a one-line error instead of a Python traceback. `--plan` can come before the file name.
 - **Checker:** `--json` prints errors, warnings and (with `--plan`) the ASCII plans as one JSON object for other tools to read.
+- **CI:** tests run on Python 3.10 and 3.13 (3.9 is end-of-life and gone from GitHub's Ubuntu 26.04 runners); actions updated to their Node 24 versions.
 
 ## v1.1.0 (2026-11-11)
 
