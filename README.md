@@ -142,7 +142,7 @@ Design patterns were studied from public renovation videos and written up in our
 ## Roadmap
 
 1. ~~Blind test of the skill on the scenarios in `evals/scenarios.md`.~~ Done in v1.1.0.
-2. ~~MCP v1: `validate_layout` and `floor_plan_svg` tools.~~ Done.
+2. ~~MCP v1: `validate_layout` and `floor_plan_svg` tools.~~ Done in v1.2.0.
 3. Blender stage via blender-orchestrator: layout JSON to scene to walkthrough video.
 4. Inputs: photo to dimensions, voice (Whisper), video to 3D reconstruction.
 5. Multi-room home layouts in a single file.

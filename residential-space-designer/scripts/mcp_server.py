@@ -23,7 +23,7 @@ sys.path.insert(0, str(HERE))
 import check_layout as cl  # noqa: E402
 import floor_plan_svg as svg  # noqa: E402
 
-SERVER_INFO = {"name": "residential-space-designer", "version": "1.1.0"}  # kept equal to .claude-plugin/plugin.json by the tests
+SERVER_INFO = {"name": "residential-space-designer", "version": "1.2.0"}  # kept equal to .claude-plugin/plugin.json by the tests
 PROTOCOLS = ["2025-06-18", "2025-03-26", "2024-11-05"]
 READABLE_DIRS = ("references", "templates", "examples")
 READABLE_SUFFIXES = (".md", ".json")

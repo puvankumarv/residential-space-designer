@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.2.0 (2026-11-15)
 
 - **MCP server** (`scripts/mcp_server.py`, standard-library Python): `validate_layout`, `floor_plan_svg`, `get_layout_schema`, `list_references` and `read_reference` tools. The Claude Code plugin registers it through `.mcp.json`; other MCP clients can point at the script.
 - **SVG floor plans** (`scripts/floor_plan_svg.py`): north-up plans with door swings, windows, routes, and raised items dashed over floor items.
