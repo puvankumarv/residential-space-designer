@@ -199,6 +199,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <a href="#rooms">Rooms</a>
       <a href="#checker">Checker</a>
       <a href="#install">Install</a>
+      <a href="viewer.html">3D</a>
     </div>
     <button class="icon-btn" id="theme" aria-label="Toggle dark mode">◐</button>
     <a class="icon-btn" href="https://github.com/puvankumarv/residential-space-designer">
@@ -279,9 +280,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <p>A fixed procedure, room-by-room rule modules, a layout format, and a Python checker that flags unsafe or unusable designs before you see them.</p>
       </div>
       <div class="card">
-        <span class="tag">Next: MCP + Blender</span>
+        <span class="tag">MCP + 3D</span>
         <h3 style="margin-top:12px">Tools that render</h3>
-        <p>The same layout JSON is designed to feed a 3D render stage. A walkthrough video follows the skill's own camera path.</p>
+        <p>The same layout JSON becomes an SVG plan, a 3D model and a Blender walkthrough video. <a href="viewer.html">Orbit the examples in 3D.</a></p>
       </div>
     </div>
   </div>
@@ -470,7 +471,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
         <div class="panel" id="p-mcp">
           <ol class="ol">
-            <li><b>With the Claude Code plugin it starts by itself.</b> Tools: <code>validate_layout</code>, <code>floor_plan_svg</code>, <code>get_layout_schema</code>, <code>list_references</code>, <code>read_reference</code>.</li>
+            <li><b>With the Claude Code plugin it starts by itself.</b> Tools: <code>validate_layout</code>, <code>floor_plan_svg</code>, <code>layout_to_gltf</code>, <code>get_layout_schema</code>, <code>list_references</code>, <code>read_reference</code>.</li>
             <li><b>Other MCP clients</b> (Claude Desktop, Cursor…): clone the repository, then add this to the client's MCP config
               <div class="code"><button class="copy">Copy</button><pre>{"mcpServers": {"residential-space-designer": {
   "command": "python3",
@@ -529,7 +530,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">Skill v1</h3><p>Room modules, sourced rules, layout format, checker, examples.</p></div>
       <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">Blind tests</h3><p>Fresh sessions with only the skill, on the scenario set.</p></div>
       <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">MCP server</h3><p><code>validate_layout</code> and <code>floor_plan_svg</code> as tools.</p></div>
-      <div class="card"><span class="tag">next</span><h3 style="margin-top:10px">3D renders</h3><p>Layout JSON to a Blender scene to a walkthrough video.</p></div>
+      <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">3D renders</h3><p>Layout JSON to a glTF model to a Blender walkthrough video. <a href="viewer.html">Try the viewer.</a></p></div>
       <div class="card"><span class="tag">planned</span><h3 style="margin-top:10px">Richer inputs</h3><p>Photo to dimensions, voice, video to 3D reconstruction.</p></div>
     </div>
   </div>

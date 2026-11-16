@@ -6,6 +6,7 @@ Run:  python3 mcp_server.py
 Tools:
   validate_layout   check a layout JSON against the safety and design rules
   floor_plan_svg    draw a layout JSON as an SVG floor plan
+  layout_to_gltf    build a 3D model (glTF 2.0) of the room
   get_layout_schema the JSON Schema a layout must follow
   list_references   the skill's reference files and example layouts
   read_reference    read one of those files
@@ -22,6 +23,7 @@ SKILL = HERE.parent
 sys.path.insert(0, str(HERE))
 import check_layout as cl  # noqa: E402
 import floor_plan_svg as svg  # noqa: E402
+import layout_to_gltf as gl  # noqa: E402
 
 SERVER_INFO = {"name": "residential-space-designer", "version": "1.2.0"}  # kept equal to .claude-plugin/plugin.json by the tests
 PROTOCOLS = ["2025-06-18", "2025-03-26", "2024-11-05"]
@@ -66,6 +68,26 @@ TOOLS = [
             "properties": {
                 "layout": LAYOUT_ARG,
                 "state": {"type": "string", "description": "Which state to draw, e.g. \"day\" or \"night\"."},
+            },
+            "required": ["layout"],
+        },
+        "annotations": {"readOnlyHint": True, "openWorldHint": False},
+    },
+    {
+        "name": "layout_to_gltf",
+        "title": "Build a 3D model",
+        "description": (
+            "Turn a room layout into a 3D model: glTF 2.0 JSON with the data embedded, so it can be saved "
+            "as a .gltf file and opened in Blender, a web glTF viewer or an OS 3D viewer. Walls are cut "
+            "around doors and windows, every element is a coloured box at its real height, and an 'entry' "
+            "node marks where to stand inside the door. No ceiling, so it can be viewed from above. "
+            "scripts/blender_walkthrough.py renders a still or walkthrough video from it."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "layout": LAYOUT_ARG,
+                "state": {"type": "string", "description": "Which state to build, e.g. \"day\" or \"night\"."},
             },
             "required": ["layout"],
         },
@@ -152,6 +174,21 @@ def floor_plan_svg(args):
         raise ToolError(f"layout has a malformed field ({type(e).__name__}: {e}); see get_layout_schema")
 
 
+def layout_to_gltf(args):
+    layout = _layout(args)
+    room = layout.get("room")
+    if not isinstance(room, dict) or not all(isinstance(room.get(k), (int, float)) for k in ("width", "depth")):
+        raise ToolError("layout.room needs numeric width and depth")
+    state = args.get("state")
+    if state and state not in (layout.get("states") or []):
+        raise ToolError(f"unknown state {state!r}; this layout has {layout.get('states') or 'no states'}")
+    layout.setdefault("elements", [])
+    try:
+        return gl.to_gltf_text(*gl.build(layout, state))
+    except (KeyError, TypeError, ValueError) as e:
+        raise ToolError(f"layout has a malformed field ({type(e).__name__}: {e}); see get_layout_schema")
+
+
 def get_layout_schema(args):
     return (SKILL / "templates" / "layout.schema.json").read_text()
 
@@ -173,6 +210,7 @@ def read_reference(args):
 HANDLERS = {
     "validate_layout": validate_layout,
     "floor_plan_svg": floor_plan_svg,
+    "layout_to_gltf": layout_to_gltf,
     "get_layout_schema": get_layout_schema,
     "list_references": list_references,
     "read_reference": read_reference,
@@ -199,7 +237,8 @@ def handle(msg):
             "serverInfo": SERVER_INFO,
             "instructions": (
                 "Tools for designing homes room by room. Get the layout format from get_layout_schema, "
-                "write the layout, run validate_layout until it has no errors, then draw it with floor_plan_svg. "
+                "write the layout, run validate_layout until it has no errors, then draw it with floor_plan_svg "
+                "or build a 3D model with layout_to_gltf. "
                 "Design guidance lives in the references (list_references / read_reference)."
             ),
         })

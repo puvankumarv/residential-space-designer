@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- **3D models** (`scripts/layout_to_gltf.py`, standard-library Python): any layout becomes a glTF 2.0 model (.glb or .gltf) with walls cut around doors and windows, glass, every element at its real size and height, and an `entry` node just inside the door.
+- **Blender walkthroughs** (`scripts/blender_walkthrough.py`): renders the model as a still or MP4, orbiting from above or standing in the doorway. Tested with Blender 5.0 (bpy 5.0.1).
+- **MCP:** new `layout_to_gltf` tool.
+- **Website:** a [3D viewer](https://puvankumarv.github.io/residential-space-designer/viewer.html) for the example rooms or your own .glb.
+
 ## v1.2.0 (2026-11-15)
 
 - **MCP server** (`scripts/mcp_server.py`, standard-library Python): `validate_layout`, `floor_plan_svg`, `get_layout_schema`, `list_references` and `read_reference` tools. The Claude Code plugin registers it through `.mcp.json`; other MCP clients can point at the script.

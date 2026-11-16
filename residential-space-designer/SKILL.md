@@ -62,7 +62,7 @@ Ask only for what is missing and actually matters. Use the intake questions in `
 5. **Zone** the room. In shared rooms, give each zone an owner and keep the centre or the main route open.
 6. **Fill vertical surfaces with storage** using `storage-modules.md`.
 7. **Plan services**: outlets, lighting, water, drainage, ventilation and AC (`services.md`).
-8. **Safety check** against `safety.md` and the module's rules. If the `validate_layout` MCP tool is available, call it with the layout; otherwise, if you can execute code, run `python3 scripts/check_layout.py layout.json --plan`. Fix every `ERROR` before presenting. `floor_plan_svg` (MCP) or `python3 scripts/floor_plan_svg.py layout.json` draws the plan as an SVG.
+8. **Safety check** against `safety.md` and the module's rules. If the `validate_layout` MCP tool is available, call it with the layout; otherwise, if you can execute code, run `python3 scripts/check_layout.py layout.json --plan`. Fix every `ERROR` before presenting. `floor_plan_svg` (MCP) or `python3 scripts/floor_plan_svg.py layout.json` draws the plan as an SVG. For a 3D view, `layout_to_gltf` (MCP) or `python3 scripts/layout_to_gltf.py layout.json room.glb` builds a glTF model, and `scripts/blender_walkthrough.py` renders it as a still or walkthrough video.
 9. **Present** the deliverables below.
 
 ## Deliverables

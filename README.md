@@ -19,7 +19,7 @@
 
 You give it dimensions, photos, a floor plan or a spoken description. For each room it produces:
 - a design brief and zone plan,
-- a layout JSON (`templates/layout.schema.json`) that the checker validates and a Blender stage can render,
+- a layout JSON (`templates/layout.schema.json`) that the checker validates and that can be exported to 3D and rendered in Blender,
 - an ASCII floor plan, a bill of materials and safety notes,
 - a zone-by-zone reveal script that doubles as the camera path for a walkthrough video.
 
@@ -36,7 +36,9 @@ For a whole home it first makes a **home plan** (rooms, adjacency, circulation),
 | `residential-space-designer/templates/` | Layout JSON schema, intake questions and brief, BOM |
 | `residential-space-designer/scripts/check_layout.py` | Layout checker, standard-library Python |
 | `residential-space-designer/scripts/floor_plan_svg.py` | Draws a layout as an SVG floor plan |
-| `residential-space-designer/scripts/mcp_server.py` | MCP server exposing the checker, the SVG plan and the references as tools |
+| `residential-space-designer/scripts/mcp_server.py` | MCP server exposing the checker, the SVG plan, the 3D model and the references as tools |
+| `residential-space-designer/scripts/layout_to_gltf.py` | Turns a layout into a 3D model (glTF 2.0) |
+| `residential-space-designer/scripts/blender_walkthrough.py` | Renders that model as a still or walkthrough video in Blender |
 | `.mcp.json` | Registers the MCP server when the plugin is installed |
 | `residential-space-designer/examples/` | Twins' loft bedroom, galley kitchen, compact bathroom, studio apartment |
 | `residential-space-designer/evals/` | Test scenarios, generated layouts and results |
@@ -87,12 +89,13 @@ Then describe your room or home ("my twins share a 3.4 × 3.4 m room…", "plan 
 
 ## MCP server
 
-The plugin starts a small MCP server (standard-library Python, no install) with five tools:
+The plugin starts a small MCP server (standard-library Python, no install) with six tools:
 
 | Tool | What it does |
 |---|---|
 | `validate_layout` | Checks a layout and returns `errors`, `warnings`, `ok`, and ASCII plans if asked |
 | `floor_plan_svg` | Draws a layout as an SVG floor plan, one state at a time |
+| `layout_to_gltf` | Builds a 3D model of the room as glTF 2.0 JSON |
 | `get_layout_schema` | Returns the layout JSON Schema |
 | `list_references` | Lists the room modules, regional modules, rules and examples |
 | `read_reference` | Reads one of those files |
@@ -111,6 +114,30 @@ Installed through the Claude Code plugin, it starts by itself. For other MCP cli
   }
 }
 ```
+
+## 3D model and walkthrough video
+
+Turn any layout into a 3D model (standard-library Python):
+
+```bash
+python3 residential-space-designer/scripts/layout_to_gltf.py residential-space-designer/examples/twins-offset-loft.json room.glb
+```
+
+The model has the floor, walls cut around doors and windows, glass in the windows, and every element as a coloured box at its real size and height. There is no ceiling, so you can look in from above. It opens in Blender, Windows 3D Viewer, macOS Quick Look, or the [3D viewer on the website](https://puvankumarv.github.io/residential-space-designer/viewer.html).
+
+Render it with Blender (or `pip install bpy` on Python 3.11):
+
+```bash
+blender -b -P residential-space-designer/scripts/blender_walkthrough.py -- room.glb orbit.mp4
+blender -b -P residential-space-designer/scripts/blender_walkthrough.py -- room.glb walk.mp4 --mode walk
+blender -b -P residential-space-designer/scripts/blender_walkthrough.py -- room.glb view.png --still
+```
+
+`--mode orbit` (default) circles the room from above. `--mode walk` stands at eye height just inside the door and looks around. `--engine cycles` gives realistic lighting but renders slowly; the default Workbench engine takes seconds.
+
+| Orbit view | Standing in the doorway |
+|---|---|
+| ![Twins' loft room from above, rendered in Blender](docs/images/twins-offset-loft-3d.jpg) | ![Twins' loft room at eye height from the door](docs/images/twins-offset-loft-walk.jpg) |
 
 ## Check a layout
 
@@ -143,7 +170,7 @@ Design patterns were studied from public renovation videos and written up in our
 
 1. ~~Blind test of the skill on the scenarios in `evals/scenarios.md`.~~ Done in v1.1.0.
 2. ~~MCP v1: `validate_layout` and `floor_plan_svg` tools.~~ Done in v1.2.0.
-3. Blender stage via blender-orchestrator: layout JSON to scene to walkthrough video.
+3. ~~Blender stage: layout JSON to scene to walkthrough video.~~ First version done: glTF export, Blender stills and videos, web viewer. Next: real furniture shapes and materials instead of boxes.
 4. Inputs: photo to dimensions, voice (Whisper), video to 3D reconstruction.
 5. Multi-room home layouts in a single file.
 

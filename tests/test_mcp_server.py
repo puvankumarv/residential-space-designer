@@ -45,7 +45,7 @@ class TestProtocol(unittest.TestCase):
         self.assertEqual(init["protocolVersion"], "2025-06-18")
         self.assertIn("tools", init["capabilities"])
         names = {t["name"] for t in replies[1]["result"]["tools"]}
-        self.assertEqual(names, {"validate_layout", "floor_plan_svg", "get_layout_schema",
+        self.assertEqual(names, {"validate_layout", "floor_plan_svg", "layout_to_gltf", "get_layout_schema",
                                  "list_references", "read_reference"})
         self.assertEqual(replies[2]["result"], {})
 
@@ -106,6 +106,14 @@ class TestTools(unittest.TestCase):
         root = ET.fromstring(res["content"][0]["text"])  # well-formed XML
         self.assertTrue(root.tag.endswith("svg"))
         self.assertIn("day", res["content"][0]["text"])
+
+    def test_layout_to_gltf(self):
+        res = call("layout_to_gltf", {"layout": example("studio-apartment.json"), "state": "day"})
+        self.assertFalse(res["isError"])
+        g = json.loads(res["content"][0]["text"])
+        self.assertEqual(g["asset"]["version"], "2.0")
+        self.assertTrue(g["buffers"][0]["uri"].startswith("data:application/octet-stream;base64,"))
+        self.assertTrue(call("layout_to_gltf", {"layout": example("studio-apartment.json"), "state": "x"})["isError"])
 
     def test_floor_plan_unknown_state(self):
         res = call("floor_plan_svg", {"layout": example("studio-apartment.json"), "state": "noon"})
