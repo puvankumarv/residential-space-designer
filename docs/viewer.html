@@ -62,17 +62,17 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);f
   <p class="lead">Every layout the skill designs can be turned into a 3D model. These are the shipped examples, each one checked against the safety and design rules first. Drag to orbit, scroll or pinch to zoom. The ceiling is left off so you can look in.</p>
 
   <div class="bar" role="group" aria-label="Choose a room">
-    <button class="chip" aria-pressed="true" data-src="models/twins-offset-loft.glb" data-note="Twins' room, 3.4 × 3.4 m: offset L-loft with a desk and wardrobe underneath.">Twins' loft room</button>
-    <button class="chip" aria-pressed="false" data-src="models/studio-apartment.glb" data-note="Studio apartment, 4 × 6.4 m, night state: the wall bed is down.">Studio apartment</button>
-    <button class="chip" aria-pressed="false" data-src="models/galley-kitchen.glb" data-note="Galley kitchen, 2.4 × 3.2 m: two runs with a 1.07 m work aisle.">Galley kitchen</button>
-    <button class="chip" aria-pressed="false" data-src="models/compact-bathroom.glb" data-note="Compact bathroom, 1.7 × 2.5 m: wet zone at the back, dry zone by the door.">Compact bathroom</button>
+    <button class="chip" aria-pressed="true" data-src="models/twins-offset-loft.glb?v=2" data-note="Twins' room, 3.4 × 3.4 m: offset L-loft with a desk and wardrobe underneath.">Twins' loft room</button>
+    <button class="chip" aria-pressed="false" data-src="models/studio-apartment.glb?v=2" data-note="Studio apartment, 4 × 6.4 m, night state: the wall bed is down.">Studio apartment</button>
+    <button class="chip" aria-pressed="false" data-src="models/galley-kitchen.glb?v=2" data-note="Galley kitchen, 2.4 × 3.2 m: two runs with a 1.07 m work aisle.">Galley kitchen</button>
+    <button class="chip" aria-pressed="false" data-src="models/compact-bathroom.glb?v=2" data-note="Compact bathroom, 1.7 × 2.5 m: wet zone at the back, dry zone by the door.">Compact bathroom</button>
     <label class="chip">Open your own .glb<input type="file" accept=".glb,.gltf" id="file"></label>
   </div>
 
   <div class="stage">
-    <model-viewer id="mv" src="models/twins-offset-loft.glb" alt="3D model of the selected room layout"
+    <model-viewer id="mv" src="models/twins-offset-loft.glb?v=2" alt="3D model of the selected room layout"
       camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="1500" rotation-per-second="12deg"
-      camera-orbit="-35deg 32deg auto" field-of-view="30deg" shadow-intensity="0.8" exposure="0.85"
+      camera-orbit="-35deg 32deg auto" field-of-view="30deg" shadow-intensity="0.8" exposure="0.75"
       tone-mapping="aces" interaction-prompt="none"></model-viewer>
   </div>
   <div class="caption"><span id="note">Twins' room, 3.4 × 3.4 m: offset L-loft with a desk and wardrobe underneath.</span><span>Floor items are boxes at their real size and height.</span></div>
