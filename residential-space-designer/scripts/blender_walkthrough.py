@@ -124,7 +124,7 @@ def add_camera(scene, mode, lo, hi, top, frames, still):
         if mode == "orbit":
             cam_data.lens = 30
             r = span * 0.95
-            start = math.radians(-60)  # from the south-west corner, like the plans
+            start = math.radians(-135)  # from the south-west corner, so W is on the left as in the plans
             cam.location = (centre.x + r * math.cos(start + turn), centre.y + r * math.sin(start + turn), top + span * 1.45)
             target.location = (centre.x, centre.y, 0.3)
         else:

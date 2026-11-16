@@ -14,6 +14,7 @@ Axes: glTF is Y-up, so layout x → X, height z → Y, and layout y (towards the
 N wall) → −Z. Units stay metres. Standard library only.
 """
 import base64
+import colorsys
 import json
 import struct
 import sys
@@ -30,7 +31,15 @@ WINDOW_H = 1.2         # default window height if the layout gives none [std]
 SKIP = {"route", "niche"}   # routes are rules, not objects; niches are recesses in the wall
 MIN_SIZE = 0.02
 
-FIXED_COLOURS = {"_wall": "#f2efe9", "_floor": "#c8b291", "_glass": "#9cc8e6"}
+FIXED_COLOURS = {"_wall": "#e6e1d8", "_floor": "#a8865f", "_glass": "#8fc1e3"}
+VIVID = 2.2   # the 2D plan pastels look washed out under 3D lighting, so boost saturation
+
+
+def _vivid(hex_colour):
+    r, g, b = (int(hex_colour[i:i + 2], 16) / 255 for i in (1, 3, 5))
+    h, sat, v = colorsys.rgb_to_hsv(r, g, b)
+    r, g, b = colorsys.hsv_to_rgb(h, min(1.0, sat * VIVID), v * 0.9)
+    return "#%02x%02x%02x" % (round(r * 255), round(g * 255), round(b * 255))
 
 
 def _linear(hex_colour, alpha=1.0):
@@ -154,7 +163,7 @@ def build(layout, state=None):
 
     def mesh(key):
         if key not in mesh_for:
-            colour = FIXED_COLOURS.get(key) or FILL.get(key, DEFAULT_FILL)
+            colour = FIXED_COLOURS.get(key) or _vivid(FILL.get(key, DEFAULT_FILL))
             mat = {"name": key.lstrip("_"), "pbrMetallicRoughness": {
                 "baseColorFactor": _linear(colour, 0.35 if key == "_glass" else 1.0),
                 "metallicFactor": 0.0, "roughnessFactor": 0.1 if key == "_glass" else 0.85}}
