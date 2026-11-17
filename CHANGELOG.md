@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.3.0 (2026-11-17)
 
 - **3D models** (`scripts/layout_to_gltf.py`, standard-library Python): any layout becomes a glTF 2.0 model (.glb or .gltf) with walls cut around doors and windows, glass, every element at its real size and height, and an `entry` node just inside the door.
 - **Blender walkthroughs** (`scripts/blender_walkthrough.py`): renders the model as a still or MP4, orbiting from above or standing in the doorway. Tested with Blender 5.0 (bpy 5.0.1).
