@@ -114,6 +114,9 @@ class TestTools(unittest.TestCase):
         self.assertEqual(g["asset"]["version"], "2.0")
         self.assertTrue(g["buffers"][0]["uri"].startswith("data:application/octet-stream;base64,"))
         self.assertTrue(call("layout_to_gltf", {"layout": example("studio-apartment.json"), "state": "x"})["isError"])
+        shaped = json.loads(call("layout_to_gltf", {"layout": example("studio-apartment.json")})["content"][0]["text"])
+        plain = json.loads(call("layout_to_gltf", {"layout": example("studio-apartment.json"), "boxes": True})["content"][0]["text"])
+        self.assertGreater(len(shaped["nodes"]), len(plain["nodes"]))
 
     def test_floor_plan_unknown_state(self):
         res = call("floor_plan_svg", {"layout": example("studio-apartment.json"), "state": "noon"})

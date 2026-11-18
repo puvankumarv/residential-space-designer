@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- **Furniture shapes in 3D** (`scripts/furniture.py`): elements are modelled by type instead of as plain boxes. Beds get a frame, mattress, duvet and pillows at the end nearest a wall, plus a guardrail with a gap by the steps on lofts. Sofas get arms and cushions; cabinets and wardrobes get plinths, doors or drawers and handles (sliding doors on two tracks); counters get stone worktops, a sink bowl and a hob; and there are appliances, sanitaryware, glass shower screens on the open sides, stairs, shelves and pleated curtains. Every part stays inside the element's box, so sizes match what the checker tested.
+- **Materials:** wood, fabric, metal, ceramic, stone and black glass, with metallic and roughness values. An element's `material` field (steel, wood, veneer) picks the frame material.
+- `--boxes` on `layout_to_gltf.py` and `boxes: true` on the MCP `layout_to_gltf` tool keep the old one-box-per-element model.
+
 ## v1.3.0 (2026-11-17)
 
 - **3D models** (`scripts/layout_to_gltf.py`, standard-library Python): any layout becomes a glTF 2.0 model (.glb or .gltf) with walls cut around doors and windows, glass, every element at its real size and height, and an `entry` node just inside the door.

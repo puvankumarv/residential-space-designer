@@ -79,7 +79,9 @@ TOOLS = [
         "description": (
             "Turn a room layout into a 3D model: glTF 2.0 JSON with the data embedded, so it can be saved "
             "as a .gltf file and opened in Blender, a web glTF viewer or an OS 3D viewer. Walls are cut "
-            "around doors and windows, every element is a coloured box at its real height, and an 'entry' "
+            "around doors and windows, every element is shaped by type at its real size (beds, sofas, "
+            "cabinets with doors, counters with worktops, appliances, sanitaryware) in wood, fabric, metal, "
+            "ceramic or stone, and an 'entry' "
             "node marks where to stand inside the door. No ceiling, so it can be viewed from above. "
             "scripts/blender_walkthrough.py renders a still or walkthrough video from it."
         ),
@@ -88,6 +90,7 @@ TOOLS = [
             "properties": {
                 "layout": LAYOUT_ARG,
                 "state": {"type": "string", "description": "Which state to build, e.g. \"day\" or \"night\"."},
+                "boxes": {"type": "boolean", "description": "Draw each element as one plain coloured box instead of a shaped model."},
             },
             "required": ["layout"],
         },
@@ -184,7 +187,7 @@ def layout_to_gltf(args):
         raise ToolError(f"unknown state {state!r}; this layout has {layout.get('states') or 'no states'}")
     layout.setdefault("elements", [])
     try:
-        return gl.to_gltf_text(*gl.build(layout, state))
+        return gl.to_gltf_text(*gl.build(layout, state, boxes=args.get("boxes") is True))
     except (KeyError, TypeError, ValueError) as e:
         raise ToolError(f"layout has a malformed field ({type(e).__name__}: {e}); see get_layout_schema")
 

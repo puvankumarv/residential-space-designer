@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Turn a layout JSON into a 3D model (glTF 2.0) of the room.
 
-Usage: python3 layout_to_gltf.py layout.json out.glb [--state night]
+Usage: python3 layout_to_gltf.py layout.json out.glb [--state night] [--boxes]
        python3 layout_to_gltf.py layout.json out.gltf      (text glTF, data embedded)
 
 The model has a floor, walls cut around doors and windows (glass in the
-windows), and every element as a coloured box at its real position and height.
+windows), and every element at its real position and size, shaped by type
+(scripts/furniture.py): beds with mattress and pillows, sofas with arms and
+cushions, cabinets with doors and handles, counters with worktops, and so on,
+in wood, fabric, metal, ceramic or stone. --boxes draws each element as one
+plain coloured box instead.
 There is no ceiling, so a viewer can look in from above. Open the file in
 Blender (File → Import → glTF), Windows 3D Viewer, macOS Quick Look, or any
 web glTF viewer; scripts/blender_walkthrough.py renders a video from it.
@@ -22,6 +26,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import check_layout as cl  # noqa: E402
+import furniture  # noqa: E402
 from floor_plan_svg import FILL, DEFAULT_FILL  # noqa: E402
 
 WALL_T = 0.12          # wall thickness drawn outside the room
@@ -67,7 +72,7 @@ def _cube():
 
 def _box(x0, x1, y0, y1, z0, z1):
     """Layout-space box → glTF (translation, scale)."""
-    w, d, h = max(x1 - x0, MIN_SIZE), max(y1 - y0, MIN_SIZE), max(z1 - z0, MIN_SIZE)
+    w, d, h = max(x1 - x0, 0.001), max(y1 - y0, 0.001), max(z1 - z0, 0.001)
     return [round((x0 + x1) / 2, 4), round((z0 + z1) / 2, 4), round(-(y0 + y1) / 2, 4)], [round(w, 4), round(h, 4), round(d, 4)]
 
 
@@ -120,8 +125,12 @@ def _entry(room, step_in=0.6):
             "W": ((step_in, mid), (1, 0)), "E": ((W - step_in, mid), (-1, 0))}[o["wall"]]
 
 
-def build(layout, state=None):
-    """Return (gltf_dict, binary_buffer) for one state of the layout."""
+def build(layout, state=None, boxes=False):
+    """Return (gltf_dict, binary_buffer) for one state of the layout.
+
+    Each element is a node at the centre of its box with extras {id, type, size};
+    its shaped parts are child nodes, or with boxes=True the node itself is one box.
+    """
     if state is None and layout.get("states"):
         state = layout["states"][0]
     view = cl.apply_state(layout, state)
@@ -163,27 +172,38 @@ def build(layout, state=None):
 
     def mesh(key):
         if key not in mesh_for:
-            colour = FIXED_COLOURS.get(key) or _vivid(FILL.get(key, DEFAULT_FILL))
-            mat = {"name": key.lstrip("_"), "pbrMetallicRoughness": {
+            metal, rough = 0.0, 0.85
+            if key in furniture.MATERIALS:
+                colour, metal, rough = furniture.MATERIALS[key]
+            elif ":" in key:   # paint:<type> or fabric:<type> take the type's plan colour
+                kind, typ = key.split(":", 1)
+                colour, rough = _vivid(FILL.get(typ, DEFAULT_FILL)), 0.55 if kind == "paint" else 0.95
+            else:
+                colour = FIXED_COLOURS.get(key) or _vivid(FILL.get(key, DEFAULT_FILL))
+            if key == "_glass":
+                rough = 0.1
+            mat = {"name": key.lstrip("_").replace(":", "_"), "pbrMetallicRoughness": {
                 "baseColorFactor": _linear(colour, 0.35 if key == "_glass" else 1.0),
-                "metallicFactor": 0.0, "roughnessFactor": 0.1 if key == "_glass" else 0.85}}
+                "metallicFactor": metal, "roughnessFactor": rough}}
             if key == "_glass":
                 mat["alphaMode"] = "BLEND"
                 mat["doubleSided"] = True
             gltf["materials"].append(mat)
-            gltf["meshes"].append({"name": key.lstrip("_"), "primitives": [{
+            gltf["meshes"].append({"name": mat["name"], "primitives": [{
                 "attributes": {"POSITION": 0, "NORMAL": 1}, "indices": 2,
                 "material": len(gltf["materials"]) - 1}]})
             mesh_for[key] = len(gltf["meshes"]) - 1
         return mesh_for[key]
 
-    def node(name, key, box, extras=None):
+    def node(name, key, box, extras=None, top=True):
         t, s = _box(*box)
         n = {"name": name, "mesh": mesh(key), "translation": t, "scale": s}
         if extras:
             n["extras"] = extras
         gltf["nodes"].append(n)
-        gltf["scenes"][0]["nodes"].append(len(gltf["nodes"]) - 1)
+        if top:
+            gltf["scenes"][0]["nodes"].append(len(gltf["nodes"]) - 1)
+        return len(gltf["nodes"]) - 1
 
     node("floor", "_floor", (-WALL_T, W + WALL_T, -WALL_T, D + WALL_T, -FLOOR_T, 0))
     walls, glass = _wall_boxes(room)
@@ -198,13 +218,28 @@ def build(layout, state=None):
         gltf["nodes"].append({"name": "entry", "translation": [round(ex, 4), 1.6, round(-ey, 4)],
                               "extras": {"facing": [fx, fy]}})
         gltf["scenes"][0]["nodes"].append(len(gltf["nodes"]) - 1)
-    for e in view.get("elements", []):
+    elements = view.get("elements", [])
+    for e in elements:
         if e["type"] in SKIP:
             continue
         x0, x1, y0, y1 = cl.rect(e)
-        z0 = e.get("z", 0)
-        node(e.get("label") or e["id"], e["type"], (x0, x1, y0, y1, z0, z0 + e.get("h", MIN_SIZE)),
-             {"id": e["id"], "type": e["type"]})
+        z0 = e.get("z", 0) or 0
+        box = (x0, x1, y0, y1, z0, z0 + e.get("h", MIN_SIZE))
+        extras = {"id": e["id"], "type": e["type"], "size": [e["w"], e.get("h", MIN_SIZE), e["d"]]}
+        shaped = None if boxes else furniture.parts(e, room, elements)
+        if not shaped:
+            node(e.get("label") or e["id"], e["type"], box, extras)
+            continue
+        centre, _ = _box(*box)
+        kids = []
+        for k, (mat, b) in enumerate(shaped):
+            i = node(f"{e['id']}_{k}", mat, b, top=False)
+            t = gltf["nodes"][i]["translation"]
+            gltf["nodes"][i]["translation"] = [round(t[j] - centre[j], 4) for j in range(3)]
+            kids.append(i)
+        gltf["nodes"].append({"name": e.get("label") or e["id"], "translation": centre,
+                              "children": kids, "extras": extras})
+        gltf["scenes"][0]["nodes"].append(len(gltf["nodes"]) - 1)
     return gltf, bytes(buf)
 
 
@@ -248,7 +283,7 @@ def main():
         sys.exit(f"{src} is not valid JSON: {e.msg} (line {e.lineno}, column {e.colno})")
     if state and state not in (layout.get("states") or []):
         sys.exit(f"Unknown state {state!r}; this layout has {layout.get('states') or 'no states'}")
-    gltf, buf = build(layout, state)
+    gltf, buf = build(layout, state, boxes="--boxes" in sys.argv)
     if dst.endswith(".gltf"):
         Path(dst).write_text(to_gltf_text(gltf, buf))
     else:

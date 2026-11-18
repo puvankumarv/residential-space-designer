@@ -123,7 +123,7 @@ Turn any layout into a 3D model (standard-library Python):
 python3 residential-space-designer/scripts/layout_to_gltf.py residential-space-designer/examples/twins-offset-loft.json room.glb
 ```
 
-The model has the floor, walls cut around doors and windows, glass in the windows, and every element as a coloured box at its real size and height. There is no ceiling, so you can look in from above. It opens in Blender, Windows 3D Viewer, macOS Quick Look, or the [3D viewer on the website](https://puvankumarv.github.io/residential-space-designer/viewer.html).
+The model has the floor, walls cut around doors and windows, glass in the windows, and every element at its real size, shaped by type: beds with a mattress, duvet and pillows (and a guardrail on lofts), sofas with arms and cushions, cabinets and wardrobes with doors, drawers and handles, counters with stone worktops, a sink bowl and a hob, appliances, sanitaryware, stairs, shelves and pleated curtains. Materials are wood, fabric, metal, ceramic, stone and glass. Add `--boxes` for one plain box per element. There is no ceiling, so you can look in from above. It opens in Blender, Windows 3D Viewer, macOS Quick Look, or the [3D viewer on the website](https://puvankumarv.github.io/residential-space-designer/viewer.html).
 
 Render it with Blender (or `pip install bpy` on Python 3.11):
 
@@ -170,7 +170,7 @@ Design patterns were studied from public renovation videos and written up in our
 
 1. ~~Blind test of the skill on the scenarios in `evals/scenarios.md`.~~ Done in v1.1.0.
 2. ~~MCP v1: `validate_layout` and `floor_plan_svg` tools.~~ Done in v1.2.0.
-3. ~~Blender stage: layout JSON to scene to walkthrough video.~~ First version done in v1.3.0: glTF export, Blender stills and videos, web viewer. Next: real furniture shapes and materials instead of boxes.
+3. ~~Blender stage: layout JSON to scene to walkthrough video.~~ First version done in v1.3.0: glTF export, Blender stills and videos, web viewer. Furniture shapes and materials added after v1.3.0.
 4. Inputs: photo to dimensions, voice (Whisper), video to 3D reconstruction.
 5. Multi-room home layouts in a single file.
 
