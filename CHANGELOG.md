@@ -4,6 +4,14 @@
 
 - **Furniture shapes in 3D** (`scripts/furniture.py`): elements are modelled by type instead of as plain boxes. Beds get a frame, mattress, duvet and pillows at the end nearest a wall, plus a guardrail with a gap by the steps on lofts. Sofas get arms and cushions; cabinets and wardrobes get plinths, doors or drawers and handles (sliding doors on two tracks); counters get stone worktops, a sink bowl and a hob; and there are appliances, sanitaryware, glass shower screens on the open sides, stairs, shelves and pleated curtains. Every part stays inside the element's box, so sizes match what the checker tested.
 - **Materials:** wood, fabric, metal, ceramic, stone and black glass, with metallic and roughness values. An element's `material` field (steel, wood, veneer) picks the frame material.
+- **MCP server v2**, after researching the 2025-11-25 and 2026-07-28 MCP revisions and other design MCP servers (notes in `interior-design-research/mcp_research.md`):
+  - New tools: `room_metrics`, `edit_layout` (apply fixes and re-check in one call), `compare_layouts`, and `floor_plan_png`, a picture of the plan the model can see, with a numbered legend (`scripts/plan_png.py`, standard library).
+  - `validate_layout`, `room_metrics`, `edit_layout` and `compare_layouts` return `structuredContent` with an `outputSchema`.
+  - Resources (`rsd://skill/<path>`) with a resource template, prompts (`design_room`, `review_layout`) that embed the right room and regional modules, and completions.
+  - Dual-era protocol: `initialize` for 2024-11-05 to 2025-11-25, and stateless 2026-07-28 with `server/discover`, per-request `_meta`, `resultType` and cache hints. Server icon, title and description.
+  - The MCP server is now declared in `.claude-plugin/plugin.json`. The root `.mcp.json` was removed because Claude Code also loaded it as a project server inside a clone, where it failed to start.
+- **Metrics CLI:** `python3 scripts/layout_tools.py metrics layout.json` and `compare a.json b.json`.
+- 3D shapes for `bathtub`, `closet` and `dryer`; elements whose `front` lists several sides use the first.
 - `--boxes` on `layout_to_gltf.py` and `boxes: true` on the MCP `layout_to_gltf` tool keep the old one-box-per-element model.
 
 ## v1.3.0 (2026-11-17)

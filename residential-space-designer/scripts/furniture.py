@@ -51,8 +51,11 @@ def _wall_gaps(e, room):
 
 
 def _front(e, room):
-    if e.get("front") in ("+x", "-x", "+y", "-y"):
-        return e["front"]
+    f = e.get("front")
+    if isinstance(f, list) and f:   # several open sides: model the first one as the front
+        f = f[0]
+    if f in ("+x", "-x", "+y", "-y"):
+        return f
     gaps = _wall_gaps(e, room)
     back = min(gaps, key=gaps.get)
     return {"-x": "+x", "+x": "-x", "-y": "+y", "+y": "-y"}[back]
@@ -239,7 +242,7 @@ def _appliance(e, room, out):
         out.append(("black_glass", fr.box(GAP, A - GAP, body_b, B - HANDLE_T, H * 0.1, H * 0.85)))
         out.append(("metal", fr.box(A * 0.2, A * 0.8, B - HANDLE_T, B, H * 0.86, H * 0.88)))
     else:  # washer, dishwasher
-        win = min(A, H) * (0.55 if t == "washer" else 0.0)
+        win = min(A, H) * (0.55 if t in ("washer", "dryer") else 0.0)
         if win:
             zc = H * 0.45
             out.append(("black_glass", fr.box(A / 2 - win / 2, A / 2 + win / 2, body_b, B - HANDLE_T, zc - win / 2, zc + win / 2)))
@@ -491,12 +494,12 @@ SHAPES = {
     "sofa": _sofa, "seat": _sofa, "swing": _sofa,
     "chair": _chair,
     "desk": _table, "table": _table, "coffee_table": _table,
-    "wardrobe": _cabinet, "cabinet": _cabinet, "storage": _cabinet, "drawers": _cabinet, "pooja_unit": _cabinet,
+    "wardrobe": _cabinet, "closet": _cabinet, "cabinet": _cabinet, "storage": _cabinet, "drawers": _cabinet, "pooja_unit": _cabinet,
     "tv_unit": _tv_unit,
     "shelf": _shelf,
     "counter": _counter, "island": _counter, "sink": _counter, "cooktop": _counter,
-    "fridge": _appliance, "oven": _appliance, "washer": _appliance, "dishwasher": _appliance,
-    "toilet": _toilet, "vanity": _vanity, "basin": _basin, "shower": _shower, "bath": _bath,
+    "fridge": _appliance, "oven": _appliance, "washer": _appliance, "dryer": _appliance, "dishwasher": _appliance,
+    "toilet": _toilet, "vanity": _vanity, "basin": _basin, "shower": _shower, "bath": _bath, "bathtub": _bath,
     "stairs": _steps, "steps": _steps, "ladder": _ladder,
     "curtain": _curtain, "board": _board, "hooks": _hooks, "door": _door,
 }

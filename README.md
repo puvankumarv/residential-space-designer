@@ -36,10 +36,11 @@ For a whole home it first makes a **home plan** (rooms, adjacency, circulation),
 | `residential-space-designer/templates/` | Layout JSON schema, intake questions and brief, BOM |
 | `residential-space-designer/scripts/check_layout.py` | Layout checker, standard-library Python |
 | `residential-space-designer/scripts/floor_plan_svg.py` | Draws a layout as an SVG floor plan |
-| `residential-space-designer/scripts/mcp_server.py` | MCP server exposing the checker, the SVG plan, the 3D model and the references as tools |
+| `residential-space-designer/scripts/mcp_server.py` | MCP server: checker, metrics, edits, comparison, PNG and SVG plans, 3D model, references as tools, resources and prompts |
+| `residential-space-designer/scripts/layout_tools.py`, `plan_png.py` | Room metrics, layout edits, option comparison, and the PNG plan renderer |
 | `residential-space-designer/scripts/layout_to_gltf.py` | Turns a layout into a 3D model (glTF 2.0) |
 | `residential-space-designer/scripts/blender_walkthrough.py` | Renders that model as a still or walkthrough video in Blender |
-| `.mcp.json` | Registers the MCP server when the plugin is installed |
+| `.claude-plugin/plugin.json` `mcpServers` | Registers the MCP server when the plugin is installed |
 | `residential-space-designer/examples/` | Twins' loft bedroom, galley kitchen, compact bathroom, studio apartment |
 | `residential-space-designer/evals/` | Test scenarios, generated layouts and results |
 | `docs/` | Project website (GitHub Pages) |
@@ -89,16 +90,29 @@ Then describe your room or home ("my twins share a 3.4 × 3.4 m room…", "plan 
 
 ## MCP server
 
-The plugin starts a small MCP server (standard-library Python, no install) with six tools:
+The plugin starts a small MCP server (standard-library Python, no install) with ten tools:
 
 | Tool | What it does |
 |---|---|
-| `validate_layout` | Checks a layout and returns `errors`, `warnings`, `ok`, and ASCII plans if asked |
-| `floor_plan_svg` | Draws a layout as an SVG floor plan, one state at a time |
-| `layout_to_gltf` | Builds a 3D model of the room as glTF 2.0 JSON |
+| `validate_layout` | Checks a layout and returns `errors`, `warnings`, `ok`, and ASCII plans if asked (structured output) |
+| `room_metrics` | Free floor (m² and %), storage volume, hanging rail, sleeping places, seats, worktop run, glazing ratio against the IRC 8% rule (structured) |
+| `edit_layout` | Moves, resizes, rotates, adds, removes or changes elements and re-checks in the same call (structured) |
+| `compare_layouts` | Ranks 2 to 6 options by errors, warnings, free floor and storage, with a one-line summary (structured) |
+| `floor_plan_png` | A PNG picture of the plan with a numbered legend, so Claude can look at what it designed |
+| `floor_plan_svg` | Draws a layout as a labelled SVG floor plan, one state at a time |
+| `layout_to_gltf` | Builds a 3D model of the room as glTF 2.0 JSON, furniture shaped by type |
 | `get_layout_schema` | Returns the layout JSON Schema |
 | `list_references` | Lists the room modules, regional modules, rules and examples |
 | `read_reference` | Reads one of those files |
+
+It also offers:
+
+- **Resources:** every reference, template and example as `rsd://skill/<path>`, so you can attach them with `@` in Claude Code.
+- **Prompts:** `design_room` (room type, size, occupants, region, brief) and `review_layout`. Claude Code shows them as slash commands. `design_room` attaches the matching room module, the regional module and the safety rules.
+- **Completions** for prompt arguments (room types, regions) and resource paths.
+- **Both protocol eras:** the `initialize` handshake (2024-11-05 to 2025-11-25) and the stateless 2026-07-28 revision with `server/discover`. Claude Code connects with 2026-07-28.
+
+![PNG plan of the studio apartment at night, drawn by floor_plan_png](docs/images/studio-apartment-plan.png)
 
 ![SVG floor plan of the twins' offset-loft example, drawn by floor_plan_svg](docs/images/twins-offset-loft.svg)
 
@@ -169,7 +183,7 @@ Design patterns were studied from public renovation videos and written up in our
 ## Roadmap
 
 1. ~~Blind test of the skill on the scenarios in `evals/scenarios.md`.~~ Done in v1.1.0.
-2. ~~MCP v1: `validate_layout` and `floor_plan_svg` tools.~~ Done in v1.2.0.
+2. ~~MCP v1: `validate_layout` and `floor_plan_svg` tools.~~ Done in v1.2.0. MCP v2 (metrics, edits, option comparison, PNG plans, resources, prompts, 2026-07-28 protocol) added after v1.3.0.
 3. ~~Blender stage: layout JSON to scene to walkthrough video.~~ First version done in v1.3.0: glTF export, Blender stills and videos, web viewer. Furniture shapes and materials added after v1.3.0.
 4. Inputs: photo to dimensions, voice (Whisper), video to 3D reconstruction.
 5. Multi-room home layouts in a single file.

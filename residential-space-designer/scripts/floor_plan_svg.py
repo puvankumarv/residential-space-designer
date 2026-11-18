@@ -25,7 +25,8 @@ FILL = {
     "wardrobe": "#e2d5ec", "cabinet": "#e2d5ec", "shelf": "#ece4f2", "storage": "#e2d5ec",
     "counter": "#f0dcc9", "sink": "#cfe6ec", "cooktop": "#f2c9c0", "oven": "#f2c9c0",
     "fridge": "#dfe4ea", "dishwasher": "#dfe4ea", "island": "#f0dcc9",
-    "toilet": "#cfe6ec", "basin": "#cfe6ec", "shower": "#cfe6ec", "bath": "#cfe6ec",
+    "toilet": "#cfe6ec", "basin": "#cfe6ec", "shower": "#cfe6ec", "bath": "#cfe6ec", "bathtub": "#cfe6ec", "vanity": "#cfe6ec",
+    "washer": "#dfe4ea", "dryer": "#dfe4ea", "closet": "#e2d5ec",
     "stairs": "#e6e1d6", "steps": "#e6e1d6", "ladder": "#e6e1d6", "platform": "#ede8dd",
     "partition": "#9aa3ad", "pooja_unit": "#f6e2a8",
 }

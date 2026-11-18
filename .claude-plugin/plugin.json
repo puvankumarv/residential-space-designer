@@ -23,5 +23,13 @@
   "skills": [
     "./residential-space-designer"
   ],
+  "mcpServers": {
+    "residential-space-designer": {
+      "command": "python3",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/residential-space-designer/scripts/mcp_server.py"
+      ]
+    }
+  },
   "icon": "./.claude-plugin/icon.png"
 }

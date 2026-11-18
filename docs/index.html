@@ -471,7 +471,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
         <div class="panel" id="p-mcp">
           <ol class="ol">
-            <li><b>With the Claude Code plugin it starts by itself.</b> Tools: <code>validate_layout</code>, <code>floor_plan_svg</code>, <code>layout_to_gltf</code>, <code>get_layout_schema</code>, <code>list_references</code>, <code>read_reference</code>.</li>
+            <li><b>With the Claude Code plugin it starts by itself.</b> Tools: <code>validate_layout</code>, <code>room_metrics</code>, <code>edit_layout</code>, <code>compare_layouts</code>, <code>floor_plan_png</code>, <code>floor_plan_svg</code>, <code>layout_to_gltf</code>, plus the references as tools and <code>rsd://</code> resources, and <code>design_room</code> / <code>review_layout</code> prompts.</li>
             <li><b>Other MCP clients</b> (Claude Desktop, Cursor…): clone the repository, then add this to the client's MCP config
               <div class="code"><button class="copy">Copy</button><pre>{"mcpServers": {"residential-space-designer": {
   "command": "python3",
@@ -529,7 +529,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="road">
       <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">Skill v1</h3><p>Room modules, sourced rules, layout format, checker, examples.</p></div>
       <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">Blind tests</h3><p>Fresh sessions with only the skill, on the scenario set.</p></div>
-      <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">MCP server</h3><p><code>validate_layout</code> and <code>floor_plan_svg</code> as tools.</p></div>
+      <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">MCP server</h3><p>Check, measure, edit, compare and look at layouts; references as resources; design prompts.</p></div>
       <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">3D renders</h3><p>Layout JSON to a glTF model to a Blender walkthrough video. <a href="viewer.html">Try the viewer.</a></p></div>
       <div class="card"><span class="tag">planned</span><h3 style="margin-top:10px">Richer inputs</h3><p>Photo to dimensions, voice, video to 3D reconstruction.</p></div>
     </div>
