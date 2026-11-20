@@ -4,78 +4,75 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Residential Space Designer</title>
-<meta name="description" content="A Claude skill that designs every residential space, from a cramped kids' room to a whole apartment, and checks each layout against building codes and design standards.">
-<meta property="og:title" content="Residential Space Designer: a Claude skill for designing homes">
-<meta property="og:description" content="Describe a room or a whole home. Get a checked layout, a materials list and a walkthrough script.">
+<meta name="description" content="A Claude skill and MCP server that designs every residential space, from a cramped kids' room to a whole apartment, and checks each layout against building codes and design standards.">
+<meta property="og:title" content="Residential Space Designer: design every room, check every layout">
+<meta property="og:description" content="A Claude skill and MCP server. Describe a room or a whole home; get a checked layout, a floor plan and a 3D model.">
 <meta property="og:type" content="website">
+<meta name="theme-color" content="#07090d">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b4532a'/%3E%3Cpath d='M7 25V13l9-6 9 6v12h-6v-7h-6v7z' fill='%23fff'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233d8bff'/%3E%3Cpath d='M7 25V13l9-6 9 6v12h-6v-7h-6v7z' fill='%23fff'/%3E%3C/svg%3E">
+<script>try{var t=localStorage.getItem("rsd-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <style>
 :root{
-  --bg:#f6f3ec; --band:#e4e3d4; --band-2:#efe7dc; --card:#fffdf8; --ink:#2b211c; --ink-2:#5d5048; --ink-3:#8e8177;
-  --line:#ddd4c6; --accent:#a94f2c; --accent-ink:#fff; --accent-soft:#f1dfd3;
-  --grid:rgba(43,33,28,.045); --code-bg:#211a16; --code-ink:#efe7dc; --code-dim:#9d9187; --ok:#3d7a4b; --warn:#a8701c;
-  --dark:#231c18; --dark-ink:#f3ece2; --dark-2:#c7bcb0; --dark-3:#968a7f; --dark-line:#3d342e; --dark-card:#2c241f;
-  --p-floor:#fffdf8; --p-wall:#2b211c; --p-sleep:#e7c3ad; --p-store:#ddd5c7; --p-work:#c8d6df; --p-kit:#d3dcc1; --p-live:#e8dab4; --p-bath:#c5dcdc;
-  --shadow:0 1px 2px rgba(40,25,15,.05),0 18px 40px -18px rgba(60,40,25,.25);
-  --r:18px; --sec:clamp(76px,10vw,136px);
+  --bg:#07090d; --bg-2:#0b0f15; --card:#0e131b; --card-2:#121924; --line:#1b2330; --line-2:#283345;
+  --ink:#e9eef6; --ink-2:#a2acbc; --ink-3:#687488; --accent:#3d8bff; --accent-2:#8ab8ff; --accent-ink:#ffffff;
+  --accent-soft:rgba(61,139,255,.14); --ok:#34d399; --warn:#fbbf24; --err:#f87171;
+  --grid:rgba(110,160,255,.06); --glow:rgba(61,139,255,.35);
+  --code-bg:#0a0e14; --code-ink:#dbe4f2; --code-dim:#6b7689;
+  --p-floor:#0c121b; --p-wall:#cfe0ff; --p-sleep:#4b3d7d; --p-store:#2b3547; --p-work:#1e4a78; --p-kit:#1d5a48; --p-live:#5e4b1e; --p-bath:#1e5561;
+  --p-lab:#e9eef6;
+  --shadow:0 30px 80px -30px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.02);
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#14110f; --band:#1c1d18; --band-2:#1d1814; --card:#1e1a17; --ink:#f2eae0; --ink-2:#c0b5a9; --ink-3:#8d8278;
-    --line:#332c27; --accent:#e2825a; --accent-ink:#1b120d; --accent-soft:#3a2519;
-    --grid:rgba(242,234,224,.04); --code-bg:#0e0c0b; --code-ink:#efe7dc; --code-dim:#8d8278; --ok:#82c290; --warn:#e3b360;
-    --dark:#0d0b0a; --dark-card:#191512; --dark-line:#2c2622;
-    --p-floor:#24201c; --p-wall:#f2eae0; --p-sleep:#7c4b36; --p-store:#4a443d; --p-work:#3a505f; --p-kit:#4b593b; --p-live:#6a5b33; --p-bath:#34575a;
-    --shadow:0 1px 2px rgba(0,0,0,.35),0 18px 40px -18px rgba(0,0,0,.6);
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#14110f; --band:#1c1d18; --band-2:#1d1814; --card:#1e1a17; --ink:#f2eae0; --ink-2:#c0b5a9; --ink-3:#8d8278;
-  --line:#332c27; --accent:#e2825a; --accent-ink:#1b120d; --accent-soft:#3a2519;
-  --grid:rgba(242,234,224,.04); --code-bg:#0e0c0b; --code-ink:#efe7dc; --code-dim:#8d8278; --ok:#82c290; --warn:#e3b360;
-  --dark:#0d0b0a; --dark-card:#191512; --dark-line:#2c2622;
-  --p-floor:#24201c; --p-wall:#f2eae0; --p-sleep:#7c4b36; --p-store:#4a443d; --p-work:#3a505f; --p-kit:#4b593b; --p-live:#6a5b33; --p-bath:#34575a;
-  --shadow:0 1px 2px rgba(0,0,0,.35),0 18px 40px -18px rgba(0,0,0,.6);
+:root[data-theme="light"]{
+  --bg:#ffffff; --bg-2:#f6f8fb; --card:#ffffff; --card-2:#f3f6fa; --line:#e5eaf1; --line-2:#d3dbe6;
+  --ink:#0b1220; --ink-2:#4a5568; --ink-3:#8492a6; --accent:#1f6feb; --accent-2:#1f6feb; --accent-ink:#ffffff;
+  --accent-soft:rgba(31,111,235,.10); --ok:#059669; --warn:#b7791f; --err:#dc2626;
+  --grid:rgba(31,111,235,.07); --glow:rgba(31,111,235,.18);
+  --code-bg:#0b1220; --code-ink:#dbe4f2; --code-dim:#7d8aa0;
+  --p-floor:#ffffff; --p-wall:#0b1220; --p-sleep:#e4dcfa; --p-store:#e3e8ef; --p-work:#d3e4fb; --p-kit:#d4efe5; --p-live:#f5ebcf; --p-bath:#d2eef1;
+  --p-lab:#0b1220;
+  --shadow:0 30px 70px -30px rgba(15,30,60,.28),0 0 0 1px rgba(15,30,60,.04);
+  color-scheme:light;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:72px}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth;scroll-padding-top:110px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Geist,Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-::selection{background:var(--accent);color:var(--accent-ink)}
-.wrap{max-width:1180px;margin:0 auto;padding-inline:32px}
-h1,h2{font-family:"Instrument Serif",Georgia,serif;font-weight:400;letter-spacing:-.015em;line-height:1.02;margin:0}
-h1 em,h2 em{font-style:italic;color:var(--accent)}
-h2{font-size:clamp(38px,5vw,64px)}
-h3{font:600 18px/1.3 Inter,sans-serif;letter-spacing:-.01em;margin:0}
+::selection{background:var(--accent);color:#fff}
+.wrap{max-width:1200px;margin:0 auto;padding-inline:28px}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.035em;line-height:1.04}
+h2{font-size:clamp(34px,4.4vw,56px)}
+h3{font-size:18px;letter-spacing:-.015em;line-height:1.3}
 p{margin:0}
-code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
-p code,li code{font-size:.88em;background:color-mix(in srgb,var(--ink) 7%,transparent);padding:1px 5px;border-radius:5px}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
-.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent)}
-.lead{color:var(--ink-2);font-size:18px;max-width:600px}
-section{padding-block:var(--sec)}
-section.band{background:var(--band)}
-section.band-2{background:var(--band-2)}
-.sec-head{display:grid;grid-template-columns:1.15fr .85fr;gap:20px 56px;align-items:end;margin-bottom:56px}
-.sec-head .eyebrow{grid-column:1/-1}
-.sec-head h2{grid-column:1}
-.sec-head .lead{grid-column:2}
+code,pre,.mono{font-family:"Geist Mono",ui-monospace,monospace}
+p code,li code{font-size:.86em;color:var(--accent-2);background:var(--accent-soft);padding:1px 6px;border-radius:5px}
+:root[data-theme="light"] p code,:root[data-theme="light"] li code{color:var(--accent)}
+.label{display:inline-flex;align-items:center;gap:10px;font:500 12px/1 "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.label b{color:var(--accent);font-weight:500}
+.lead{color:var(--ink-2);font-size:18px;max-width:620px}
+section{padding-block:clamp(80px,10vw,128px);border-top:1px solid var(--line);position:relative}
+.sec-head{display:grid;gap:18px;margin-bottom:48px;max-width:760px}
+.sec-head.row{max-width:none;grid-template-columns:1fr 1fr;align-items:end;gap:18px 56px}
+.sec-head.row .label{grid-column:1/-1}
 
-/* nav */
-nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--band) 82%,transparent);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);border-bottom:1px solid color-mix(in srgb,var(--ink) 9%,transparent)}
-nav.scrolled{background:color-mix(in srgb,var(--bg) 86%,transparent)}
-nav .wrap{display:flex;align-items:center;gap:22px;height:64px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;text-decoration:none;white-space:nowrap}
-.brand svg{width:28px;height:28px}
-.nav-links{display:flex;gap:4px;margin-left:auto;font-size:14px;color:var(--ink-2)}
-.nav-links a{text-decoration:none;white-space:nowrap;padding:7px 12px;border-radius:999px;transition:background .15s,color .15s}
-.nav-links a:hover{color:var(--ink);background:color-mix(in srgb,var(--ink) 6%,transparent)}
-.nav-links a.on{color:var(--ink);background:var(--card);box-shadow:0 1px 2px rgba(0,0,0,.08)}
-.icon-btn{border:1px solid color-mix(in srgb,var(--ink) 14%,transparent);background:transparent;color:var(--ink);border-radius:999px;height:36px;min-width:36px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font:500 13px Inter,sans-serif;cursor:pointer;text-decoration:none}
-.icon-btn:hover{background:var(--card)}
+/* bar + nav */
+.bar{background:linear-gradient(90deg,#1747a6,#3d8bff 50%,#1747a6);color:#fff;text-align:center;font:500 13px/1 Geist,sans-serif;padding:10px 16px}
+.bar a{text-decoration:none}
+.bar b{font:500 11px "Geist Mono",monospace;letter-spacing:.06em;background:rgba(255,255,255,.18);padding:3px 7px;border-radius:5px;margin-right:8px}
+nav{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:20px;height:62px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.01em;text-decoration:none;white-space:nowrap}
+.brand svg{width:26px;height:26px}
+.nav-links{display:flex;gap:2px;margin-left:auto;font-size:14px;color:var(--ink-2)}
+.nav-links a{text-decoration:none;white-space:nowrap;padding:7px 11px;border-radius:8px}
+.nav-links a:hover{color:var(--ink);background:var(--card-2)}
+.nav-links a.on{color:var(--ink);background:var(--card-2);box-shadow:inset 0 0 0 1px var(--line-2)}
+.icon-btn{border:1px solid var(--line-2);background:var(--card);color:var(--ink);border-radius:8px;height:36px;min-width:36px;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font:500 12px "Geist Mono",monospace;letter-spacing:.04em;cursor:pointer;text-decoration:none}
+.icon-btn:hover{border-color:var(--ink-3)}
+.icon-btn.solid{background:var(--ink);color:var(--bg);border-color:var(--ink);text-transform:uppercase}
 .icon-btn.menu-btn{display:none}
 .menu{display:none;border-top:1px solid var(--line);background:var(--bg)}
 .menu.open{display:block}
@@ -83,242 +80,289 @@ nav .wrap{display:flex;align-items:center;gap:22px;height:64px}
 .menu a.on{color:var(--accent)}
 
 /* hero */
-.hero{background:var(--band);padding:clamp(40px,6vw,72px) 0 clamp(56px,7vw,96px);position:relative;overflow:hidden}
-.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(90deg,transparent 40%,#000 75%);-webkit-mask-image:linear-gradient(90deg,transparent 40%,#000 75%);pointer-events:none}
-.hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center}
-.hero h1{font-size:clamp(52px,6.3vw,86px);margin:22px 0 24px}
-.hero .lead{font-size:19px}
-.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
-.btn{display:inline-flex;align-items:center;gap:10px;height:50px;padding:0 24px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;border:1px solid color-mix(in srgb,var(--ink) 16%,transparent);background:transparent;transition:transform .15s,background .15s}
-.btn:hover{transform:translateY(-1px);background:var(--card)}
-.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.btn.primary:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.btn .arr{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:13px}
-.btn.primary:hover .arr{background:var(--accent-ink);color:var(--accent)}
-.stats{display:flex;flex-wrap:wrap;gap:0;margin-top:44px;border-top:1px solid color-mix(in srgb,var(--ink) 12%,transparent);padding-top:22px}
-.stat{padding-right:32px;margin-right:32px;border-right:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
-.stat:last-child{border-right:0;margin-right:0;padding-right:0}
-.stat b{display:block;font:400 34px/1 "Instrument Serif",Georgia,serif}
-.stat span{display:block;font-size:13px;color:var(--ink-3);margin-top:6px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{font:500 12px "JetBrains Mono",monospace;padding:7px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink-2)}
-.strip{padding:22px 0;border-bottom:1px solid var(--line)}
-.strip .wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.strip small{font:500 11px "JetBrains Mono",monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.hero{padding:clamp(64px,8vw,104px) 0 0;border-top:0;overflow:hidden;text-align:center}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);pointer-events:none}
+.hero::after{content:"";position:absolute;left:50%;top:-220px;width:900px;height:520px;transform:translateX(-50%);background:radial-gradient(closest-side,var(--glow),transparent);pointer-events:none;opacity:.7}
+.hero .wrap{position:relative;z-index:1}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border:1px solid var(--line-2);border-radius:999px;background:var(--card);font-size:13px;color:var(--ink-2);text-decoration:none}
+.pill b{font:500 11px "Geist Mono",monospace;letter-spacing:.06em;text-transform:uppercase;background:var(--accent);color:#fff;padding:4px 8px;border-radius:999px}
+.pill:hover{border-color:var(--ink-3)}
+.hero h1{font-size:clamp(46px,7vw,92px);margin:28px auto 22px;max-width:15ch}
+.hl{color:#fff;background:var(--accent);padding:0 .14em;border-radius:.08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.hero .lead{margin:0 auto;font-size:19px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:34px}
+.btn{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border-radius:10px;font:600 15px Geist,sans-serif;text-decoration:none;border:1px solid var(--line-2);background:var(--card);color:var(--ink);cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
+.btn:hover{transform:translateY(-1px);border-color:var(--ink-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset,0 10px 30px -10px var(--glow)}
+.btn.primary:hover{box-shadow:0 0 0 1px rgba(255,255,255,.12) inset,0 14px 40px -10px var(--glow)}
+.cmd{display:inline-flex;align-items:center;gap:12px;height:48px;padding:0 8px 0 16px;border-radius:10px;border:1px solid var(--line-2);background:var(--code-bg);color:var(--code-ink);font:13.5px "Geist Mono",monospace;max-width:100%}
+.cmd span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmd i{font-style:normal;color:var(--accent-2)}
+.cmd button{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--code-ink);border-radius:7px;height:32px;padding:0 10px;font:500 12px "Geist Mono",monospace;cursor:pointer;flex:none}
+.cmd button:hover{background:rgba(255,255,255,.12)}
+.clients{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 28px;margin-top:40px;color:var(--ink-3);font-size:14px}
+.clients small{font:500 11px "Geist Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+.clients span{display:inline-flex;align-items:center;gap:8px;color:var(--ink-2);font-weight:500}
+.clients span::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--line-2)}
 
-.plan-card{background:var(--card);border:1px solid color-mix(in srgb,var(--ink) 10%,transparent);border-radius:22px;padding:16px;box-shadow:var(--shadow)}
-.hero .plan-card{max-width:440px;margin-left:auto !important;transform:rotate(.6deg)}
-.plan-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
-.plan-head .mono{font-size:12px;color:var(--ink-3)}
-.seg{display:inline-flex;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--bg)}
-.seg button{border:0;background:transparent;color:var(--ink-2);font:500 13px Inter,sans-serif;padding:5px 14px;border-radius:999px;cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-.view3d{display:none;aspect-ratio:456/696;max-height:62vh;border-radius:14px;overflow:hidden;background:var(--band)}
-.view3d model-viewer{width:100%;height:100%;--poster-color:transparent}
-.plan-card.is3d .plan{display:none}
-.plan-card.is3d .view3d{display:block}
-.plan-card figcaption{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink-3);margin-top:12px}
+/* product window */
+.app{margin:64px auto 0;max-width:1120px;text-align:left;border:1px solid var(--line-2);border-radius:16px 16px 0 0;border-bottom:0;background:var(--bg-2);box-shadow:var(--shadow);overflow:hidden}
+.app-bar{display:flex;align-items:center;gap:14px;height:44px;padding:0 14px;border-bottom:1px solid var(--line);background:var(--card)}
+.dots{display:flex;gap:6px}.dots i{width:11px;height:11px;border-radius:50%;background:var(--line-2)}
+.app-tab{font:12.5px "Geist Mono",monospace;color:var(--ink-2);padding:6px 12px;border-radius:7px;background:var(--bg-2);border:1px solid var(--line)}
+.app-bar .status{margin-left:auto}
+.app-body{display:grid;grid-template-columns:1fr 1.05fr 1fr;min-height:540px}
+.pane{border-right:1px solid var(--line);padding:18px;min-width:0}
+.pane:last-child{border-right:0}
+.pane-h{display:flex;justify-content:space-between;align-items:center;gap:10px;font:500 11px "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:14px}
+.json{margin:0;font:12.5px/1.75 "Geist Mono",monospace;color:var(--ink-2);white-space:pre;overflow:hidden}
+.json .k{color:var(--accent-2)} .json .s{color:#7ee2b8} .json .n{color:#f5b86b} .json .c{color:var(--ink-3)}
+:root[data-theme="light"] .json .k{color:#1f6feb} :root[data-theme="light"] .json .s{color:#047857} :root[data-theme="light"] .json .n{color:#b45309}
+.seg{display:inline-flex;padding:3px;border:1px solid var(--line-2);border-radius:8px;background:var(--bg)}
+.seg button{border:0;background:transparent;color:var(--ink-3);font:500 12px "Geist Mono",monospace;padding:4px 11px;border-radius:5px;cursor:pointer;text-transform:none;letter-spacing:0}
+.seg button[aria-pressed="true"]{background:var(--card-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-2)}
+.plan-wrap{display:grid;place-items:center}
 .plan{width:100%;height:auto;display:block}
-.hero .plan{max-height:60vh}
+.app .plan{max-height:460px;width:auto;max-width:100%}
+.view3d{display:none;width:100%;height:460px;border-radius:10px;overflow:hidden;background:var(--card)}
+.view3d model-viewer{width:100%;height:100%;--poster-color:transparent}
+.is3d .plan{display:none}.is3d .view3d{display:block}
 .p-floor{fill:var(--p-floor)} .p-wall{stroke:var(--p-wall)} .p-gap{stroke:var(--p-floor)}
 .p-sleep{fill:var(--p-sleep)} .p-store{fill:var(--p-store)} .p-work{fill:var(--p-work)} .p-kit{fill:var(--p-kit)} .p-live{fill:var(--p-live)} .p-bath{fill:var(--p-bath)}
 .p-up{fill-opacity:.55;stroke:var(--accent);stroke-width:2;stroke-dasharray:6 4}
 .p-door{fill:none;stroke:var(--ink-3);stroke-width:1.5}
 .p-win{stroke:var(--accent);stroke-width:3}
-.p-lab{font:500 12px Inter,sans-serif;fill:var(--ink)}
-.p-dim{font:500 11px "JetBrains Mono",monospace;fill:var(--ink-3)}
-.status{display:inline-flex;align-items:center;gap:6px;font:500 12px "JetBrains Mono",monospace;color:var(--ok);white-space:nowrap}
-.status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 22%,transparent)}
+.p-lab{font:500 12px Geist,sans-serif;fill:var(--p-lab)}
+.p-dim{font:500 11px "Geist Mono",monospace;fill:var(--ink-3)}
+.calls{display:grid;gap:10px}
+.call{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:12px 14px}
+.call-h{display:flex;justify-content:space-between;align-items:center;gap:8px;font:500 12.5px "Geist Mono",monospace}
+.call-h code{color:var(--accent-2)}
+:root[data-theme="light"] .call-h code{color:var(--accent)}
+.ok{color:var(--ok);font:500 11px "Geist Mono",monospace}
+.warn{color:var(--warn)}
+.err{color:var(--err);font:inherit}
+.call-h .err{font:500 11px "Geist Mono",monospace}
+.call-b{margin-top:8px;font:12.5px/1.6 "Geist Mono",monospace;color:var(--ink-2)}
+.call-b b{color:var(--ink);font-weight:500}
+.status{display:inline-flex;align-items:center;gap:7px;font:500 12px "Geist Mono",monospace;color:var(--ok);white-space:nowrap}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px color-mix(in srgb,var(--ok) 25%,transparent)}
 
-/* cards */
-.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;transition:transform .2s,border-color .2s,box-shadow .2s}
-.card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--ink) 22%,transparent);box-shadow:var(--shadow)}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stat{padding:30px 24px;border-right:1px solid var(--line)}
+.stat:last-child{border-right:0}
+.stat b{display:block;font:600 38px/1 Geist,sans-serif;letter-spacing:-.04em}
+.stat span{display:block;margin-top:8px;font:500 12px "Geist Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+
+/* generic cards */
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;transition:border-color .2s,transform .2s,box-shadow .2s;position:relative}
+.card:hover{border-color:var(--line-2);transform:translateY(-2px);box-shadow:0 20px 40px -24px rgba(0,0,0,.6)}
 .card p{color:var(--ink-2);font-size:15px;margin-top:8px}
-.card .k{font:500 12px "JetBrains Mono",monospace;color:var(--ink-3);margin-top:18px;padding-top:14px;border-top:1px dashed var(--line);display:block}
+.card .k{font:500 12px "Geist Mono",monospace;color:var(--ink-3);margin-top:18px;padding-top:14px;border-top:1px dashed var(--line-2);display:block}
 .card .k b{color:var(--ink);font-weight:500}
-.tag{display:inline-block;font:500 11px "JetBrains Mono",monospace;letter-spacing:.04em;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--ink) 7%,transparent);color:var(--ink-2)}
+.tag{display:inline-block;font:500 11px "Geist Mono",monospace;letter-spacing:.04em;padding:3px 8px;border-radius:6px;background:var(--card-2);border:1px solid var(--line-2);color:var(--ink-2)}
 
-/* what it is */
-.compare{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.compare .card{padding:30px}
-.compare .card.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.compare .card.on p{color:color-mix(in srgb,var(--bg) 78%,transparent)}
-.compare .card.on .tag{background:var(--accent);color:var(--accent-ink)}
-.compare h3{font:400 30px/1.05 "Instrument Serif",Georgia,serif;letter-spacing:-.01em}
+.compare{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.compare .card{padding:28px}
+.compare .card.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 24px 60px -30px var(--glow)}
+.compare .card.on .tag{background:var(--accent);border-color:var(--accent);color:#fff}
+.compare h3{font-size:22px}
 
-/* steps */
-.steps{counter-reset:s;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.step{position:relative;padding-top:76px}
-.step::before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;top:22px;left:26px;font:400 40px/1 "Instrument Serif",Georgia,serif;color:var(--accent)}
-.step ul{margin:14px 0 0;padding-left:18px;color:var(--ink-2);font-size:14px}
-.step li{margin:3px 0}
-
-/* rooms */
-.room h3{display:flex;align-items:center;gap:10px}
-.swatch{width:12px;height:12px;border-radius:4px;flex:none}
-
-/* checker */
-.split{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start}
-.term{background:var(--code-bg);color:var(--code-ink);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
-.term-bar{display:flex;align-items:center;gap:6px;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
-.term-bar i{width:10px;height:10px;border-radius:50%;background:#4a4039}
-.term-bar span{margin-left:8px;font:12px "JetBrains Mono",monospace;color:var(--code-dim)}
-.term pre{margin:0;padding:20px;font-size:13px;line-height:1.75;overflow-x:auto;white-space:pre}
-.t-dim{color:var(--code-dim)} .t-err{color:#ff8f7d} .t-warn{color:#f0c36b} .t-ok{color:#92d3a0}
-.rules{display:grid}
-.rule{display:grid;grid-template-columns:140px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);font-size:15px}
-.rule:first-child{border-top:1px solid var(--line)}
-.rule b{font:400 22px/1.1 "Instrument Serif",Georgia,serif}
-.rule span{color:var(--ink-2)}
-
-/* dark band (MCP) */
-section.dark{background:var(--dark);color:var(--dark-ink);--ink:var(--dark-ink);--ink-2:var(--dark-2);--ink-3:var(--dark-3);--line:var(--dark-line);--card:var(--dark-card);--bg:var(--dark)}
-section.dark .tag{background:rgba(255,255,255,.08);color:var(--dark-2)}
-.tools{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-.tool{padding:18px}
-.tool code{font-size:13px;color:var(--accent);font-weight:500}
-.tool p{font-size:14px;margin-top:6px}
-.tool .tag{margin-bottom:12px}
-.tool.new{border-color:color-mix(in srgb,var(--accent) 55%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 9%,var(--card)),var(--card))}
-.showcase{display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:start;margin-top:48px}
-.shot{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
+/* tool table */
+.tbl{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
+.tr{display:grid;grid-template-columns:220px 1fr 150px 90px;gap:16px;align-items:center;padding:15px 20px;border-top:1px solid var(--line);font-size:15px;transition:background .15s}
+.tr:first-child{border-top:0}
+.tr:not(.th):hover{background:var(--card-2)}
+.tr.th{font:500 11px "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);background:var(--bg-2);padding-block:11px}
+.tr code{font:500 13.5px "Geist Mono",monospace;color:var(--accent-2)}
+:root[data-theme="light"] .tr code{color:var(--accent)}
+.tr span{color:var(--ink-2)}
+.tr em{font:500 12px "Geist Mono",monospace;font-style:normal;color:var(--ink-3)}
+.new{font:500 10.5px "Geist Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-2);background:var(--accent-soft);padding:3px 7px;border-radius:5px;justify-self:start}
+:root[data-theme="light"] .new{color:var(--accent)}
+.showcase{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:start;margin-top:40px}
+.shot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0}
 .shot img{display:block;width:336px;max-width:100%;height:auto;border-radius:8px;background:#fff}
 .shot figcaption{font-size:13px;color:var(--ink-3);margin-top:12px;max-width:336px}
-.showcase h3{font:400 30px/1.1 "Instrument Serif",Georgia,serif}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
-.metric{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
-.metric small{display:block;font:500 11px "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
-.metric b{display:block;font:400 40px/1.05 "Instrument Serif",Georgia,serif;margin-top:8px;font-variant-numeric:tabular-nums}
-.metric b span{font:500 14px Inter,sans-serif;color:var(--ink-3);margin-left:4px}
+.sc-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.sc-head h3{font:500 15px "Geist Mono",monospace;letter-spacing:0}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.metric{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.metric small{display:block;font:500 11px "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.metric b{display:block;font:600 34px/1.05 Geist,sans-serif;letter-spacing:-.04em;margin-top:8px;font-variant-numeric:tabular-nums}
+.metric b span{font:500 14px Geist,sans-serif;color:var(--ink-3);margin-left:4px;letter-spacing:0}
 .metric em{display:block;font-style:normal;font-size:13px;color:var(--ink-2);margin-top:2px}
-.metric.flag{border-color:color-mix(in srgb,var(--warn) 60%,var(--line))}
+.metric.flag{border-color:color-mix(in srgb,var(--warn) 50%,var(--line))}
 .metric.flag em{color:var(--warn)}
-.extras{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.extras{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
 .extras .card{padding:18px}
-.extras h3{font-size:16px}
+.extras h3{font-size:15px}
+
+/* steps */
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card)}
+.steps .card{border:0;border-right:1px solid var(--line);border-radius:0;padding-top:70px}
+.steps .card:last-child{border-right:0}
+.steps .card:hover{transform:none;box-shadow:none;background:var(--card-2)}
+.step::before{counter-increment:s;content:"STEP " counter(s,decimal-leading-zero);position:absolute;top:24px;left:24px;font:500 11px "Geist Mono",monospace;letter-spacing:.1em;color:var(--accent)}
+.step ul{margin:14px 0 0;padding-left:18px;color:var(--ink-2);font-size:14px}
+.step li{margin:3px 0}
+.room h3{display:flex;align-items:center;gap:10px}
+.swatch{width:10px;height:10px;border-radius:3px;flex:none}
+
+/* checker */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.term{background:var(--code-bg);color:var(--code-ink);border:1px solid var(--line-2);border-radius:14px;overflow:hidden}
+.term-bar{display:flex;align-items:center;gap:6px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.term-bar i{width:10px;height:10px;border-radius:50%;background:#2a3444}
+.term-bar span{margin-left:8px;font:12px "Geist Mono",monospace;color:var(--code-dim)}
+.term pre{margin:0;padding:20px;font-size:13px;line-height:1.75;overflow-x:auto;white-space:pre}
+.t-dim{color:var(--code-dim)} .t-err{color:#ff8f8f} .t-warn{color:#fcd06b} .t-ok{color:#5eead4}
+.rules{display:grid}
+.rule{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:15px 0;border-bottom:1px solid var(--line);font-size:15px}
+.rule:first-child{border-top:1px solid var(--line)}
+.rule b{font-weight:600}
+.rule span{color:var(--ink-2)}
 
 /* example */
+.plan-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0}
+.plan-card figcaption{display:flex;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink-3);margin-top:12px}
 .reveal{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:r}
-.reveal li{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;font-size:15px;color:var(--ink-2)}
-.reveal li::before{counter-increment:r;content:counter(r);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--accent);font:600 12px "JetBrains Mono",monospace}
-.render{margin:20px 0 0;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);background:var(--card)}
+.reveal li{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start;font-size:15px;color:var(--ink-2)}
+.reveal li::before{counter-increment:r;content:counter(r);display:grid;place-items:center;width:26px;height:26px;border-radius:7px;background:var(--accent-soft);color:var(--accent-2);font:500 12px "Geist Mono",monospace}
+:root[data-theme="light"] .reveal li::before{color:var(--accent)}
+.render{margin:16px 0 0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--card)}
 .render img{display:block;width:100%;height:auto}
 .render figcaption{padding:10px 14px;font-size:13px;color:var(--ink-3)}
-.reveal-head{font:400 30px/1.1 "Instrument Serif",Georgia,serif;margin-bottom:20px}
+.sub-h{font:500 13px "Geist Mono",monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px}
 
 /* install */
-.tabs{display:inline-flex;gap:4px;margin-bottom:16px;flex-wrap:wrap;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
-.tab{border:0;background:transparent;color:var(--ink-2);border-radius:10px;padding:8px 14px;font:500 14px Inter,sans-serif;cursor:pointer}
-.tab[aria-selected="true"]{background:var(--ink);color:var(--bg)}
-.panel{display:none}
-.panel.on{display:block}
-.code{position:relative;background:var(--code-bg);color:var(--code-ink);border-radius:14px;padding:16px 18px;margin:10px 0;font-size:13.5px;line-height:1.7;overflow-x:auto}
+.tabs{display:flex;gap:2px;margin-bottom:16px;flex-wrap:wrap;padding:4px;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.tab{border:0;background:transparent;color:var(--ink-3);border-radius:7px;padding:7px 12px;font:500 13px "Geist Mono",monospace;cursor:pointer}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{background:var(--card-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-2)}
+.panel{display:none}.panel.on{display:block}
+.code{position:relative;background:var(--code-bg);color:var(--code-ink);border:1px solid var(--line-2);border-radius:10px;padding:14px 16px;margin:10px 0;font-size:13px;line-height:1.7;overflow-x:auto}
 .code pre{margin:0;white-space:pre;padding-right:64px}
-.copy{position:absolute;top:10px;right:10px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--code-dim);border-radius:999px;font:500 12px Inter,sans-serif;padding:4px 10px;cursor:pointer}
+.copy{position:absolute;top:9px;right:9px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:var(--code-dim);border-radius:6px;font:500 12px "Geist Mono",monospace;padding:4px 9px;cursor:pointer}
 .copy:hover{color:var(--code-ink)}
 .ol{margin:0;padding-left:20px;display:grid;gap:14px;color:var(--ink-2)}
 .ol b{color:var(--ink)}
 .prompts{display:grid;gap:10px}
-.prompt{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;font-size:15px}
-.prompt .copy{position:static;border-color:var(--line);color:var(--ink-3);flex:none}
+.prompt{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 16px;font-size:15px}
+.prompt .copy{position:static;border-color:var(--line-2);background:transparent;color:var(--ink-3);flex:none}
 .prompt .copy:hover{color:var(--ink)}
-.prompt small{display:block;color:var(--ink-3);font:500 11px "JetBrains Mono",monospace;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+.prompt small{display:block;color:var(--accent-2);font:500 11px "Geist Mono",monospace;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+:root[data-theme="light"] .prompt small{color:var(--accent)}
 
-/* sources */
+/* sources + roadmap */
 .src{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .src .card{padding:18px}
-.src b{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--accent)}
-.note{margin-top:28px;padding:20px 22px;border-radius:14px;background:var(--accent-soft);color:var(--ink);font-size:15px}
-
-/* roadmap */
+.src b{font:500 13px "Geist Mono",monospace;color:var(--accent-2)}
+:root[data-theme="light"] .src b{color:var(--accent)}
+.note{margin-top:24px;padding:16px 18px;border-radius:12px;border:1px solid color-mix(in srgb,var(--warn) 40%,var(--line));background:color-mix(in srgb,var(--warn) 7%,transparent);color:var(--ink-2);font-size:15px}
+.note b{color:var(--ink)}
 .road{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
 .road .card{padding:20px}
-.road .card.done{border-color:color-mix(in srgb,var(--ok) 55%,var(--line))}
-.road .tag.ok{background:var(--ok);color:var(--bg)}
+.road .card.done .tag.ok{background:color-mix(in srgb,var(--ok) 16%,transparent);border-color:color-mix(in srgb,var(--ok) 40%,transparent);color:var(--ok)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.chip{font:500 12px "Geist Mono",monospace;padding:6px 11px;border-radius:7px;border:1px solid var(--line-2);background:var(--card);color:var(--ink-2)}
 
 /* closing */
-.closing{background:var(--accent);color:var(--accent-ink);text-align:center}
-.closing h2{font-size:clamp(40px,6vw,76px)}
-.closing p{max-width:560px;margin:18px auto 0;opacity:.88;font-size:18px}
-.closing .cta{justify-content:center}
-.closing .btn.primary{background:var(--accent-ink);color:var(--accent);border-color:var(--accent-ink)}
-.closing .btn.primary:hover{background:transparent;color:var(--accent-ink)}
-.closing .btn{border-color:color-mix(in srgb,var(--accent-ink) 40%,transparent);color:var(--accent-ink)}
-.closing .btn:hover{background:color-mix(in srgb,var(--accent-ink) 12%,transparent)}
+.closing{text-align:center;overflow:hidden}
+.closing::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 60% 70% at 50% 50%,#000,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 60% 70% at 50% 50%,#000,transparent 75%)}
+.closing::after{content:"";position:absolute;left:50%;top:50%;width:800px;height:400px;transform:translate(-50%,-50%);background:radial-gradient(closest-side,var(--glow),transparent);opacity:.55;pointer-events:none}
+.closing .wrap{position:relative;z-index:1}
+.closing h2{font-size:clamp(40px,6vw,72px)}
+.closing p{max-width:540px;margin:18px auto 0;color:var(--ink-2);font-size:18px}
 
-.tools>*,.metrics>*,.extras>*,.showcase>*,.hero-grid>*,.split>*,.steps>*,.grid-2>*,.grid-3>*,.grid-4>*,.grid-5>*,.compare>*,.src>*,.road>*,.ol>li,.prompts>*,.rules>*,.sec-head>*{min-width:0}
-p code,li code,.lead code{overflow-wrap:anywhere}
-footer{border-top:1px solid var(--line);padding:40px 0;color:var(--ink-3);font-size:14px}
+.tr>*,.app-body>*,.metrics>*,.extras>*,.showcase>*,.split>*,.steps>*,.grid-5>*,.compare>*,.src>*,.road>*,.ol>li,.prompts>*,.rules>*,.sec-head>*{min-width:0}
+p code,li code{overflow-wrap:anywhere}
+footer{border-top:1px solid var(--line);padding:36px 0;color:var(--ink-3);font-size:14px}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 @media (prefers-reduced-motion: reduce){*{transition:none !important;scroll-behavior:auto !important}}
-@media (max-width:1080px){
+@media (max-width:1100px){
   .nav-links{display:none}
   .icon-btn.menu-btn{display:inline-flex;margin-left:auto}
+  .app-body{grid-template-columns:1fr 1fr}
+  .pane.code-pane{display:none}
 }
 @media (max-width:960px){
-  .hero-grid,.split,.sec-head{grid-template-columns:1fr}
-  .sec-head .lead{grid-column:1}
-  .hero .plan-card{margin:0 auto !important;transform:none}
-  .steps,.grid-4,.grid-5{grid-template-columns:repeat(2,1fr)}
-  .grid-3,.compare,.src{grid-template-columns:1fr 1fr}
-  .road{grid-template-columns:1fr 1fr}
-  .tools{grid-template-columns:repeat(3,1fr)}
-  .showcase{grid-template-columns:1fr}
+  .split,.sec-head.row,.showcase{grid-template-columns:1fr}
+  .grid-5{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:1fr 1fr}
+  .steps .card:nth-child(2){border-right:0}
+  .steps .card:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .compare,.src,.road{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .stat:nth-child(3){border-right:0}
+  .stat:nth-child(-n+3){border-bottom:1px solid var(--line)}
+  .tr{grid-template-columns:190px 1fr 80px}
+  .tr em{display:none}
 }
-@media (max-width:600px){
+@media (max-width:640px){
   .wrap{padding-inline:20px}
-  .steps,.grid-4,.grid-5,.grid-3,.grid-2,.compare,.src,.road,.extras{grid-template-columns:1fr}
-  .tools,.metrics{grid-template-columns:1fr 1fr}
-  .metric b{font-size:32px}
+  .bar{font-size:12px}
+  .app-body{grid-template-columns:1fr}
+  .pane{border-right:0;border-bottom:1px solid var(--line)}
+  .app .plan{max-height:380px}
+  .view3d{height:380px}
+  .grid-5,.compare,.src,.road,.extras,.steps{grid-template-columns:1fr}
+  .steps .card{border-right:0;border-bottom:1px solid var(--line)}
+  .metrics{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat{border-right:0;border-bottom:1px solid var(--line);padding:22px 18px}
+  .stat:nth-child(odd){border-right:1px solid var(--line)}
+  .stat:last-child{grid-column:1/-1;border-right:0;border-bottom:0}
+  .stat b{font-size:30px}
+  .tr{grid-template-columns:1fr auto;gap:4px 12px}
+  .tr span{grid-column:1/-1}
+  .tr.th{display:none}
   .rule{grid-template-columns:1fr;gap:4px}
-  .brand{font-size:14px}
   .gh-btn{display:none}
   nav .wrap{gap:10px}
-  .stats{display:grid;grid-template-columns:1fr 1fr;gap:18px 0}
-  .stat{padding:0 0 0 16px;margin:0;border-right:0;border-left:1px solid color-mix(in srgb,var(--ink) 12%,transparent)}
-  .stat b{font-size:30px}
-  .hero h1{font-size:clamp(46px,13vw,64px)}
-  .btn{height:48px;padding:0 20px}
+  .cmd{width:100%}
+  .btn{width:100%;justify-content:center}
 }
 </style>
 </head>
 <body>
 
+<div class="bar"><a href="#mcp"><b>NEW</b>MCP server v2: room metrics, layout edits and plans Claude can see →</a></div>
 <nav>
   <div class="wrap">
     <a class="brand" href="#top">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M7 25V13l9-6 9 6v12h-6v-7h-6v7z" fill="var(--accent-ink)"/></svg>
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M7 25V13l9-6 9 6v12h-6v-7h-6v7z" fill="#fff"/></svg>
       Residential Space Designer
     </a>
     <div class="nav-links">
-      <a href="#what">What it is</a>
+      <a href="#what">Overview</a>
+      <a href="#mcp">MCP tools</a>
       <a href="#how">How it works</a>
       <a href="#rooms">Rooms</a>
       <a href="#checker">Checker</a>
-      <a href="#mcp">MCP tools</a>
       <a href="#install">Install</a>
-      <a href="viewer.html">3D</a>
+      <a href="viewer.html">3D viewer</a>
     </div>
     <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
       <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
     </button>
-    <button class="icon-btn" id="theme" aria-label="Toggle dark mode">◐</button>
-    <a class="icon-btn gh-btn" href="https://github.com/puvankumarv/residential-space-designer">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-      <span class="gh-label">GitHub</span>
+    <button class="icon-btn" id="theme" aria-label="Switch light or dark">
+      <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor"/></svg>
+    </button>
+    <a class="icon-btn solid gh-btn" href="https://github.com/puvankumarv/residential-space-designer">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+      GitHub
     </a>
   </div>
   <div class="menu" id="menu">
-    <a href="#what">What it is</a>
+    <a href="#what">Overview</a>
+    <a href="#mcp">MCP tools</a>
     <a href="#how">How it works</a>
     <a href="#rooms">Rooms</a>
     <a href="#checker">Checker</a>
-    <a href="#mcp">MCP tools</a>
     <a href="#install">Install</a>
     <a href="viewer.html">3D viewer</a>
     <a href="https://github.com/puvankumarv/residential-space-designer">GitHub ↗</a>
@@ -326,32 +370,51 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </nav>
 
 <header class="hero" id="top">
-  <div class="wrap hero-grid">
-    <div>
-      <span class="eyebrow">A Claude skill · open source</span>
-      <h1>Design every room.<br><em>Check every layout.</em></h1>
-      <p class="lead">Describe a room or a whole home, by text, photos or a floor plan. Claude makes the key design decision and hands back a buildable layout, tested against building codes before you see it.</p>
-      <div class="cta">
-        <a class="btn primary" href="#install">Install the skill <span class="arr">→</span></a>
-        <a class="btn" href="viewer.html">See rooms in 3D</a>
-      </div>
-      <div class="stats">
-        <div class="stat"><b>10</b><span>room modules</span></div>
-        <div class="stat"><b>10</b><span>MCP tools</span></div>
-        <div class="stat"><b>88</b><span>tests</span></div>
-        <div class="stat"><b>0</b><span>dependencies</span></div>
-      </div>
+  <div class="wrap">
+    <a class="pill" href="#mcp"><b>Skill + MCP</b>Open source · Python 3 · no dependencies</a>
+    <h1>Design every room. <span class="hl">Check every layout.</span></h1>
+    <p class="lead">A Claude skill and MCP server for homes. Describe a room or a whole flat; Claude makes the key design decision, then checks the layout against building codes before you see it.</p>
+    <div class="cta">
+      <a class="btn primary" href="#install">Get started →</a>
+      <div class="cmd"><span><i>/</i>plugin install residential-space-designer</span><button type="button" data-copy="/plugin install residential-space-designer --marketplace puvankumarv/residential-space-designer">Copy</button></div>
     </div>
-    <figure class="plan-card" id="hero-card" style="margin:0">
-      <div class="plan-head">
-        <span class="mono">examples/studio-apartment.json</span>
-        <div class="seg" role="group" aria-label="View">
-          <button type="button" aria-pressed="true" data-view="plan">Plan</button>
-          <button type="button" aria-pressed="false" data-view="3d">3D</button>
+    <div class="clients"><small>Works with</small><span>Claude Code</span><span>Claude Desktop</span><span>Claude.ai</span><span>Cursor</span><span>VS Code</span><span>Any MCP client</span></div>
+
+    <div class="app" id="hero-card">
+      <div class="app-bar"><div class="dots"><i></i><i></i><i></i></div><span class="app-tab">examples/studio-apartment.json</span><span class="status">validate_layout · 0 errors</span></div>
+      <div class="app-body">
+        <div class="pane code-pane">
+          <div class="pane-h"><span>layout.json</span><span>4.0 × 6.4 m</span></div>
+<pre class="json">{
+  <span class="k">"room"</span>: {
+    <span class="k">"name"</span>: <span class="s">"Studio apartment"</span>,
+    <span class="k">"type"</span>: <span class="s">"studio"</span>,
+    <span class="k">"width"</span>: <span class="n">4.0</span>, <span class="k">"depth"</span>: <span class="n">6.4</span>,
+    <span class="k">"openings"</span>: [ <span class="c">… door S, window E</span> ]
+  },
+  <span class="k">"states"</span>: [<span class="s">"night"</span>, <span class="s">"day"</span>],
+  <span class="k">"elements"</span>: [
+    { <span class="k">"id"</span>: <span class="s">"bed"</span>, <span class="k">"type"</span>: <span class="s">"bed"</span>,
+      <span class="k">"x"</span>: <span class="n">0.75</span>, <span class="k">"y"</span>: <span class="n">3.95</span>,
+      <span class="k">"w"</span>: <span class="n">1.4</span>, <span class="k">"d"</span>: <span class="n">2.0</span>, <span class="k">"h"</span>: <span class="n">0.45</span>,
+      <span class="k">"states"</span>: { <span class="k">"day"</span>: { <span class="k">"hidden"</span>: <span class="n">true</span> } } },
+    { <span class="k">"id"</span>: <span class="s">"sofa"</span>, <span class="k">"type"</span>: <span class="s">"sofa"</span>,
+      <span class="k">"front"</span>: <span class="s">"+x"</span>, <span class="c">…</span> },
+    { <span class="k">"id"</span>: <span class="s">"cooktop"</span>, <span class="k">"type"</span>: <span class="s">"cooktop"</span>, <span class="c">…</span> },
+    <span class="c">… 9 more</span>
+  ]
+}</pre>
         </div>
-      </div>
-      <div class="view3d" id="view3d"></div>
-      <svg viewBox="0 0 456 696" role="img" aria-label="Studio apartment floor plan" class="plan">
+        <div class="pane">
+          <div class="pane-h"><span id="hero-note">Plan · night</span>
+            <div class="seg" role="group" aria-label="View">
+              <button type="button" aria-pressed="true" data-view="plan">Plan</button>
+              <button type="button" aria-pressed="false" data-view="3d">3D</button>
+            </div>
+          </div>
+          <div class="plan-wrap">
+            <div class="view3d" id="view3d"></div>
+            <svg viewBox="0 0 456 696" role="img" aria-label="Studio apartment floor plan" class="plan">
 <rect class="p-floor" x="28" y="28.0" width="400.0" height="640.0"/>
 <rect class="p-store" x="28.0" y="478.0" width="35.0" height="90.0" rx="3"/>
 <rect class="p-kit" x="158.0" y="608.0" width="60.0" height="60.0" rx="3"/>
@@ -383,25 +446,36 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <text class="p-dim" x="228.0" y="690.0" text-anchor="middle">4.0 m</text>
 <text class="p-dim" x="12" y="348.0" text-anchor="middle" transform="rotate(-90 12 348.0)">6.4 m</text>
 </svg>
-      <figcaption><span id="hero-note">Studio apartment, 25 m², night layout</span><span class="status">0 errors</span></figcaption>
-    </figure>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="pane-h"><span>Tool calls</span><span>MCP</span></div>
+          <div class="calls">
+            <div class="call"><div class="call-h"><code>validate_layout</code><span class="ok">✓ ok</span></div><div class="call-b"><b>0</b> errors · <b>0</b> warnings · night and day</div></div>
+            <div class="call"><div class="call-h"><code>room_metrics</code><span class="ok">✓</span></div><div class="call-b">free floor <b>65.2%</b> · storage <b>2.59 m³</b><br>sleeps <b>2</b> · seats <b>3</b> · worktop <b>2.0 m</b><br><span class="warn">glazing 6.6% &lt; IRC 8%</span></div></div>
+            <div class="call"><div class="call-h"><code>edit_layout</code><span class="err">✗ 2 errors</span></div><div class="call-b">rotate <b>sofa</b> → caught:<br><span class="err">sofa: outside the room</span><br><span class="err">sofa and coffee overlap</span></div></div>
+            <div class="call"><div class="call-h"><code>floor_plan_png</code><span class="ok">✓ image</span></div><div class="call-b">336 × 504 px · 12 numbered items</div></div>
+            <div class="call"><div class="call-h"><code>layout_to_gltf</code><span class="ok">✓ 3D</span></div><div class="call-b"><b>130</b> objects · walls cut around openings</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
-<div class="strip">
-  <div class="wrap">
-    <small>Covers</small>
-    <div class="chips">
-      <span class="chip">bedrooms</span><span class="chip">kitchens</span><span class="chip">bathrooms</span><span class="chip">living &amp; dining</span><span class="chip">entry &amp; stairs</span><span class="chip">balcony &amp; laundry</span><span class="chip">home office</span><span class="chip">studios &amp; whole homes</span><span class="chip">exterior &amp; site</span><span class="chip">Indian &amp; Western homes</span>
-    </div>
-  </div>
+<div class="stats">
+  <div class="stat"><b>10</b><span>MCP tools</span></div>
+  <div class="stat"><b>10</b><span>Room modules</span></div>
+  <div class="stat"><b>88</b><span>Tests passing</span></div>
+  <div class="stat"><b>2</b><span>Regions: India, West</span></div>
+  <div class="stat"><b>0</b><span>Dependencies</span></div>
 </div>
 
 <section id="what">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">What it is</span>
-      <h2>A design method, <em>not</em> a black box.</h2>
+    <div class="sec-head row">
+      <span class="label"><b>01</b> / Overview</span>
+      <h2>A design method, not a black box.</h2>
       <p class="lead">A <b>skill</b> is a folder of instructions, reference rules and scripts that Claude loads when a task needs it. Nothing is "trained": the quality comes from the written rules, and every number cites where it came from.</p>
     </div>
     <div class="compare">
@@ -421,14 +495,67 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         <p>The same layout JSON becomes an SVG plan, a 3D model and a Blender walkthrough video. <a href="viewer.html">Orbit the examples in 3D.</a></p>
       </div>
     </div>
+    <div class="chips"><span class="chip">bedrooms</span><span class="chip">kitchens</span><span class="chip">bathrooms</span><span class="chip">living &amp; dining</span><span class="chip">entry &amp; stairs</span><span class="chip">balcony &amp; laundry</span><span class="chip">home office</span><span class="chip">studios &amp; whole homes</span><span class="chip">exterior &amp; site</span><span class="chip">Indian &amp; Western homes</span></div>
   </div>
 </section>
 
-<section id="how" class="band-2">
+<section id="mcp">
+  <div class="wrap">
+    <div class="sec-head row">
+      <span class="label"><b>02</b> / MCP tools</span>
+      <h2>Ten tools Claude calls while it designs.</h2>
+      <p class="lead">The plugin starts a small MCP server: plain Python, nothing to install. Claude checks a layout, fixes it, looks at it, measures it and compares options without leaving the chat.</p>
+    </div>
+    <div class="tbl" role="table" aria-label="MCP tools">
+      <div class="tr th" role="row"><span>Tool</span><span>What it does</span><span>Returns</span><span></span></div>
+      <div class="tr" role="row"><code>validate_layout</code><span>Errors and warnings with their source, for every day/night state.</span><em>structured</em><i></i></div>
+      <div class="tr" role="row"><code>edit_layout</code><span>Move, resize, rotate, add or remove items, then re-check in the same call.</span><em>structured</em><b class="new">new</b></div>
+      <div class="tr" role="row"><code>floor_plan_png</code><span>A picture of the plan Claude can look at, with a numbered legend.</span><em>image</em><b class="new">new</b></div>
+      <div class="tr" role="row"><code>room_metrics</code><span>Free floor, storage, beds, seats, worktop run and daylight against IRC 8%.</span><em>structured</em><b class="new">new</b></div>
+      <div class="tr" role="row"><code>compare_layouts</code><span>Ranks 2 to 6 options by errors, warnings, free floor and storage.</span><em>structured</em><b class="new">new</b></div>
+      <div class="tr" role="row"><code>floor_plan_svg</code><span>A labelled SVG plan with door swings, north up.</span><em>svg</em><i></i></div>
+      <div class="tr" role="row"><code>layout_to_gltf</code><span>A 3D model with furniture shaped by type. <a href="viewer.html">Open the viewer →</a></span><em>gltf</em><i></i></div>
+      <div class="tr" role="row"><code>get_layout_schema</code><span>The JSON Schema every layout follows.</span><em>json</em><i></i></div>
+      <div class="tr" role="row"><code>list_references</code><span>Room modules, regional modules, rules and examples.</span><em>text</em><i></i></div>
+      <div class="tr" role="row"><code>read_reference</code><span>Reads one of those files into the chat.</span><em>text</em><i></i></div>
+    </div>
+
+    <div class="showcase">
+      <figure class="shot">
+        <img id="shot-img" src="images/studio-apartment-plan.png" width="336" height="504" alt="PNG floor plan of the studio apartment, drawn by floor_plan_png, with numbered furniture">
+        <figcaption>What Claude sees from <code>floor_plan_png</code>. Numbers match the legend it gets back; hatching marks raised items.</figcaption>
+      </figure>
+      <div>
+        <div class="sc-head">
+          <h3>room_metrics → studio-apartment.json</h3>
+          <div class="seg" role="group" aria-label="State">
+            <button type="button" aria-pressed="true" data-state="night">night</button>
+            <button type="button" aria-pressed="false" data-state="day">day</button>
+          </div>
+        </div>
+        <div class="metrics" aria-live="polite">
+          <div class="metric"><small>Free floor</small><b data-m="free">65.2<span>%</span></b><em data-m="free-note">wall bed down</em></div>
+          <div class="metric"><small>Sleeping places</small><b data-m="sleep">2</b><em>double wall bed</em></div>
+          <div class="metric"><small>Seats</small><b>3</b><em>sofa, 2.0 m</em></div>
+          <div class="metric"><small>Storage</small><b>2.59<span>m³</span></b><em>cabinets and wardrobes</em></div>
+          <div class="metric"><small>Worktop run</small><b>2.0<span>m</span></b><em>prep, hob, sink</em></div>
+          <div class="metric flag"><small>Glazing / floor</small><b>6.6<span>%</span></b><em>below the IRC 8% for daylight</em></div>
+        </div>
+        <div class="extras">
+          <div class="card"><h3>Resources</h3><p>Every reference, template and example as <code>rsd://skill/…</code>, ready to attach with <code>@</code>.</p></div>
+          <div class="card"><h3>Prompts</h3><p><code>design_room</code> and <code>review_layout</code> appear as slash commands, with the right modules attached.</p></div>
+          <div class="card"><h3>Current protocol</h3><p>MCP 2026-07-28 with <code>server/discover</code>, plus the older handshake back to 2024-11-05.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">How it works</span>
-      <h2>From “my room is a mess” to a <em>checked plan.</em></h2>
+      <span class="label"><b>03</b> / How it works</span>
+      <h2>From “my room is a mess” to a checked plan.</h2>
     </div>
     <div class="steps">
       <div class="card step">
@@ -457,10 +584,10 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <section id="rooms">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">Room modules</span>
-      <h2>Every room, <em>inside and out.</em></h2>
-      <p class="lead">One skill with a module per room. Claude loads only the ones a brief needs.</p>
+    <div class="sec-head row">
+      <span class="label"><b>04</b> / Room modules</span>
+      <h2>Every room, inside and out.</h2>
+      <p class="lead">One skill with a module per room. Claude loads only the ones a brief needs, for Indian and Western homes.</p>
     </div>
     <div class="grid-5">
       <div class="card room"><h3><span class="swatch" style="background:var(--p-sleep)"></span>Bedrooms</h3><p>Kids', twin and shared rooms; loft, offset, half-height and wall beds.</p><span class="k">decides <b>how people sleep</b></span></div>
@@ -477,11 +604,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </div>
 </section>
 
-<section id="checker" class="band">
+<section id="checker">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">The checker</span>
-      <h2>Every layout is <em>tested</em> before you see it.</h2>
+    <div class="sec-head row">
+      <span class="label"><b>05</b> / The checker</span>
+      <h2>Every layout is tested before you see it.</h2>
       <p class="lead"><code>check_layout.py</code> is plain Python with no dependencies. It reads a layout JSON, prints errors and warnings with their source, and draws an ASCII floor plan.</p>
     </div>
     <div class="split">
@@ -510,68 +637,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </div>
 </section>
 
-<section id="mcp" class="dark">
+<section id="example">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">MCP tools</span>
-      <h2>Ten tools Claude <em>calls</em> while it designs.</h2>
-      <p class="lead">The plugin starts a small MCP server, plain Python with nothing to install. Claude checks a layout, fixes it, looks at it, measures it and compares options without leaving the chat.</p>
-    </div>
-    <div class="tools">
-      <div class="card tool"><span class="tag">check</span><br><code>validate_layout</code><p>Errors and warnings with their source, per day/night state.</p></div>
-      <div class="card tool new"><span class="tag">fix</span><br><code>edit_layout</code><p>Move, resize, rotate, add or remove, then re-check in the same call.</p></div>
-      <div class="card tool new"><span class="tag">see</span><br><code>floor_plan_png</code><p>A picture of the plan Claude can look at, with a numbered legend.</p></div>
-      <div class="card tool new"><span class="tag">measure</span><br><code>room_metrics</code><p>Free floor, storage, beds, seats, worktop and daylight.</p></div>
-      <div class="card tool new"><span class="tag">decide</span><br><code>compare_layouts</code><p>Ranks 2 to 6 options by errors, warnings, free floor and storage.</p></div>
-      <div class="card tool"><span class="tag">draw</span><br><code>floor_plan_svg</code><p>A labelled SVG plan with door swings, north up.</p></div>
-      <div class="card tool"><span class="tag">build</span><br><code>layout_to_gltf</code><p>A 3D model with furniture shaped by type. <a href="viewer.html">Try it.</a></p></div>
-      <div class="card tool"><span class="tag">format</span><br><code>get_layout_schema</code><p>The JSON Schema every layout follows.</p></div>
-      <div class="card tool"><span class="tag">learn</span><br><code>list_references</code><p>Room modules, regional modules, rules, examples.</p></div>
-      <div class="card tool"><span class="tag">learn</span><br><code>read_reference</code><p>Reads one of those files into the chat.</p></div>
-    </div>
-
-    <div class="showcase">
-      <figure class="shot" style="margin:0">
-        <img id="shot-img" src="images/studio-apartment-plan.png" width="336" height="504" alt="PNG floor plan of the studio apartment, drawn by floor_plan_png, with numbered furniture">
-        <figcaption>What Claude sees from <code>floor_plan_png</code>. Numbers match the legend it gets back; hatching marks raised items.</figcaption>
-      </figure>
-      <div>
-        <div class="plan-head" style="margin-bottom:0">
-          <h3>room_metrics on the studio</h3>
-          <div class="seg" role="group" aria-label="State">
-            <button type="button" aria-pressed="true" data-state="night">Night</button>
-            <button type="button" aria-pressed="false" data-state="day">Day</button>
-          </div>
-        </div>
-        <div class="metrics" aria-live="polite">
-          <div class="metric"><small>Free floor</small><b data-m="free">65.2<span>%</span></b><em data-m="free-note">wall bed down</em></div>
-          <div class="metric"><small>Sleeping places</small><b data-m="sleep">2</b><em>double wall bed</em></div>
-          <div class="metric"><small>Seats</small><b>3</b><em>sofa, 2.0 m</em></div>
-          <div class="metric"><small>Storage</small><b>2.59<span>m³</span></b><em>cabinets and wardrobes</em></div>
-          <div class="metric"><small>Worktop run</small><b>2.0<span>m</span></b><em>prep, hob, sink</em></div>
-          <div class="metric flag"><small>Glazing / floor</small><b>6.6<span>%</span></b><em>below the IRC 8% for daylight</em></div>
-        </div>
-        <div class="extras">
-          <div class="card"><h3>Resources</h3><p>Every reference, template and example as <code>rsd://skill/…</code>, ready to attach with <code>@</code>.</p></div>
-          <div class="card"><h3>Prompts</h3><p><code>design_room</code> and <code>review_layout</code> show up as slash commands, with the right room and safety modules attached.</p></div>
-          <div class="card"><h3>Current protocol</h3><p>Speaks MCP 2026-07-28 with <code>server/discover</code>, and the older handshake back to 2024-11-05.</p></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="example" class="band-2">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">Worked example</span>
-      <h2>Twins, 11 m², and <em>no more</em> bunk-bed fights.</h2>
-      <p class="lead">Instead of a stacked bunk, the upper bed turns the corner over a desk and wardrobe. Dashed outlines are at loft level. The reveal script below doubles as the camera path for a walkthrough video.</p>
+    <div class="sec-head row">
+      <span class="label"><b>06</b> / Worked example</span>
+      <h2>Twins, 11 m², and no more bunk-bed fights.</h2>
+      <p class="lead">Instead of a stacked bunk, the upper bed turns the corner over a desk and wardrobe. Dashed outlines are at loft level. The reveal script doubles as the camera path for a walkthrough video.</p>
     </div>
     <div class="split">
       <div>
-      <figure class="plan-card" style="margin:0">
-        <svg viewBox="0 0 396 396" role="img" aria-label="Twins' room, offset L-loft floor plan" class="plan">
+        <figure class="plan-card">
+          <svg viewBox="0 0 396 396" role="img" aria-label="Twins' room, offset L-loft floor plan" class="plan">
 <rect class="p-floor" x="28" y="28.0" width="340.0" height="340.0"/>
 <rect class="p-sleep" x="28.0" y="28.0" width="95.0" height="200.0" rx="3"/>
 <rect class="p-store" x="123.0" y="28.0" width="45.0" height="95.0" rx="3"/>
@@ -595,15 +671,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <text class="p-dim" x="198.0" y="390.0" text-anchor="middle">3.4 m</text>
 <text class="p-dim" x="12" y="198.0" text-anchor="middle" transform="rotate(-90 12 198.0)">3.4 m</text>
 </svg>
-        <figcaption><span>3.4 × 3.4 m, ceiling 2.8 m · <code>examples/twins-offset-loft.json</code></span><span class="status">0 errors</span></figcaption>
-      </figure>
-      <figure class="render">
-        <img src="images/twins-offset-loft-3d.jpg" alt="3D render of the twins' room: loft bed with guardrail over a desk, storage steps, lower bed and wardrobes" loading="lazy">
-        <figcaption>The same layout, exported with <code>layout_to_gltf</code> and rendered in Blender. <a href="viewer.html">Orbit it →</a></figcaption>
-      </figure>
+          <figcaption><span>3.4 × 3.4 m, ceiling 2.8 m · <code>examples/twins-offset-loft.json</code></span><span class="status">0 errors</span></figcaption>
+        </figure>
+        <figure class="render">
+          <img src="images/twins-offset-loft-3d.jpg" alt="3D render of the twins' room: loft bed with guardrail over a desk, storage steps, lower bed and wardrobes" loading="lazy">
+          <figcaption>The same layout, exported with <code>layout_to_gltf</code> and rendered in Blender. <a href="viewer.html">Orbit it →</a></figcaption>
+        </figure>
       </div>
       <div>
-        <h3 class="reveal-head">Reveal script</h3>
+        <h3 class="sub-h">Reveal script</h3>
         <ol class="reveal">
           <li>Two kids, one 11 m² room. No more bunk-bed fights over who gets the top.</li>
           <li>The upper bed turns the corner instead of stacking, so both kids can sit up in bed.</li>
@@ -622,8 +698,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <section id="install">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">Install &amp; use</span>
-      <h2>Up and running in <em>two minutes.</em></h2>
+      <span class="label"><b>07</b> / Install</span>
+      <h2>Up and running in two minutes.</h2>
     </div>
     <div class="split">
       <div>
@@ -683,7 +759,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
       </div>
       <div>
-        <h3 style="margin-bottom:14px">Try asking</h3>
+        <h3 class="sub-h">Try asking</h3>
         <div class="prompts">
           <div class="prompt"><div><small>bedroom</small>My twins are 9 and share a 3.4 × 3.4 m room with a 2.8 m ceiling. They fight over the bunk bed and both need a desk.</div><button class="copy">Copy</button></div>
           <div class="prompt"><div><small>kitchen</small>Our galley kitchen is 2.4 × 3.2 m and two of us keep bumping into each other. Fridge is by the door.</div><button class="copy">Copy</button></div>
@@ -695,11 +771,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </div>
 </section>
 
-<section id="sources" class="band">
+<section id="sources">
   <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">Where the rules come from</span>
-      <h2>Every number has a <em>source.</em></h2>
+    <div class="sec-head row">
+      <span class="label"><b>08</b> / Sources</span>
+      <h2>Every number has a source.</h2>
       <p class="lead">Design patterns come from about 100 small-space renovations and 14 whole-home tours of Indian and Western houses and flats. Safety and clearance numbers come from codes and standards. Anything unconfirmed is tagged <code>[std]</code> and flagged to you.</p>
     </div>
     <div class="src">
@@ -717,8 +793,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <section id="roadmap">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">Roadmap</span>
-      <h2>Where this is <em>going.</em></h2>
+      <span class="label"><b>09</b> / Roadmap</span>
+      <h2>Where this is going.</h2>
     </div>
     <div class="road">
       <div class="card done"><span class="tag ok">done</span><h3 style="margin-top:10px">Skill v1</h3><p>Room modules, sourced rules, layout format, checker, examples.</p></div>
@@ -732,10 +808,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <section class="closing">
   <div class="wrap">
-    <h2>Your next room, <em style="color:inherit">checked.</em></h2>
+    <span class="label">Get started</span>
+    <h2 style="margin-top:18px">Your next room, <span class="hl">checked.</span></h2>
     <p>Install the plugin, describe the room, and get a layout that already passes the rules.</p>
     <div class="cta">
-      <a class="btn primary" href="#install">Install the skill</a>
+      <a class="btn primary" href="#install">Install the skill →</a>
       <a class="btn" href="https://github.com/puvankumarv/residential-space-designer">Star on GitHub</a>
     </div>
   </div>
@@ -751,11 +828,22 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 <script>
 (function(){
   var root=document.documentElement, key="rsd-theme";
-  try{var saved=localStorage.getItem(key); if(saved) root.setAttribute("data-theme",saved);}catch(e){}
   document.getElementById("theme").addEventListener("click",function(){
-    var dark=root.getAttribute("data-theme")==="dark"||(!root.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme: dark)").matches);
-    var next=dark?"light":"dark"; root.setAttribute("data-theme",next);
+    var next=root.getAttribute("data-theme")==="light"?"dark":"light";
+    root.setAttribute("data-theme",next);
     try{localStorage.setItem(key,next);}catch(e){}
+  });
+  function copyText(text,btn){
+    if(!navigator.clipboard) return;
+    navigator.clipboard.writeText(text).then(function(){var o=btn.textContent;btn.textContent="Copied";setTimeout(function(){btn.textContent=o;},1400);});
+  }
+  document.querySelectorAll("[data-copy]").forEach(function(b){b.addEventListener("click",function(){copyText(b.dataset.copy,b);});});
+  document.querySelectorAll(".copy").forEach(function(b){
+    b.addEventListener("click",function(){
+      var src=b.parentElement.querySelector("pre")||b.parentElement.querySelector("div");
+      var t=src.cloneNode(true); var s=t.querySelector("small"); if(s) s.remove();
+      copyText(t.textContent.trim(),b);
+    });
   });
   document.querySelectorAll(".tab").forEach(function(t){
     t.addEventListener("click",function(){
@@ -763,47 +851,30 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       document.querySelectorAll(".panel").forEach(function(p){p.classList.toggle("on",p.id===t.dataset.panel);});
     });
   });
-  var nav=document.querySelector("nav");
-  function onScroll(){nav.classList.toggle("scrolled",scrollY>window.innerHeight*0.6);}
-  addEventListener("scroll",onScroll,{passive:true}); onScroll();
-  // mobile menu
   var mb=document.getElementById("menu-btn"), menu=document.getElementById("menu");
   function setMenu(open){menu.classList.toggle("open",open);mb.setAttribute("aria-expanded",open?"true":"false");mb.setAttribute("aria-label",open?"Close menu":"Open menu");}
   mb.addEventListener("click",function(){setMenu(!menu.classList.contains("open"));});
   menu.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){setMenu(false);});});
   addEventListener("keydown",function(e){if(e.key==="Escape")setMenu(false);});
-
-  // highlight the section in view
   var links=document.querySelectorAll('.nav-links a[href^="#"], .menu a[href^="#"]');
   if("IntersectionObserver" in window){
-    var io=new IntersectionObserver(function(entries){
-      entries.forEach(function(en){
-        if(!en.isIntersecting) return;
-        links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id);});
-      });
-    },{rootMargin:"-45% 0px -50% 0px"});
-    document.querySelectorAll("section[id]").forEach(function(sec){io.observe(sec);});
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(!en.isIntersecting)return;links.forEach(function(a){a.classList.toggle("on",a.getAttribute("href")==="#"+en.target.id);});});},{rootMargin:"-45% 0px -50% 0px"});
+    document.querySelectorAll("section[id]").forEach(function(s){io.observe(s);});
   }
-
-  // hero: plan or 3D (model-viewer loads only when asked for)
   var card=document.getElementById("hero-card"), v3=document.getElementById("view3d"), note=document.getElementById("hero-note");
-  card.querySelectorAll(".seg button").forEach(function(b){
+  card.querySelectorAll("[data-view]").forEach(function(b){
     b.addEventListener("click",function(){
       var is3d=b.dataset.view==="3d";
-      card.querySelectorAll(".seg button").forEach(function(o){o.setAttribute("aria-pressed",o===b?"true":"false");});
-      if(is3d && !v3.firstChild){
-        var sc=document.createElement("script"); sc.type="module";
-        sc.src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"; document.head.appendChild(sc);
-        v3.innerHTML='<model-viewer src="models/studio-apartment.glb?v=3" alt="3D model of the studio apartment, night layout" camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="800" rotation-per-second="14deg" camera-orbit="-35deg 40deg auto" field-of-view="30deg" exposure="0.75" tone-mapping="aces" shadow-intensity="0.8" interaction-prompt="none"></model-viewer>';
+      card.querySelectorAll("[data-view]").forEach(function(o){o.setAttribute("aria-pressed",o===b?"true":"false");});
+      if(is3d&&!v3.firstChild){
+        var sc=document.createElement("script");sc.type="module";sc.src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js";document.head.appendChild(sc);
+        v3.innerHTML='<model-viewer src="models/studio-apartment.glb?v=3" alt="3D model of the studio apartment, night layout" camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="800" rotation-per-second="14deg" camera-orbit="-35deg 40deg auto" field-of-view="30deg" exposure="0.8" tone-mapping="aces" shadow-intensity="0.8" interaction-prompt="none"></model-viewer>';
       }
       card.classList.toggle("is3d",is3d);
-      note.textContent=is3d?"Studio apartment in 3D: drag to orbit":"Studio apartment, 25 m², night layout";
+      note.textContent=is3d?"3D · drag to orbit":"Plan · night";
     });
   });
-
-  // MCP showcase: night or day metrics
-  var M={night:{free:"65.2",note:"wall bed down",sleep:"2",img:"images/studio-apartment-plan.png"},
-         day:{free:"76.1",note:"wall bed folded away",sleep:"0",img:"images/studio-apartment-plan-day.png"}};
+  var M={night:{free:"65.2",note:"wall bed down",sleep:"2",img:"images/studio-apartment-plan.png"},day:{free:"76.1",note:"wall bed folded away",sleep:"0",img:"images/studio-apartment-plan-day.png"}};
   document.querySelectorAll("[data-state]").forEach(function(b){
     b.addEventListener("click",function(){
       var m=M[b.dataset.state];
@@ -812,16 +883,6 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       document.querySelector('[data-m="free-note"]').textContent=m.note;
       document.querySelector('[data-m="sleep"]').textContent=m.sleep;
       document.getElementById("shot-img").src=m.img;
-    });
-  });
-
-  document.querySelectorAll(".copy").forEach(function(b){
-    b.addEventListener("click",function(){
-      var src=b.parentElement.querySelector("pre")||b.parentElement.querySelector("div");
-      var text=src.cloneNode(true); var s=text.querySelector("small"); if(s) s.remove();
-      navigator.clipboard.writeText(text.textContent.trim()).then(function(){
-        var o=b.textContent; b.textContent="Copied"; setTimeout(function(){b.textContent=o;},1400);
-      });
     });
   });
 })();
