@@ -99,7 +99,7 @@ The plugin starts a small MCP server (standard-library Python, no install) with 
 | `edit_layout` | Moves, resizes, rotates, adds, removes or changes elements and re-checks in the same call (structured) |
 | `compare_layouts` | Ranks 2 to 6 options by errors, warnings, free floor and storage, with a one-line summary (structured) |
 | `floor_plan_png` | A PNG picture of the plan with a numbered legend, so Claude can look at what it designed |
-| `floor_plan_svg` | Draws a layout as a labelled SVG floor plan, one state at a time |
+| `floor_plan_svg` | Draws an architectural SVG floor plan (hatched walls, door swings, furniture symbols, dimensions), or plain boxes with `style: "plain"` |
 | `layout_to_gltf` | Builds a 3D model of the room as glTF 2.0 JSON, furniture shaped by type |
 | `get_layout_schema` | Returns the layout JSON Schema |
 | `list_references` | Lists the room modules, regional modules, rules and examples |

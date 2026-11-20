@@ -9,7 +9,7 @@ Tools:
   edit_layout       move, resize, rotate, add, remove or change elements, then re-check (structured)
   compare_layouts   rank 2-6 layout options by errors, warnings, free floor and storage (structured)
   floor_plan_png    a PNG picture of the plan, so the model can see it, with a numbered legend
-  floor_plan_svg    the full SVG floor plan with labels and door swings
+  floor_plan_svg    an architectural SVG floor plan (or plain boxes) with door swings and dimensions
   layout_to_gltf    a 3D model (glTF 2.0) with furniture shaped by type
   get_layout_schema the JSON Schema a layout must follow
   list_references   the skill's reference files and example layouts
@@ -37,6 +37,7 @@ import check_layout as cl  # noqa: E402
 import floor_plan_svg as svg  # noqa: E402
 import layout_to_gltf as gl  # noqa: E402
 import layout_tools as lt  # noqa: E402
+import plan_drawing  # noqa: E402
 import plan_png  # noqa: E402
 
 VERSION = "1.3.0"  # kept equal to .claude-plugin/plugin.json by the tests
@@ -207,11 +208,17 @@ TOOLS = [
         "name": "floor_plan_svg",
         "title": "Draw a floor plan",
         "description": (
-            "Draw a room layout as an SVG floor plan, north up, 1 m = 100 px. Floor items are filled, "
-            "raised items (loft beds, wall cabinets) dashed; doors show their swing. Returns the SVG markup. "
-            "For layouts with states (day/night), pass state to pick one; the first state is the default."
+            "Draw a room layout as an SVG floor plan, north up, 1 m = 100 px. The default 'architectural' style "
+            "draws it like an architect: hatched walls, door leaves and swings, glazed windows, furniture as "
+            "symbols (beds with pillows, sofas with arms, hob rings, sink and toilet bowls, stair treads), "
+            "raised items such as loft beds dashed as overhead, dimension lines, a north arrow and a scale bar; "
+            "each item has a hover title with its size. 'plain' draws filled, labelled boxes. Returns the SVG "
+            "markup. For layouts with states (day/night), pass state; the first state is the default."
         ),
-        "inputSchema": {"type": "object", "properties": {"layout": LAYOUT_ARG, "state": STATE_ARG}, "required": ["layout"]},
+        "inputSchema": {"type": "object", "properties": {
+            "layout": LAYOUT_ARG, "state": STATE_ARG,
+            "style": {"type": "string", "enum": ["architectural", "plain"], "default": "architectural",
+                      "description": "Drawing style."}}, "required": ["layout"]},
         "annotations": READ_ONLY,
     },
     {
@@ -435,7 +442,11 @@ def floor_plan_png(args):
 
 def floor_plan_svg(args):
     layout = _layout(args.get("layout"))
-    return text(_guard(svg.render, layout, _state(layout, args.get("state"))))
+    state = _state(layout, args.get("state"))
+    style = args.get("style", "architectural")
+    if style not in ("architectural", "plain"):
+        raise ToolError("style must be 'architectural' or 'plain'")
+    return text(_guard(svg.render if style == "plain" else plan_drawing.render, layout, state))
 
 
 def layout_to_gltf(args):

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Architectural floor plans** (`scripts/plan_drawing.py`, standard library): hatched walls, door leaves and swings, glazed windows, furniture as plan symbols (beds with pillows and a turned-down duvet, sofas with arms and cushions, hob rings, sink and toilet bowls, wardrobe rails, stair treads with an UP arrow), loft beds and wall cabinets dashed as overhead, a light tint per use, dimension lines, a north arrow and a scale bar. Each item has a hover title with its size. `floor_plan_svg` now draws this by default; `style: "plain"` keeps the old boxes.
+- **Website:** rebuilt in the style of MCP product sites (dark-first blueprint theme, install command up front, a product window with layout JSON, plan and tool calls, a tool table), using the new architectural plans.
 - **Furniture shapes in 3D** (`scripts/furniture.py`): elements are modelled by type instead of as plain boxes. Beds get a frame, mattress, duvet and pillows at the end nearest a wall, plus a guardrail with a gap by the steps on lofts. Sofas get arms and cushions; cabinets and wardrobes get plinths, doors or drawers and handles (sliding doors on two tracks); counters get stone worktops, a sink bowl and a hob; and there are appliances, sanitaryware, glass shower screens on the open sides, stairs, shelves and pleated curtains. Every part stays inside the element's box, so sizes match what the checker tested.
 - **Materials:** wood, fabric, metal, ceramic, stone and black glass, with metallic and roughness values. An element's `material` field (steel, wood, veneer) picks the frame material.
 - **MCP server v2**, after researching the 2025-11-25 and 2026-07-28 MCP revisions and other design MCP servers (notes in `interior-design-research/mcp_research.md`):
