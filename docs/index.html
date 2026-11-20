@@ -80,7 +80,7 @@ nav .wrap{display:flex;align-items:center;gap:20px;height:62px}
 .menu a.on{color:var(--accent)}
 
 /* hero */
-.hero{padding:clamp(64px,8vw,104px) 0 0;border-top:0;overflow:hidden;text-align:center}
+.hero{position:relative;padding:clamp(64px,8vw,104px) 0 0;border-top:0;overflow:hidden;text-align:center}
 .hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);pointer-events:none}
 .hero::after{content:"";position:absolute;left:50%;top:-220px;width:900px;height:520px;transform:translateX(-50%);background:radial-gradient(closest-side,var(--glow),transparent);pointer-events:none;opacity:.7}
 .hero .wrap{position:relative;z-index:1}
