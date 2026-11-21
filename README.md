@@ -114,7 +114,7 @@ It also offers:
 
 ![PNG plan of the studio apartment at night, drawn by floor_plan_png](docs/images/studio-apartment-plan.png)
 
-![SVG floor plan of the twins' offset-loft example, drawn by floor_plan_svg](docs/images/twins-offset-loft.svg)
+![Architectural floor plan of the twins' offset-loft example, drawn by floor_plan_svg: hatched walls, door swing, furniture symbols, the loft bed dashed overhead, dimensions](docs/images/twins-offset-loft.svg)
 
 Installed through the Claude Code plugin, it starts by itself. For other MCP clients (Claude Desktop, Cursor and others), clone the repository and add:
 

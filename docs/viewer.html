@@ -5,59 +5,66 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>3D Room Viewer · Residential Space Designer</title>
 <meta name="description" content="Orbit around rooms designed and checked by the Residential Space Designer skill, or open your own layout_to_gltf model.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23b4532a'/%3E%3Cpath d='M7 25V13l9-6 9 6v12h-6v-7h-6v7z' fill='%23fff'/%3E%3C/svg%3E">
+<meta property="og:title" content="3D Room Viewer · Residential Space Designer">
+<meta property="og:image" content="https://puvankumarv.github.io/residential-space-designer/images/social-card.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%233d8bff'/%3E%3Cpath d='M7 25V13l9-6 9 6v12h-6v-7h-6v7z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem("rsd-theme");if(t)document.documentElement.setAttribute("data-theme",t);}catch(e){}</script>
 <script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 <style>
 :root{
-  --bg:#f7f4ee; --card:#fffdf9; --ink:#1f1d1a; --ink-2:#55504a; --ink-3:#8a837a;
-  --line:#e2dbcf; --accent:#b4532a; --accent-ink:#fff; --stage:#efeae0;
-  --code-bg:#1f1d1a; --code-ink:#ece7de;
+  --bg:#07090d; --bg-2:#0b0f15; --card:#0e131b; --card-2:#121924; --line:#1b2330; --line-2:#283345;
+  --ink:#e9eef6; --ink-2:#a2acbc; --ink-3:#687488; --accent:#3d8bff; --accent-2:#8ab8ff; --stage:#0b1018;
+  --grid:rgba(110,160,255,.06); --code-bg:#0a0e14; --code-ink:#dbe4f2; color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#161513; --card:#201f1c; --ink:#f0ebe3; --ink-2:#bdb6ab; --ink-3:#8c857b;
-    --line:#34312c; --accent:#e07a4f; --accent-ink:#1a1210; --stage:#1d1c19;
-    --code-bg:#0f0e0d; --code-ink:#ece7de;
-  }
-}
-:root[data-theme="dark"]{
-  --bg:#161513; --card:#201f1c; --ink:#f0ebe3; --ink-2:#bdb6ab; --ink-3:#8c857b;
-  --line:#34312c; --accent:#e07a4f; --accent-ink:#1a1210; --stage:#1d1c19;
-  --code-bg:#0f0e0d; --code-ink:#ece7de;
+:root[data-theme="light"]{
+  --bg:#ffffff; --bg-2:#f6f8fb; --card:#ffffff; --card-2:#f3f6fa; --line:#e5eaf1; --line-2:#d3dbe6;
+  --ink:#0b1220; --ink-2:#4a5568; --ink-3:#8492a6; --accent:#1f6feb; --accent-2:#1f6feb; --stage:#eef2f7;
+  --grid:rgba(31,111,235,.07); --code-bg:#0b1220; --code-ink:#dbe4f2; color-scheme:light;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif}
-a{color:var(--accent)}
-.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
-header{padding:28px 0 8px;display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
-header a.home{font-weight:600;text-decoration:none;color:var(--ink)}
-h1{font:600 clamp(28px,4vw,40px)/1.15 Fraunces,Georgia,serif;margin:12px 0 6px;letter-spacing:-.01em}
-.lead{color:var(--ink-2);margin:0 0 20px;max-width:62ch}
-.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-.chip{border:1px solid var(--line);background:var(--card);color:var(--ink-2);border-radius:8px;padding:8px 14px;font:500 14px Inter,sans-serif;cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Geist,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-2)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+header{height:62px;display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid var(--line);margin:0 -24px;padding:0 24px}
+header a.home{display:inline-flex;align-items:center;gap:10px;font-weight:600;text-decoration:none;color:var(--ink)}
+header a.home::before{content:"";width:24px;height:24px;border-radius:6px;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M7 25V13l9-6 9 6v12h-6v-7h-6v7z' fill='%23fff'/%3E%3C/svg%3E") center/18px no-repeat}
+header .gh{font:500 12px "Geist Mono",monospace;text-transform:uppercase;letter-spacing:.04em;text-decoration:none;color:var(--bg);background:var(--ink);padding:9px 12px;border-radius:8px}
+.eyebrow{display:block;margin-top:48px;font:500 12px "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.eyebrow b{color:var(--accent);font-weight:500}
+h1{font:600 clamp(34px,5vw,56px)/1.05 Geist,sans-serif;letter-spacing:-.035em;margin:14px 0 12px}
+.lead{color:var(--ink-2);margin:0 0 28px;max-width:62ch;font-size:17px}
+.bar{display:flex;gap:4px;flex-wrap:wrap;align-items:center;margin-bottom:12px;padding:4px;border:1px solid var(--line);border-radius:10px;background:var(--card);width:max-content;max-width:100%}
+.chip{border:0;background:transparent;color:var(--ink-3);border-radius:7px;padding:7px 12px;font:500 13px "Geist Mono",monospace;cursor:pointer}
+.chip:hover{color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--card-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line-2)}
+label.chip{color:var(--accent-2)}
 label.chip input{display:none}
-.stage{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--stage)}
-model-viewer{width:100%;height:min(70vh,620px);background:var(--stage);--poster-color:transparent}
-.caption{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--ink-3);font-size:14px;padding:10px 2px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:36px 0}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
-.card h2{font:600 18px/1.3 Inter,sans-serif;margin:0 0 6px}
-.card p{margin:0 0 10px;color:var(--ink-2);font-size:15px}
-pre{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:12px 14px;font:13px/1.5 "JetBrains Mono",monospace;overflow-x:auto;margin:0}
-footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--ink-3);font-size:14px}
+.stage{position:relative;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--stage);box-shadow:0 30px 80px -30px rgba(0,0,0,.6)}
+.stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+model-viewer{position:relative;width:100%;height:min(70vh,640px);background:transparent;--poster-color:transparent}
+.caption{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--ink-3);font:13px "Geist Mono",monospace;padding:12px 2px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin:40px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.card h2{font:600 17px/1.3 Geist,sans-serif;letter-spacing:-.01em;margin:0 0 6px}
+.card p{margin:0 0 12px;color:var(--ink-2);font-size:15px}
+.card code{font:13px "Geist Mono",monospace;color:var(--accent-2)}
+pre{background:var(--code-bg);color:var(--code-ink);border:1px solid var(--line-2);border-radius:10px;padding:12px 14px;font:13px/1.55 "Geist Mono",monospace;overflow-x:auto;margin:0}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--ink-3);font-size:14px}
+@media (max-width:600px){.wrap{padding:0 16px}header{margin:0 -16px;padding:0 16px}.bar{width:auto}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <a class="home" href="./">← Residential Space Designer</a>
-    <a href="https://github.com/puvankumarv/residential-space-designer">GitHub</a>
+    <a class="home" href="./">Residential Space Designer</a>
+    <a class="gh" href="https://github.com/puvankumarv/residential-space-designer">GitHub</a>
   </header>
 
+  <span class="eyebrow"><b>3D</b> / Viewer</span>
   <h1>See the room in 3D.</h1>
   <p class="lead">Every layout the skill designs can be turned into a 3D model, with furniture shaped by type: beds, sofas, cabinets with doors, worktops, appliances. These are the shipped examples, each one checked against the safety and design rules first. Drag to orbit, scroll or pinch to zoom. The ceiling is left off so you can look in.</p>
 
