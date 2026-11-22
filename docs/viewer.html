@@ -46,6 +46,8 @@ label.chip input{display:none}
 .stage{position:relative;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--stage);box-shadow:0 30px 80px -30px rgba(0,0,0,.6)}
 .stage::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
 model-viewer{position:relative;width:100%;height:min(70vh,640px);background:transparent;--poster-color:transparent}
+.dl{font:500 12px "Geist Mono",monospace;text-decoration:none;color:var(--accent-2);border:1px solid var(--line-2);border-radius:7px;padding:4px 9px;margin-left:10px;white-space:nowrap}
+.dl:hover{border-color:var(--accent)}
 .caption{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--ink-3);font:13px "Geist Mono",monospace;padding:12px 2px 0}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;margin:40px 0}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
@@ -82,7 +84,7 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--ink-3);f
       camera-orbit="-35deg 32deg auto" field-of-view="30deg" shadow-intensity="0.8" exposure="0.75"
       tone-mapping="aces" interaction-prompt="none"></model-viewer>
   </div>
-  <div class="caption"><span id="note">Twins' room, 3.4 × 3.4 m: offset L-loft with a desk and wardrobe underneath.</span><span>Furniture is shaped by type at its real size.</span></div>
+  <div class="caption"><span id="note">Twins' room, 3.4 × 3.4 m: offset L-loft with a desk and wardrobe underneath.</span><span class="cap-r">Furniture is shaped by type at its real size. <a id="dl" class="dl" href="models/twins-offset-loft.glb" download="twins-offset-loft.glb">Download .glb ↓</a></span></div>
 
   <div class="grid">
     <div class="card">
@@ -115,6 +117,8 @@ and save it as room.gltf"</pre>
     c.addEventListener("click", function(){
       chips.forEach(function(o){ o.setAttribute("aria-pressed", o === c ? "true" : "false"); });
       mv.src = c.dataset.src;
+      var file = c.dataset.src.split("?")[0], dl = document.getElementById("dl");
+      dl.href = file; dl.download = file.split("/").pop(); dl.hidden = false;
       note.textContent = c.dataset.note;
     });
   });
@@ -123,6 +127,7 @@ and save it as room.gltf"</pre>
     if (!f) return;
     chips.forEach(function(o){ o.setAttribute("aria-pressed", "false"); });
     mv.src = URL.createObjectURL(f);
+    document.getElementById("dl").hidden = true;  // it's already the visitor's own file
     note.textContent = f.name + " (opened locally, nothing is uploaded)";
   });
 })();

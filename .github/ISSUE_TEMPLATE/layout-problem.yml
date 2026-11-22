@@ -1,0 +1,40 @@
+name: Layout problem
+description: The checker, a plan or a 3D model gets a layout wrong
+labels: ["layout"]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting. A layout JSON that shows the problem is the most useful thing you can share.
+  - type: dropdown
+    id: area
+    attributes:
+      label: What went wrong?
+      options:
+        - The checker reported an error that isn't real
+        - The checker missed a real problem
+        - The floor plan (SVG or PNG) is drawn wrong
+        - The 3D model is wrong
+        - An MCP tool failed or returned something odd
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: layout
+    attributes:
+      label: Layout JSON
+      description: Paste the layout, or the smallest part of it that shows the problem.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and why
+      description: If a code or guideline says otherwise, name it (for example IRC R310, NKBA).
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: v1.3.0, or a commit

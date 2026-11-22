@@ -1,0 +1,22 @@
+name: Feature or room request
+description: A new room type, rule, regional practice, tool or output
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What would you like?
+      description: For example a rule for laundry rooms, Vastu placement checks, a DXF export.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: The problem it solves
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Sources
+      description: Any code, standard or guideline that backs the numbers. Rules without a source are tagged [std].

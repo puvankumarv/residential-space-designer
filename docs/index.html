@@ -299,6 +299,19 @@ nav .wrap{display:flex;align-items:center;gap:20px;height:62px}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
 .chip{font:500 12px "Geist Mono",monospace;padding:6px 11px;border-radius:7px;border:1px solid var(--line-2);background:var(--card);color:var(--ink-2)}
 
+
+/* faq */
+.faq{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden}
+.qa{border-top:1px solid var(--line)}
+.qa:first-child{border-top:0}
+.qa summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 22px;font-weight:600;font-size:16px;letter-spacing:-.01em}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";font:400 22px/1 "Geist Mono",monospace;color:var(--ink-3);transition:transform .2s}
+.qa[open] summary::after{transform:rotate(45deg);color:var(--accent)}
+.qa summary:hover{background:var(--card-2)}
+.qa p{padding:0 22px 20px;color:var(--ink-2);max-width:820px}
+.qa a,.sec-head .lead a{color:var(--accent-2)}
+
 /* closing */
 .closing{text-align:center;overflow:hidden}
 .closing::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse 60% 70% at 50% 50%,#000,transparent 75%);-webkit-mask-image:radial-gradient(ellipse 60% 70% at 50% 50%,#000,transparent 75%)}
@@ -378,6 +391,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <a href="#rooms">Rooms</a>
       <a href="#checker">Checker</a>
       <a href="#install">Install</a>
+      <a href="#faq">FAQ</a>
       <a href="viewer.html">3D viewer</a>
     </div>
     <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
@@ -398,6 +412,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <a href="#rooms">Rooms</a>
     <a href="#checker">Checker</a>
     <a href="#install">Install</a>
+    <a href="#faq">FAQ</a>
     <a href="viewer.html">3D viewer</a>
     <a href="https://github.com/puvankumarv/residential-space-designer">GitHub ↗</a>
   </div>
@@ -1118,10 +1133,30 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </div>
 </section>
 
+<section id="faq">
+  <div class="wrap">
+    <div class="sec-head row">
+      <span class="label"><b>09</b> / FAQ</span>
+      <h2>Questions, answered.</h2>
+      <p class="lead">Short answers to what people ask first. Anything else, <a href="https://github.com/puvankumarv/residential-space-designer/issues">open an issue</a>.</p>
+    </div>
+    <div class="faq">
+      <details class="qa"><summary>Is it free?</summary><p>Yes. The skill, checker and MCP server are open source under the MIT licence. You need Claude to use the skill: Claude Code, the Claude app with skills, or any MCP client for the server.</p></details>
+      <details class="qa"><summary>Does it replace an architect or interior designer?</summary><p>No. It gives you a well-reasoned, checked starting layout. Code values are minimums and vary by country and edition, so check local codes, and have structure, gas, electrics and waterproofing done or signed off by qualified people.</p></details>
+      <details class="qa"><summary>Which codes and standards does it check against?</summary><p>US residential code (IRC) for escape windows, toilet and shower clearances, stairs and window falls; NKBA kitchen and bath guidelines; CPSC and EN 747 for bunk and loft beds; Neufert and Panero for circulation; IES for lighting. Each rule carries its source tag, and anything unconfirmed is tagged <code>[std]</code>.</p></details>
+      <details class="qa"><summary>Does it work for Indian homes?</summary><p>Yes. A regional module covers pooja rooms, dry and wet kitchens, elders on the ground floor, west-sun shading and Vastu if you want it. A Western module covers drop zones, open kitchens and mudrooms.</p></details>
+      <details class="qa"><summary>Do I need to install anything?</summary><p>Only Python 3 for the checker and the MCP server; there are no packages to install. In Claude Code the plugin installs everything in one command.</p></details>
+      <details class="qa"><summary>Does the MCP server work outside Claude Code?</summary><p>Yes. It speaks MCP over stdio, so Claude Desktop, Cursor, VS Code and other MCP clients can run it with a three-line config. See the MCP server tab under Install.</p></details>
+      <details class="qa"><summary>Is my room data sent anywhere?</summary><p>No. The MCP server and scripts run on your machine and make no network calls. What you share in the chat goes to Claude as usual.</p></details>
+      <details class="qa"><summary>Can I open the 3D model in other software?</summary><p>Yes. <code>layout_to_gltf</code> writes standard glTF 2.0, which opens in Blender, Windows 3D Viewer, macOS Quick Look and web viewers like the one on this site.</p></details>
+    </div>
+  </div>
+</section>
+
 <section id="roadmap">
   <div class="wrap">
     <div class="sec-head">
-      <span class="label"><b>09</b> / Roadmap</span>
+      <span class="label"><b>10</b> / Roadmap</span>
       <h2>Where this is going.</h2>
     </div>
     <div class="road">

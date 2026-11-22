@@ -188,6 +188,10 @@ Design patterns were studied from public renovation videos and written up in our
 4. Inputs: photo to dimensions, voice (Whisper), video to 3D reconstruction.
 5. Multi-room home layouts in a single file.
 
+## Contributing
+
+Issues and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md): every number needs a source tag, and the code stays standard-library Python.
+
 ## License
 
 [MIT](LICENSE) © 2026 Puvan Kumar V. The research notes in `interior-design-research/` summarise public videos in our own words. The videos themselves belong to their creators.
