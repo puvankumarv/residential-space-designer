@@ -51,5 +51,14 @@ Seen across Indian and Western houses and flats (`[HT]`, see [home_tours.md](htt
 | **Every window to green** | Garden, courtyard or balcony planting placed where the main windows look | [HT-I5, W5] |
 | **Keep what exists** | Original floors, brick, stairs and heirloom furniture reused; lower cost and carbon | [HT-I6, W2, W3, W5] |
 
+## 6b. Patterns from small-flat videos
+| Pattern | How | Source |
+|---|---|---|
+| **Guest WC near the entrance** | A separate WC so guests don't enter the private rooms | [YT-S2] |
+| **Wet rooms at the ends** | In an open plan, keep bathroom and WC compact at the ends and the living, kitchen and office in the middle | [YT-S2] |
+| **Borrowed light** | An internal window (switchable or frosted glass) brings daylight to a windowless bathroom or kitchen | [YT-S1], [YT-S2] |
+| **Spaces that appear and disappear** | Slide-out dining, fold-away office chair, curtains instead of doors | [YT-S1], [YT-S2] |
+| **Trace routes first** | Keep routes out of kitchen work zones and seating groups | [YT-K1], [YT-L1] |
+
 ## 7. Regional programs
 Room lists differ by culture. Check `regional/india.md` (pooja, dry and wet kitchens, utility, elders' room, staff access, verandah, courtyard) or `regional/western.md` (mudroom, ensuites, walk-in closets, laundry room, home office) before fixing the room list.

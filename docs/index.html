@@ -683,9 +683,9 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </header>
 
 <div class="stats">
-  <div class="stat"><b>10</b><span>MCP tools</span></div>
+  <div class="stat"><b>11</b><span>MCP tools</span></div>
   <div class="stat"><b>10</b><span>Room modules</span></div>
-  <div class="stat"><b>88</b><span>Tests passing</span></div>
+  <div class="stat"><b>106</b><span>Tests passing</span></div>
   <div class="stat"><b>2</b><span>Regions: India, West</span></div>
   <div class="stat"><b>0</b><span>Dependencies</span></div>
 </div>
@@ -722,7 +722,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="wrap">
     <div class="sec-head row">
       <span class="label"><b>02</b> / MCP tools</span>
-      <h2>Ten tools Claude calls while it designs.</h2>
+      <h2>Eleven tools Claude calls while it designs.</h2>
       <p class="lead">The plugin starts a small MCP server: plain Python, nothing to install. Claude checks a layout, fixes it, looks at it, measures it and compares options without leaving the chat.</p>
     </div>
     <div class="tbl" role="table" aria-label="MCP tools">
@@ -732,6 +732,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="tr" role="row"><code>floor_plan_png</code><span>A picture of the plan Claude can look at, with a numbered legend.</span><em>image</em><b class="new">new</b></div>
       <div class="tr" role="row"><code>room_metrics</code><span>Free floor, storage, beds, seats, worktop run and daylight against IRC 8%.</span><em>structured</em><b class="new">new</b></div>
       <div class="tr" role="row"><code>compare_layouts</code><span>Ranks 2 to 6 options by errors, warnings, free floor and storage.</span><em>structured</em><b class="new">new</b></div>
+      <div class="tr" role="row"><code>find_design_patterns</code><span>Proven moves for a room problem, with the architect's or designer's video it came from.</span><em>structured</em><b class="new">new</b></div>
       <div class="tr" role="row"><code>floor_plan_svg</code><span>A labelled SVG plan with door swings, north up.</span><em>svg</em><i></i></div>
       <div class="tr" role="row"><code>layout_to_gltf</code><span>A 3D model with furniture shaped by type. <a href="viewer.html">Open the viewer →</a></span><em>gltf</em><i></i></div>
       <div class="tr" role="row"><code>get_layout_schema</code><span>The JSON Schema every layout follows.</span><em>json</em><i></i></div>
@@ -1084,7 +1085,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
         </div>
         <div class="panel" id="p-mcp">
           <ol class="ol">
-            <li><b>With the Claude Code plugin it starts by itself.</b> Tools: <code>validate_layout</code>, <code>room_metrics</code>, <code>edit_layout</code>, <code>compare_layouts</code>, <code>floor_plan_png</code>, <code>floor_plan_svg</code>, <code>layout_to_gltf</code>, plus the references as tools and <code>rsd://</code> resources, and <code>design_room</code> / <code>review_layout</code> prompts.</li>
+            <li><b>With the Claude Code plugin it starts by itself.</b> Tools: <code>validate_layout</code>, <code>room_metrics</code>, <code>edit_layout</code>, <code>compare_layouts</code>, <code>find_design_patterns</code>, <code>floor_plan_png</code>, <code>floor_plan_svg</code>, <code>layout_to_gltf</code>, plus the references as tools and <code>rsd://</code> resources, and <code>design_room</code> / <code>review_layout</code> prompts.</li>
             <li><b>Other MCP clients</b> (Claude Desktop, Cursor…): clone the repository, then add this to the client's MCP config
               <div class="code"><button class="copy">Copy</button><pre>{"mcpServers": {"residential-space-designer": {
   "command": "python3",

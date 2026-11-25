@@ -105,3 +105,7 @@ Inputs: text | voice (speech-to-text) | room photos | walkthrough video | floor 
 
 ## 5. Whole-home tours (added 2026-11-09)
 To widen the skill from small rooms to whole houses, 14 full home tours were read: 8 Indian (Buildofy, Zenden, Homely by LBB and a budget-build channel) and 6 Western (Never Too Small, The Local Project, Living Big in a Tiny House). Paraphrased notes and cross-cutting patterns are in [`home_tours.md`](home_tours.md). They feed `references/regional/india.md`, `references/regional/western.md`, `references/rooms/exterior.md` and the patterns section of `references/rooms/whole-home.md`.
+
+## Room-specific videos (2026-11-25)
+
+Ten more videos fill the gaps above (bedroom-heavy Shorts and whole-home tours): kitchens, bathrooms, living rooms, a home office, a utility balcony and two small flats, from architects, designers and owners. Notes, creator strength and cross-cutting patterns are in [`youtube_room_notes.md`](youtube_room_notes.md); the skill cites them as `[YT]`.

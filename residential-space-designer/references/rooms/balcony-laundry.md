@@ -19,5 +19,14 @@ Put the washer and dryer where water supply and drainage already exist. Usually 
 | Outdoor electrics | Weatherproof sockets with ground-fault protection, fitted by an electrician | [std] |
 | Drainage | Keep the floor drain clear; slope towards it | [DI 9] |
 
+## Patterns from room videos
+| Pattern | How | Source |
+|---|---|---|
+| **Dishwasher faces along a narrow balcony** | It needs about 1.5 m in front to open, load and stand; in a 1.2 m-wide balcony, place it beside the washer facing along the length | [YT-U1] `[std]` |
+| **Measure the door before buying** | A 57–58 cm balcony door won't pass a 60 × 60 cm machine without dismantling it | [YT-U1] |
+| **Services for two machines** | Two sockets (15 A), a two-way angle valve for both inlets, and a drain standpipe each | [YT-U1] |
+| **Utility beside the kitchen sink** | Makes loading the dishwasher and moving vessels easy | [YT-U1] |
+| **Ceiling drying rack** | A rope-and-pulley rack in a full-height bathroom or utility keeps laundry off the floor | [YT-S2] |
+
 ## Reveal order
 Door to the balcony → laundry tower → drying rack → leisure corner (if any).

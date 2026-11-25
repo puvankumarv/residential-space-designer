@@ -51,5 +51,21 @@ Source tags are explained in `../sources.md`. ✔ means `scripts/check_layout.py
 ## Storage moves
 Full-height pantry with pull-out baskets [DI 66]; stacked drawer bases instead of doors; a rail system on the backsplash; a toe-kick drawer; appliance garages; an over-fridge cabinet for rarely used items.
 
+## Patterns from room videos
+| Pattern | How | Source |
+|---|---|---|
+| **Fridge at a run end, near the way in** | Never mid-run: it splits the worktop into two short pieces and puts snack traffic through the work zone | [YT-K1] |
+| **The kitchen is also a corridor** | Trace routes to the garden, utility, bins and table; if one crosses the sink–hob–fridge strip, move the access, not the units | [YT-K1] |
+| **Draw every swing on one sheet** | Appliance doors, drawers and corner cupboards; check the bin drawer opens with the dishwasher down | [YT-K1] |
+| **Room width decides the layout** | Island only from about 3.6 m of room width with 1.0–1.2 m clear on the working side; galleys under about 2.4 m are poor | [YT-K1], agrees with [NKBA] |
+| **A view from the sink** | You stand there longest: face a window or the room, not a blank wall; avoid gloss worktops facing low west sun | [YT-K1] |
+| **Services fix the sink and hob** | Sink near the stack with enough fall; hood on or near an external wall with a short, straight duct | [YT-K1], [YT-K2] |
+| **A second station** | Somewhere for the second person: about 800 mm of worktop with a socket away from hob and sink (island end or short return) | [YT-K1] |
+| **Indian: hob on the longest counter** | Room for the rolling board and everything around it; the drain point fixes the sink | [YT-K2] |
+| **Modular widths** | Cabinets in 300 / 450 / 600 / 750 / 900 mm so standard baskets, trays and shutters fit; odd widths leave dead pockets | [YT-K2] |
+| **Storage from a list** | List dals and pulses (shallow drawers sized to canisters), atta, rice and sugar (grain trolley), oils, ladles; then pick a pantry type | [YT-K2], [HT-I6] |
+| **Appliance garage** | Rolling shutter (450 / 600 / 900 mm) with daily appliances on shelves and sockets behind, so nothing is unplugged and moved | [YT-K2] |
+| **Round corner trays** | A swing-out corner unit with round trays for kadais and pressure cookers | [YT-K2] |
+
 ## Reveal order
 Entry view → the main run and triangle → landing and prep space → storage reveal (pantry, drawers) → seating or island → wide shot.

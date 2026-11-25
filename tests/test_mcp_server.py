@@ -48,7 +48,7 @@ class TestProtocol(unittest.TestCase):
         self.assertEqual(init["protocolVersion"], "2025-06-18")
         self.assertIn("tools", init["capabilities"])
         names = {t["name"] for t in replies[1]["result"]["tools"]}
-        self.assertEqual(names, {"validate_layout", "room_metrics", "edit_layout", "compare_layouts", "floor_plan_png",
+        self.assertEqual(names, {"validate_layout", "room_metrics", "edit_layout", "compare_layouts", "find_design_patterns", "floor_plan_png",
                                  "floor_plan_svg", "layout_to_gltf", "get_layout_schema", "list_references", "read_reference"})
         self.assertEqual(replies[2]["result"], {})
 

@@ -90,7 +90,7 @@ Then describe your room or home ("my twins share a 3.4 × 3.4 m room…", "plan 
 
 ## MCP server
 
-The plugin starts a small MCP server (standard-library Python, no install) with ten tools:
+The plugin starts a small MCP server (standard-library Python, no install) with eleven tools:
 
 | Tool | What it does |
 |---|---|
@@ -98,6 +98,7 @@ The plugin starts a small MCP server (standard-library Python, no install) with 
 | `room_metrics` | Free floor (m² and %), storage volume, hanging rail, sleeping places, seats, worktop run, glazing ratio against the IRC 8% rule (structured) |
 | `edit_layout` | Moves, resizes, rotates, adds, removes or changes elements and re-checks in the same call (structured) |
 | `compare_layouts` | Ranks 2 to 6 options by errors, warnings, free floor and storage, with a one-line summary (structured) |
+| `find_design_patterns` | Proven moves for a room problem ("toilet visible from the door", "dishwasher in a narrow balcony"), each with how to apply it, its source and the YouTube video it came from (structured) |
 | `floor_plan_png` | A PNG picture of the plan with a numbered legend, so Claude can look at what it designed |
 | `floor_plan_svg` | Draws an architectural SVG floor plan (hatched walls, door swings, furniture symbols, dimensions), or plain boxes with `style: "plain"` |
 | `layout_to_gltf` | Builds a 3D model of the room as glTF 2.0 JSON, furniture shaped by type |
@@ -178,7 +179,7 @@ CI runs these tests on every push: checker rules, every shipped layout, and the 
 
 v1. Code values are minimums. NKBA and design-guide values are recommendations. Values tagged `[std]` are common practice and must be confirmed. Always check local building codes, and have structure, gas, electrics and waterproofing done or signed off by professionals.
 
-Design patterns were studied from public renovation videos and written up in our own words. The case-study notes in `interior-design-research/` are paraphrased summaries, not transcripts.
+Design patterns were studied from public renovation videos and written up in our own words. The case-study notes in `interior-design-research/` are paraphrased summaries, not transcripts: about 100 renovation Shorts, 14 whole-home tours, and 10 room-specific videos from architects, designers and owners (kitchens, bathrooms, living rooms, home offices, utility balconies, small flats) in `youtube_room_notes.md`.
 
 ## Roadmap
 

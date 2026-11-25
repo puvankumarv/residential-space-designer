@@ -41,5 +41,19 @@ Keep the toilet on its existing soil stack if you can, because moving it is the 
 ## Storage moves
 Mirror cabinet across the full wall; a niche in the shower wall (non-load-bearing walls only); over-toilet cabinet; vanity drawers instead of doors; a towel ladder.
 
+## Patterns from room videos
+| Pattern | How | Source |
+|---|---|---|
+| **WC not beside the head of the bath** | Put the basin between them, or use a double-ended bath with central taps | [YT-B1] |
+| **WC out of the door view** | Doors stay open: the first view from the door (and from the bed in an ensuite) should be the vanity, not the WC | [YT-B1], [YT-B2] |
+| **Use the stud walls** | Niches, recessed mirrors and lighting in wall cavities; a short or half wall can create shower headroom or a clean bath end | [YT-B1], [YT-B2] |
+| **Niche off the shower-head wall** | The supply pipes run down that wall; put niches on an adjacent or opposite wall | [YT-B1] |
+| **A ledge by the basin** | Undermount basin or a shelf under the mirror, so there's somewhere to put things | [YT-B1] |
+| **Mirror cabinet depth** | A cabinet deeper than the basin below hits your head; keep it shallower than the basin projection | [YT-B1] |
+| **Check headroom under slopes** | Include the shower tray step and drainage below when checking head height | [YT-B1] |
+| **WC on a stud wall** | Back-to-wall (floor-standing) rather than wall-hung; wall-hung needs a frame that carries the load | [YT-B1] |
+| **Small-room plans** | Linear (one wall, about 1.5 × 2.4 m), corner shower with a sliding glass panel, curbless wet room to a linear drain, or a raised shower zone to split wet and dry | [YT-B2] |
+| **Recover the door swing** | Pocket or sliding door, or an outward-opening door, in very small bathrooms | [YT-B2] |
+
 ## Reveal order
 Door view → wet zone → dry zone with vanity → storage → a detail shot (drain, niche, lighting) → wide shot.

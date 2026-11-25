@@ -8,6 +8,7 @@ Tools:
   room_metrics      free floor, storage, sleeping places, seats, worktop, daylight (structured)
   edit_layout       move, resize, rotate, add, remove or change elements, then re-check (structured)
   compare_layouts   rank 2-6 layout options by errors, warnings, free floor and storage (structured)
+  find_design_patterns  proven room moves from architects' and designers' videos, with sources (structured)
   floor_plan_png    a PNG picture of the plan, so the model can see it, with a numbered legend
   floor_plan_svg    an architectural SVG floor plan (or plain boxes) with door swings and dimensions
   layout_to_gltf    a 3D model (glTF 2.0) with furniture shaped by type
@@ -36,6 +37,7 @@ sys.path.insert(0, str(HERE))
 import check_layout as cl  # noqa: E402
 import floor_plan_svg as svg  # noqa: E402
 import layout_to_gltf as gl  # noqa: E402
+import design_patterns as dp  # noqa: E402
 import layout_tools as lt  # noqa: E402
 import plan_drawing  # noqa: E402
 import plan_png  # noqa: E402
@@ -67,7 +69,8 @@ CAPABILITIES = {
 INSTRUCTIONS = (
     "Tools for designing homes room by room. Get the layout format from get_layout_schema, write the layout, "
     "run validate_layout until it has no errors, fix things with edit_layout (it re-checks for you), look at "
-    "the result with floor_plan_png, measure it with room_metrics, and weigh options with compare_layouts. "
+    "the result with floor_plan_png, measure it with room_metrics, and weigh options with compare_layouts. For a specific problem, find_design_patterns returns proven moves "
+    "with their sources. "
     "Then hand over floor_plan_svg or a 3D model from layout_to_gltf. Design guidance is in the references "
     "(resources rsd://skill/..., or list_references / read_reference)."
 )
@@ -185,6 +188,37 @@ TOOLS = [
             "type": "object",
             "properties": {"options": {"type": "array", "items": {"type": "object"}}, "ranking": STRINGS, "summary": {"type": "string"}},
             "required": ["options", "ranking", "summary"],
+        },
+        "annotations": READ_ONLY,
+    },
+    {
+        "name": "find_design_patterns",
+        "title": "Find design patterns",
+        "description": (
+            "Search the skill's design patterns: proven moves for kitchens, bathrooms, living rooms, home offices, "
+            "utility balconies, small flats and whole homes, each with how to apply it and its source. Patterns "
+            "come from architects', designers' and owners' YouTube videos and home tours (paraphrased), checked "
+            "against codes where numbers are given; cited videos come back with their links. Use it when a room "
+            "has a specific problem (e.g. 'narrow kitchen fridge', 'toilet visible from door', 'dishwasher balcony')."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "What you're looking for, in plain words."},
+                "room": {"type": "string", "enum": dp.ROOMS, "description": "Limit to one room or region."},
+                "limit": {"type": "integer", "minimum": 1, "maximum": 30, "default": 8},
+            },
+        },
+        "outputSchema": {
+            "type": "object",
+            "properties": {
+                "count": {"type": "integer"},
+                "patterns": {"type": "array", "items": {"type": "object", "properties": {
+                    "room": {"type": "string"}, "pattern": {"type": "string"}, "how": {"type": "string"},
+                    "sources": {"type": "string"}, "file": {"type": "string"},
+                    "videos": {"type": "array", "items": {"type": "object"}}}}},
+            },
+            "required": ["count", "patterns"],
         },
         "annotations": READ_ONLY,
     },
@@ -424,6 +458,19 @@ def compare_layouts(args):
     return structured(_guard(lt.compare, clean))
 
 
+def find_design_patterns(args):
+    query, room, limit = args.get("query", ""), args.get("room"), args.get("limit", 8)
+    if not isinstance(query, str):
+        raise ToolError("query must be a string")
+    if room is not None and room not in dp.ROOMS:
+        raise ToolError(f"room must be one of {dp.ROOMS}")
+    if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 30:
+        raise ToolError("limit must be a whole number from 1 to 30")
+    found = dp.search(query, room, limit)
+    return structured({"count": len(found), "patterns": [
+        {k: r[k] for k in ("room", "pattern", "how", "sources", "file", "videos")} for r in found]})
+
+
 def floor_plan_png(args):
     layout = _layout(args.get("layout"))
     state = _state(layout, args.get("state"))
@@ -476,6 +523,7 @@ HANDLERS = {
     "room_metrics": room_metrics,
     "edit_layout": edit_layout,
     "compare_layouts": compare_layouts,
+    "find_design_patterns": find_design_patterns,
     "floor_plan_png": floor_plan_png,
     "floor_plan_svg": floor_plan_svg,
     "layout_to_gltf": layout_to_gltf,

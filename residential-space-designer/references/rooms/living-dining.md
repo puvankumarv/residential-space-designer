@@ -35,5 +35,19 @@ Pick the focus first: TV, a view or window, or conversation. Seating faces the f
 ## Storage moves
 A TV wall with closed cabinets and open display niches; window-seat storage; platform seating with drawers [DI 26]; a sideboard that doubles as a room divider in open plan.
 
+## Patterns from room videos
+| Pattern | How | Source |
+|---|---|---|
+| **Paths first** | Map the routes people will take before placing anything; seating goes in the quiet pockets left over, dining in the next one, desks or shelves on slim edges | [YT-L1] |
+| **Path around, not through** | Main path about 0.9 m, kept to the edge of the seating group so nobody walks between two chairs | [YT-L2], agrees with [NKBA] walkway |
+| **Align to an axis** | Centre the seating on a window, fireplace or wall, and the table on a window or light point; loosen once it works | [YT-L1] |
+| **First view and seat views** | From the entrance, show the seating group, not the TV or kitchen; from the sofa, look at a window or calm wall, not the kitchen or WC door | [YT-L1] |
+| **Faces first, screen second** | Seats in a U or loose circle within conversation distance; mix chair types; dining chairs can join for guests | [YT-L1], [YT-L2] |
+| **Pull the sofa off the wall** | 20–30 cm off the wall in small rooms; float it with a console behind in large rooms | [YT-L2] `[std]` |
+| **Anchor and enclose** | Coffee table in the middle, side tables and lamps beside seats so each seat feels enclosed | [YT-L1] |
+| **Rug holds the group** | At least the front legs of every main seat on the rug | [YT-L1], [YT-L2] |
+| **TV at seated eye level** | Centre of the screen near seated eye height; a screen filling about 30° of view puts a 50-inch TV within about 2.1 m | [YT-L2] (SMPTE guidance) |
+| **Vary heights and light** | Mix tall and low pieces; layer lamps instead of one ceiling light | [YT-L2] |
+
 ## Reveal order
 Entry view → seating focus → storage wall → dining → wide shot.
