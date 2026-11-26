@@ -195,7 +195,7 @@ TOOLS = [
         "name": "find_design_patterns",
         "title": "Find design patterns",
         "description": (
-            "Search the skill's design patterns: proven moves for kitchens, bathrooms, living rooms, home offices, "
+            "Search the skill's design patterns: proven moves, symptom → fix diagnostics and bedroom archetype layouts for bedrooms, kitchens, bathrooms, living rooms, home offices, "
             "utility balconies, small flats and whole homes, each with how to apply it and its source. Patterns "
             "come from architects', designers' and owners' YouTube videos and home tours (paraphrased), checked "
             "against codes where numbers are given; cited videos come back with their links. Use it when a room "
@@ -214,6 +214,7 @@ TOOLS = [
             "properties": {
                 "count": {"type": "integer"},
                 "patterns": {"type": "array", "items": {"type": "object", "properties": {
+                    "kind": {"type": "string", "enum": ["pattern", "fix", "archetype"]},
                     "room": {"type": "string"}, "pattern": {"type": "string"}, "how": {"type": "string"},
                     "sources": {"type": "string"}, "file": {"type": "string"},
                     "videos": {"type": "array", "items": {"type": "object"}}}}},
@@ -468,7 +469,7 @@ def find_design_patterns(args):
         raise ToolError("limit must be a whole number from 1 to 30")
     found = dp.search(query, room, limit)
     return structured({"count": len(found), "patterns": [
-        {k: r[k] for k in ("room", "pattern", "how", "sources", "file", "videos")} for r in found]})
+        {k: r[k] for k in ("kind", "room", "pattern", "how", "sources", "file", "videos")} for r in found]})
 
 
 def floor_plan_png(args):
@@ -583,6 +584,7 @@ def prompts_get(params, modern):
             "3. Run validate_layout. Fix every error with edit_layout, and review each warning.",
             "4. Look at it with floor_plan_png and check flow, door swings and what you see from the door.",
             "5. Report room_metrics (free floor, storage, sleeping places, daylight).",
+            "   For any specific problem (a visible toilet, a fridge with nowhere to go), call find_design_patterns for proven moves and their sources.",
             "6. If there are two good ideas, build both and use compare_layouts.",
             "7. Finish with the layout JSON, a short design note, and offer floor_plan_svg or layout_to_gltf.",
         ]

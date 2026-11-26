@@ -226,6 +226,34 @@ def centre(e):
     return (e["x"] + e["w"] / 2, e["y"] + e["d"] / 2)
 
 
+RUN_WORKTOP = {"counter", "sink", "cooktop", "dishwasher"}
+TOUCH = 0.05      # elements this close count as one run
+RUN_OVERLAP = 0.2  # and must share at least this much depth
+
+
+def check_fridge_mid_run(els, rep):
+    """A fridge with worktop on both sides along its run splits the counter in two [YT-K1]."""
+    for f in (e for e in els if e["type"] == "fridge"):
+        front = f.get("front")
+        front = front[0] if isinstance(front, list) and front else front
+        along_x = front in ("+y", "-y") or (front is None and f["w"] >= f["d"])
+        fx0, fx1, fy0, fy1 = rect(f)
+        left = right = False
+        for e in els:
+            if e is f or e["type"] not in RUN_WORKTOP or (e.get("z", 0) or 0) >= 1.0:
+                continue
+            x0, x1, y0, y1 = rect(e)
+            if along_x and min(fy1, y1) - max(fy0, y0) >= RUN_OVERLAP:
+                left |= abs(x1 - fx0) <= TOUCH
+                right |= abs(x0 - fx1) <= TOUCH
+            elif not along_x and min(fx1, x1) - max(fx0, x0) >= RUN_OVERLAP:
+                left |= abs(y1 - fy0) <= TOUCH
+                right |= abs(y0 - fy1) <= TOUCH
+        if left and right:
+            rep.warn(f"{f['id']}: fridge in the middle of a worktop run splits it in two; "
+                     "put it at the end of the run, near the way in [YT-K1]")
+
+
 def check_room_type(layout, solid, rep):
     room = layout["room"]
     rtype = room.get("type", "bedroom")
@@ -268,6 +296,7 @@ def check_room_type(layout, solid, rep):
                 rep.warn(f"work triangle total {total:.2f} m > {TRIANGLE_MAX} m [NKBA]")
         else:
             rep.warn("kitchen without sink, cooktop and fridge; work triangle not checked")
+        check_fridge_mid_run(els, rep)
 
     if rtype == "bathroom":
         for e in els:

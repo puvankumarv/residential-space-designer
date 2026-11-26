@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- **`find_design_patterns` covers bedrooms and diagnostics:** it now also reads the "Symptom → Usual fix" tables (bedroom, kitchen, bathroom, living) and the bedroom archetype layouts, and links the 100 renovation Shorts (`[DI n]`, "Seen in" lists) to YouTube. 104 entries in all, each tagged `pattern`, `fix` or `archetype`.
+- **Checker:** warns when a fridge sits in the middle of a worktop run, splitting it in two `[YT-K1]`.
+- **`design_room` prompt:** points Claude to `find_design_patterns` for specific problems.
 - **New research: 10 room-specific YouTube videos** (`interior-design-research/youtube_room_notes.md`, tag `[YT]`): kitchens (an architect's layout mistakes; Indian modular kitchens), bathrooms, living rooms (an architect's eight-step method), home offices, a utility balcony and two small flats. Paraphrased, with each creator's strength noted; numbers kept only where a code agrees, otherwise `[std]`.
 - **Room modules updated** with "Patterns from room videos": kitchen (fridge at a run end, the kitchen as a corridor, a second station, modular widths, storage from a list), bathroom (WC out of the door view, niches off the shower-head wall, mirror cabinet depth), living (paths first, faces before the screen, rug and TV rules), home office (command position), utility (dishwasher orientation, door width before buying), and small flats (guest WC by the entrance, borrowed light).
 - **MCP `find_design_patterns`** (`scripts/design_patterns.py`): searches every pattern table in the references and links each cited video to YouTube via `references/video_sources.json`.

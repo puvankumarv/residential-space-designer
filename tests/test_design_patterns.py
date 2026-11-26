@@ -47,11 +47,21 @@ class TestPatterns(unittest.TestCase):
             self.assertIn(room, rooms)
 
     def test_search_ranks_the_obvious_match_first(self):
-        top = dp.search("fridge position", room="kitchen", limit=3)[0]
-        self.assertIn("Fridge", top["pattern"])
-        self.assertEqual(top["videos"][0]["url"], "https://youtu.be/Bx5tm2m4320")
+        hits = dp.search("fridge position", room="kitchen", limit=3)
+        self.assertTrue(all("ridge" in h["pattern"] for h in hits[:2]), [h["pattern"] for h in hits])
+        run_end = next(h for h in hits if "run end" in h["pattern"])
+        self.assertEqual(run_end["videos"][0]["url"], "https://youtu.be/Bx5tm2m4320")
         top = dp.search("toilet seen from the door", room="bathroom")[0]
         self.assertIn("WC", top["pattern"])
+
+    def test_bedroom_fixes_and_archetypes(self):
+        fix = dp.search("wardrobe doors can't open", room="bedroom")[0]
+        self.assertEqual(fix["kind"], "fix")
+        self.assertTrue(fix["videos"] and all(v["id"].startswith("DI-") for v in fix["videos"]))
+        kinds = {r["kind"] for r in dp.load() if r["room"] == "bedroom"}
+        self.assertEqual(kinds, {"fix", "archetype"})
+        twins = dp.search("twins loft", room="bedroom")[0]
+        self.assertEqual(twins["kind"], "archetype")
 
     def test_room_filter(self):
         self.assertTrue(all(r["room"] == "utility" for r in dp.search("", room="utility")))

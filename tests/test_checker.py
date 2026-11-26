@@ -140,6 +140,20 @@ class TestRoomTypeRules(unittest.TestCase):
             el(L, i)["x"] = 1.55
         self.assertTrue(has(run(L).warns, "walkway"))
 
+    def test_fridge_mid_run(self):
+        """A fridge with worktop on both sides along its run gets a warning [YT-K1]; at a run end it doesn't."""
+        L = load("examples/studio-apartment.json")
+        self.assertFalse(has(run(L).warns, "fridge in the middle"))
+        # studio run along the S wall: counter 1.3, cooktop 1.9, sink 2.5–3.3, fridge 3.3–4.0
+        # swap fridge and sink so the fridge sits between cooktop and sink
+        M = copy.deepcopy(L)
+        el(M, "fridge")["x"], el(M, "sink")["x"] = 2.5, 3.2
+        msgs = run(M).warns
+        self.assertTrue(has(msgs, "fridge in the middle"), msgs)
+        # something raised beside it (a wall unit) isn't worktop, so the fridge no longer splits a run
+        el(M, "sink")["z"] = 1.5
+        self.assertFalse(has(run(M).warns, "fridge in the middle"))
+
     def test_kitchen_triangle(self):
         L = load("examples/galley-kitchen.json")
         L["room"]["depth"] = 5.5

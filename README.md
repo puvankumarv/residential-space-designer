@@ -98,7 +98,7 @@ The plugin starts a small MCP server (standard-library Python, no install) with 
 | `room_metrics` | Free floor (m² and %), storage volume, hanging rail, sleeping places, seats, worktop run, glazing ratio against the IRC 8% rule (structured) |
 | `edit_layout` | Moves, resizes, rotates, adds, removes or changes elements and re-checks in the same call (structured) |
 | `compare_layouts` | Ranks 2 to 6 options by errors, warnings, free floor and storage, with a one-line summary (structured) |
-| `find_design_patterns` | Proven moves for a room problem ("toilet visible from the door", "dishwasher in a narrow balcony"), each with how to apply it, its source and the YouTube video it came from (structured) |
+| `find_design_patterns` | Proven moves, symptom → fix diagnostics and bedroom archetypes for a room problem ("toilet visible from the door", "dishwasher in a narrow balcony"), each with how to apply it, its source and the YouTube video it came from (structured) |
 | `floor_plan_png` | A PNG picture of the plan with a numbered legend, so Claude can look at what it designed |
 | `floor_plan_svg` | Draws an architectural SVG floor plan (hatched walls, door swings, furniture symbols, dimensions), or plain boxes with `style: "plain"` |
 | `layout_to_gltf` | Builds a 3D model of the room as glTF 2.0 JSON, furniture shaped by type |

@@ -3,11 +3,13 @@
 
 Usage: python3 design_patterns.py [query words] [--room kitchen] [--limit 8]
 
-Patterns live in the reference files as tables whose first column is
-"Pattern" (room modules, whole-home and regional notes). This reads them
-straight from the markdown, so the references stay the one source of truth,
-and links each cited video ([YT-K1], [HT-I2, I4] …) to its YouTube page using
-references/video_sources.json. The MCP server exposes this as
+Three kinds of entry, all read straight from the reference markdown so the
+references stay the one source of truth:
+  pattern    tables whose first column is "Pattern" (room modules, whole-home, regional)
+  fix        "Symptom | Usual fix" diagnostic tables (bedroom, kitchen, bathroom, living)
+  archetype  the bedroom archetype layouts (## A. … in rooms/bedroom/patterns.md)
+Each cited video ([YT-K1], [HT-I2, I4], [DI 66] or a "Seen in" list of Short
+numbers) is linked to its YouTube page using references/video_sources.json. The MCP server exposes this as
 find_design_patterns.
 """
 import json
@@ -21,7 +23,7 @@ ROOM_OF = {  # reference file → room key
     "balcony-laundry": "utility", "entry-circulation": "entry", "exterior": "exterior", "whole-home": "whole-home",
     "india": "india", "western": "western",
 }
-ROOMS = sorted(set(ROOM_OF.values()))
+ROOMS = sorted(set(ROOM_OF.values()) | {"bedroom"})
 STOP = {"a", "an", "the", "and", "or", "for", "to", "of", "in", "on", "with", "my", "is", "it", "how", "what", "do", "i"}
 
 
@@ -33,9 +35,14 @@ def _clean(text):
     return re.sub(r"\*\*|`", "", text).strip()
 
 
-def video_ids(text):
-    """IDs cited in a source cell: '[HT-I1, I2, W4]' → HT-I1, HT-I2, HT-W4; '[YT-K1], [YT-K2]' → both."""
+def video_ids(text, seen_in=False):
+    """IDs cited in text: '[HT-I1, I2, W4]' → HT-I1, HT-I2, HT-W4; '[YT-K1]'; '[DI 66, 9]' → DI-66, DI-9.
+    With seen_in, a bare number list ('20, 33, 67') is read as Dreamy Interior Short numbers."""
     ids = []
+    if seen_in:
+        ids += [f"DI-{n}" for n in re.findall(r"\b(\d{1,3})\b", text)]
+    for group in re.findall(r"\[DI ([\d,\s]+)\]", text):
+        ids += [f"DI-{n}" for n in re.findall(r"\d+", group)]
     for group in re.findall(r"\[((?:HT|YT)-[^\]]+)\]", text):
         prefix = None
         for part in (p.strip() for p in group.split(",")):
@@ -52,31 +59,44 @@ def load():
     """Every pattern row in the references, with its room, section and linked videos."""
     videos = json.loads((REFS / "video_sources.json").read_text())["videos"]
     rows = []
+    def link(ids):
+        return [dict(id=i, **videos[i]) for i in ids if i in videos]
+
     for path in sorted(REFS.rglob("*.md")):
         room = ROOM_OF.get(path.stem, "bedroom" if path.parent.name == "bedroom" else None)
         if room is None:
             continue
-        section, header = None, None
-        for line in path.read_text().splitlines():
+        section, header, lines = None, None, path.read_text().splitlines()
+        for k, line in enumerate(lines):
             if line.startswith("#"):
                 section, header = line.lstrip("#").strip(), None
+                m = re.match(r"##\s+([A-Z])\.\s+(.+)", line)
+                if path.name == "patterns.md" and room == "bedroom" and m:
+                    body = next((l for l in lines[k + 1:] if l.strip()), "")
+                    rows.append({"kind": "archetype", "room": room, "section": "Archetype layouts",
+                                 "file": str(path.relative_to(REFS.parent)), "pattern": _clean(m.group(2)),
+                                 "how": _clean(body), "sources": "bedroom archetype", "videos": link(video_ids(body))})
                 continue
             if not line.startswith("|"):
                 header = None
                 continue
             cells = _cells(line)
             if header is None:
-                header = cells if cells and cells[0].lower() == "pattern" else []
+                header = cells if cells and cells[0].lower() in ("pattern", "symptom") else []
                 continue
             if not header or set(line) <= set("|-: "):
                 continue
-            if len(cells) < 3:
+            fix = header[0].lower() == "symptom"
+            if len(cells) < (2 if fix else 3):
                 continue
-            ids = video_ids(cells[2])
+            src = cells[2] if len(cells) > 2 else ""
+            ids = video_ids(cells[1] + " " + src, seen_in=fix and len(cells) > 2 and "[" not in src)
             rows.append({
-                "room": room, "section": section, "file": str(path.relative_to(REFS.parent)),
-                "pattern": _clean(cells[0]), "how": _clean(cells[1]), "sources": _clean(cells[2]),
-                "videos": [dict(id=i, **videos[i]) for i in ids if i in videos],
+                "kind": "fix" if fix else "pattern", "room": room, "section": section,
+                "file": str(path.relative_to(REFS.parent)), "pattern": _clean(cells[0]), "how": _clean(cells[1]),
+                "sources": (_clean(src) if not (fix and src and "[" not in src) else f"[DI {_clean(src)}]")
+                or " ".join(re.findall(r"\[[^\]]+\]", cells[1])),
+                "videos": link(ids),
             })
     return rows
 

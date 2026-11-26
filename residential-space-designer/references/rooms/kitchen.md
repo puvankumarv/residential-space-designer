@@ -54,7 +54,7 @@ Full-height pantry with pull-out baskets [DI 66]; stacked drawer bases instead o
 ## Patterns from room videos
 | Pattern | How | Source |
 |---|---|---|
-| **Fridge at a run end, near the way in** | Never mid-run: it splits the worktop into two short pieces and puts snack traffic through the work zone | [YT-K1] |
+| **Fridge at a run end, near the way in** | Never mid-run: it splits the worktop into two short pieces and puts snack traffic through the work zone. ✔ The checker warns when worktop touches the fridge on both sides | [YT-K1] |
 | **The kitchen is also a corridor** | Trace routes to the garden, utility, bins and table; if one crosses the sink–hob–fridge strip, move the access, not the units | [YT-K1] |
 | **Draw every swing on one sheet** | Appliance doors, drawers and corner cupboards; check the bin drawer opens with the dishwasher down | [YT-K1] |
 | **Room width decides the layout** | Island only from about 3.6 m of room width with 1.0–1.2 m clear on the working side; galleys under about 2.4 m are poor | [YT-K1], agrees with [NKBA] |
